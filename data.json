@@ -1,0 +1,19 @@
+{
+  "updated_at": "INIT",
+  "btc_price": 0,
+  "mstr": {
+    "mstr_price": 0,
+    "market_cap_b": 0,
+    "mnav_multiple": 0,
+    "btc_holdings": 500000
+  },
+  "dow": {
+    "dow_status": "Neutral",
+    "dow_signal": "模型校準中...",
+    "support_level": 0,
+    "resistance_level": 0
+  },
+  "wyckoff": {
+    "current_phase_hint": "系統初始化中，等待 GitHub Actions 首次排程拉取..."
+  }
+}

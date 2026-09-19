@@ -332,7 +332,7 @@
       });
     }
 
-    // 1. 初始化讀取
+    // 1. 初始化讀取 data.json
     fetch('data.json?t=' + new Date().getTime())
       .then(res => res.json())
       .then(data => {
@@ -382,9 +382,9 @@
         startRealtimeEngines();
       });
 
-    // 2. 雙重即時引擎
+    // 2. 雙向長連線引擎 (BTC/ETH/UNI 使用標準現貨流，MSTR 走原生期貨多路流)
     function startRealtimeEngines() {
-      // (A) BTC, ETH, UNI 現貨長連線
+      // (A) BTC, ETH, UNI
       const spotStreams = 'btcusdt@miniTicker/ethusdt@miniTicker/uniusdt@miniTicker';
       const wsSpot = new WebSocket(`wss://stream.binance.com:9443/ws/${spotStreams}`);
       
@@ -403,43 +403,41 @@
         }
       };
 
-      // (B) MSTR 專屬合約 WebSocket (正確支援大小寫與重連)
-      function connectMstrFuturesWS() {
+      // (B) MSTR 專屬合約流：使用全網免認證的 WebSocket 多路通道
+      function initMstrStream() {
         try {
           const wsMstr = new WebSocket('wss://fstream.binance.com/ws/mstrusdt@ticker');
           wsMstr.onmessage = (event) => {
-            const msg = JSON.parse(event.data);
-            if (msg.c) {
-              const livePrice = parseFloat(msg.c);
+            const data = JSON.parse(event.data);
+            if (data && data.c) {
+              const livePrice = parseFloat(data.c);
               if (livePrice > 0) {
                 updateLivePriceUI('mstr-price', livePrice, 'mstr', 2);
                 updateMnavBadge(livePrice, lastPrices.btc);
               }
             }
           };
+          wsMstr.onclose = () => setTimeout(initMstrStream, 4000);
           wsMstr.onerror = () => wsMstr.close();
-          wsMstr.onclose = () => setTimeout(connectMstrFuturesWS, 3000);
         } catch (e) {}
       }
-      connectMstrFuturesWS();
+      initMstrStream();
 
-      // (C) 雙保險：跨域友善公共網關輪詢 (每 2 秒向免 CORS 代理查詢一次)
-      async function pollMstrProxy() {
-        try {
-          // 利用公開免 CORS 的行情代理
-          const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://fapi.binance.com/fapi/v1/ticker/price?symbol=MSTRUSDT');
-          const res = await fetch(proxyUrl);
-          const data = await res.json();
-          if (data && data.price) {
-            const p = parseFloat(data.price);
-            if (p > 0) {
-              updateLivePriceUI('mstr-price', p, 'mstr', 2);
-              updateMnavBadge(p, lastPrices.btc);
+      // (C) 備援：定時向後端 data.json 進行增量拉取 (後端每 10 分鐘同步一次)
+      setInterval(() => {
+        fetch('data.json?t=' + new Date().getTime())
+          .then(res => res.json())
+          .then(data => {
+            if (data && data.mstr && data.mstr.price) {
+              // 僅在尚未收到即時推播時維持後端最新校正
+              if (!lastPrices.mstr || Math.abs(lastPrices.mstr - data.mstr.price) > 3) {
+                updateLivePriceUI('mstr-price', data.mstr.price, 'mstr', 2);
+                updateMnavBadge(data.mstr.price, lastPrices.btc);
+              }
             }
-          }
-        } catch (e) {}
-      }
-      setInterval(pollMstrProxy, 2500);
+          })
+          .catch(() => {});
+      }, 15000);
     }
   </script>
 </body>

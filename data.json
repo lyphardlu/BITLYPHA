@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-09-19 13:07 UTC",
-  "btc_price": 81301.12,
+  "updated_at": "2026-09-19 13:13 UTC",
+  "btc_price": 81227.62,
   "mstr": {
     "mstr_price": 153.92,
     "market_cap_b": 37.71,
@@ -8,12 +8,13 @@
     "btc_holdings": 500000
   },
   "dow": {
-    "dow_status": "Bullish",
-    "dow_signal": "多頭格局 (Higher High + Higher Low)",
-    "support_level": 75590.24,
-    "resistance_level": 81301.12
+    "dow_status": "Bearish",
+    "dow_signal": "空頭受阻 (Lower High + Lower Low)",
+    "support_level": 76137.68,
+    "resistance_level": 81472.4,
+    "atr_val": 2737.19
   },
   "wyckoff": {
-    "current_phase_hint": "【Phase C-D / 壓力邊界】價格觸及區間上軌，警惕 UTAD（誘多假突破）或確認是否有爆量強勢突破（SOS）。"
+    "current_phase_hint": "【Phase D / 突破壓力】價格逼近上方有效波段阻力，觀察是否爆量確認 SOS（強勢出現）或 UTAD（假突破誘多）。"
   }
 }

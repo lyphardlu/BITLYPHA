@@ -149,7 +149,7 @@
 
     </div>
 
-    <!-- 主區塊：左側盤口診斷 + 右側 TradingView 圖表 -->
+    <!-- 主區塊：左側盤口診斷 (含 Wyckoff Phase) + 右側 TradingView 圖表 -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
       
       <!-- 左側盤口診斷 -->
@@ -162,36 +162,48 @@
         <div class="space-y-2.5">
           <!-- BTC -->
           <div class="bg-[#080B11] p-2.5 rounded border border-[#182030] font-mono text-xs">
-            <div class="flex justify-between text-emerald-400 font-bold mb-1">
-              <span>BTC · 比特幣</span>
-              <span id="btc-dow-text" class="text-slate-400 font-normal">--</span>
+            <div class="flex justify-between items-center mb-1">
+              <span class="text-emerald-400 font-bold">BTC · 比特幣</span>
+              <div class="flex items-center space-x-1.5">
+                <span id="btc-phase-badge" class="text-[9px] px-1.5 py-0.5 rounded bg-sky-950 text-sky-300 border border-sky-800 font-mono">--</span>
+                <span id="btc-dow-text" class="text-slate-400">--</span>
+              </div>
             </div>
             <div id="btc-wyckoff" class="text-[11px] text-slate-300 leading-normal">加載中...</div>
           </div>
 
           <!-- ETH -->
           <div class="bg-[#080B11] p-2.5 rounded border border-[#182030] font-mono text-xs">
-            <div class="flex justify-between text-indigo-400 font-bold mb-1">
-              <span>ETH · 以太坊</span>
-              <span id="eth-dow-text" class="text-slate-400 font-normal">--</span>
+            <div class="flex justify-between items-center mb-1">
+              <span class="text-indigo-400 font-bold">ETH · 以太坊</span>
+              <div class="flex items-center space-x-1.5">
+                <span id="eth-phase-badge" class="text-[9px] px-1.5 py-0.5 rounded bg-sky-950 text-sky-300 border border-sky-800 font-mono">--</span>
+                <span id="eth-dow-text" class="text-slate-400">--</span>
+              </div>
             </div>
             <div id="eth-wyckoff" class="text-[11px] text-slate-300 leading-normal">加載中...</div>
           </div>
 
           <!-- UNI -->
           <div class="bg-[#080B11] p-2.5 rounded border border-[#182030] font-mono text-xs">
-            <div class="flex justify-between text-pink-400 font-bold mb-1">
-              <span>UNI · Uniswap</span>
-              <span id="uni-dow-text" class="text-slate-400 font-normal">--</span>
+            <div class="flex justify-between items-center mb-1">
+              <span class="text-pink-400 font-bold">UNI · Uniswap</span>
+              <div class="flex items-center space-x-1.5">
+                <span id="uni-phase-badge" class="text-[9px] px-1.5 py-0.5 rounded bg-sky-950 text-sky-300 border border-sky-800 font-mono">--</span>
+                <span id="uni-dow-text" class="text-slate-400">--</span>
+              </div>
             </div>
             <div id="uni-wyckoff" class="text-[11px] text-slate-300 leading-normal">加載中...</div>
           </div>
 
           <!-- MSTR -->
           <div class="bg-[#080B11] p-2.5 rounded border border-[#182030] font-mono text-xs">
-            <div class="flex justify-between text-cyan-400 font-bold mb-1">
-              <span>MSTR · 微策略</span>
-              <span id="mstr-dow-text" class="text-slate-400 font-normal">--</span>
+            <div class="flex justify-between items-center mb-1">
+              <span class="text-cyan-400 font-bold">MSTR · 微策略</span>
+              <div class="flex items-center space-x-1.5">
+                <span id="mstr-phase-badge" class="text-[9px] px-1.5 py-0.5 rounded bg-sky-950 text-sky-300 border border-sky-800 font-mono">--</span>
+                <span id="mstr-dow-text" class="text-slate-400">--</span>
+              </div>
             </div>
             <div id="mstr-wyckoff" class="text-[11px] text-slate-300 leading-normal">加載中...</div>
           </div>
@@ -285,15 +297,25 @@
       if (status === 'Bullish') {
         el.className = 'text-[10px] px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 font-mono cursor-help';
         el.innerText = 'UPTREND';
-        el.title = '【多頭推進】：頂頂高、底底高 (HH + HL)。';
       } else if (status === 'Bearish') {
         el.className = 'text-[10px] px-1.5 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800 font-mono cursor-help';
         el.innerText = 'DOWNTREND';
-        el.title = '【空頭受阻】：反彈不過前高、跌破前波低點。';
       } else {
         el.className = 'text-[10px] px-1.5 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800 font-mono cursor-help';
         el.innerText = 'RANGING';
-        el.title = '【區間震盪】：高低點方向收斂衝突，無明確趨勢。';
+      }
+    }
+
+    function renderPhaseBadge(elemId, phase) {
+      const el = document.getElementById(elemId);
+      if (!el) return;
+      el.innerText = phase;
+      if (phase === 'PHASE C') {
+        el.className = 'text-[9px] px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 font-mono';
+      } else if (phase === 'PHASE D') {
+        el.className = 'text-[9px] px-1.5 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800 font-mono';
+      } else {
+        el.className = 'text-[9px] px-1.5 py-0.5 rounded bg-sky-950 text-sky-300 border border-sky-800 font-mono';
       }
     }
 
@@ -339,6 +361,7 @@
         document.getElementById('btc-wyckoff').innerText = data.btc.wyckoff_hint;
         document.getElementById('btc-space').innerText = '$' + Math.round(data.btc.buy_target/1000*10)/10 + 'k ~ $' + Math.round(data.btc.sell_target/1000*10)/10 + 'k';
         renderDowBadge('btc-dow-badge', data.btc.dow_status);
+        renderPhaseBadge('btc-phase-badge', data.btc.wyckoff_phase);
 
         // ETH
         updateLivePriceUI('eth-price', data.eth.price, 'eth', 2);
@@ -348,6 +371,7 @@
         document.getElementById('eth-wyckoff').innerText = data.eth.wyckoff_hint;
         document.getElementById('eth-space').innerText = '$' + Number(data.eth.buy_target).toFixed(0) + ' ~$' + Number(data.eth.sell_target).toFixed(0);
         renderDowBadge('eth-dow-badge', data.eth.dow_status);
+        renderPhaseBadge('eth-phase-badge', data.eth.wyckoff_phase);
 
         // UNI
         updateLivePriceUI('uni-price', data.uni.price, 'uni', 2);
@@ -357,6 +381,7 @@
         document.getElementById('uni-wyckoff').innerText = data.uni.wyckoff_hint;
         document.getElementById('uni-space').innerText = '$' + Number(data.uni.buy_target).toFixed(1) + ' ~$' + Number(data.uni.sell_target).toFixed(1);
         renderDowBadge('uni-dow-badge', data.uni.dow_status);
+        renderPhaseBadge('uni-phase-badge', data.uni.wyckoff_phase);
 
         // MSTR
         updateLivePriceUI('mstr-price', data.mstr.price, 'mstr', 2);
@@ -366,6 +391,7 @@
         document.getElementById('mstr-wyckoff').innerText = data.mstr.wyckoff_hint;
         document.getElementById('mstr-space').innerText = '$' + Number(data.mstr.buy_target).toFixed(0) + ' ~$' + Number(data.mstr.sell_target).toFixed(0);
         renderDowBadge('mstr-dow-badge', data.mstr.dow_status);
+        renderPhaseBadge('mstr-phase-badge', data.mstr.wyckoff_phase);
         updateMnavBadge(data.mstr.price, data.btc.price);
 
         startRealtimeEngines();
@@ -377,7 +403,6 @@
 
     // 2. 啟動雙通道實時引擎
     function startRealtimeEngines() {
-      // (A) BTC, ETH, UNI 現貨 WebSocket
       const spotStreams = 'btcusdt@miniTicker/ethusdt@miniTicker/uniusdt@miniTicker';
       const wsSpot = new WebSocket(`wss://stream.binance.com:9443/ws/${spotStreams}`);
       
@@ -396,7 +421,6 @@
         }
       };
 
-      // (B) OKX XMSTR 實時 WebSocket 串流
       function connectOkxXmstrWS() {
         try {
           const wsOkx = new WebSocket('wss://ws.okx.com:8443/ws/v5/public');
@@ -418,13 +442,10 @@
           };
           wsOkx.onerror = () => wsOkx.close();
           wsOkx.onclose = () => setTimeout(connectOkxXmstrWS, 5000);
-        } catch (e) {
-          console.log('OKX WS connection notice:', e);
-        }
+        } catch (e) {}
       }
       connectOkxXmstrWS();
 
-      // (C) 備援輪詢：每 10 秒同步後端 data.json
       setInterval(() => {
         fetch('data.json?nocache=' + new Date().getTime())
           .then(res => res.json())

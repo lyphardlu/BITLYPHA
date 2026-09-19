@@ -1,0 +1,37 @@
+name: Update BTC and MSTR Data
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'  # 每 6 小時自動觸發更新
+  workflow_dispatch:         # 支援在網頁上手動點擊執行
+
+permissions:
+  contents: write
+
+jobs:
+  refresh-data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 檢出儲存庫
+        uses: actions/checkout@v4
+
+      - name: 設定 Python 環境
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: 安裝套件
+        run: |
+          pip install yfinance requests
+
+      - name: 執行資料更新
+        run: |
+          python update_data.py
+
+      - name: 提交更新數據
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add data.json
+          git commit -m "Auto update data [skip ci]" || exit 0
+          git push

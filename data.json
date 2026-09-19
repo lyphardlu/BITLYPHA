@@ -1,20 +1,33 @@
 {
-  "updated_at": "2026-09-19 13:13 UTC",
-  "btc_price": 81227.62,
+  "updated_at": "2026-09-19 13:19 UTC",
   "mstr": {
     "mstr_price": 153.92,
     "market_cap_b": 37.71,
     "mnav_multiple": 1.03,
     "btc_holdings": 500000
   },
-  "dow": {
-    "dow_status": "Bearish",
-    "dow_signal": "空頭受阻 (Lower High + Lower Low)",
-    "support_level": 76137.68,
-    "resistance_level": 81472.4,
-    "atr_val": 2737.19
+  "btc": {
+    "price": 81200.0,
+    "dow_status": "Bullish",
+    "dow_signal": "趨勢延續中",
+    "support": 75944.74,
+    "resistance": 86455.26,
+    "wyckoff_hint": "【區間運行】處於結構通道中段，主力籌碼穩定換手中。"
   },
-  "wyckoff": {
-    "current_phase_hint": "【Phase D / 突破壓力】價格逼近上方有效波段阻力，觀察是否爆量確認 SOS（強勢出現）或 UTAD（假突破誘多）。"
+  "eth": {
+    "price": 2700.0,
+    "dow_status": "Bullish",
+    "dow_signal": "趨勢延續中",
+    "support": 2525.26,
+    "resistance": 2874.74,
+    "wyckoff_hint": "【區間運行】處於結構通道中段，主力籌碼穩定換手中。"
+  },
+  "uni": {
+    "price": 9.0,
+    "dow_status": "Bullish",
+    "dow_signal": "趨勢延續中",
+    "support": 8.418,
+    "resistance": 9.582,
+    "wyckoff_hint": "【區間運行】處於結構通道中段，主力籌碼穩定換手中。"
   }
 }

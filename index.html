@@ -20,13 +20,13 @@
     <!-- Header -->
     <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-[#1E2638] pb-4 gap-4">
       <div class="flex items-center space-x-3">
-        <div class="h-10 w-10 rounded bg-amber-500/10 border border-amber-500/40 flex items-center justify-center font-display font-bold text-amber-400 text-xl">
+        <div class="h-10 w-10 rounded bg-emerald-500/10 border border-emerald-500/40 flex items-center justify-center font-display font-bold text-emerald-400 text-xl">
           α
         </div>
         <div>
           <div class="flex items-center space-x-2">
             <h1 class="text-xl font-bold tracking-tight text-white font-display">CryptoAlpha</h1>
-            <span class="text-[10px] px-1.5 py-0.5 rounded bg-[#161F30] text-amber-400 border border-amber-500/20 font-mono">SWING PRO</span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded bg-[#161F30] text-emerald-400 border border-emerald-500/20 font-mono">SWING PRO</span>
             <span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono">LIVE</span>
           </div>
           <p class="text-xs text-[#8A99AD] mt-0.5 font-mono">Operator: <span class="text-slate-300">Lyphard</span> · BTC · ETH · UNI · MSTR Quantitative Levels</p>
@@ -35,7 +35,7 @@
       <div class="flex items-center space-x-3">
         <div class="text-right font-mono text-[11px] text-[#64748B]">
           <div>LAST SYNC (UTC)</div>
-          <div id="update-time" class="text-amber-400 font-semibold mt-0.5">CONNECTING...</div>
+          <div id="update-time" class="text-emerald-400 font-semibold mt-0.5">CONNECTING...</div>
         </div>
         <button onclick="location.reload()" class="text-xs font-mono px-3 py-1.5 rounded bg-[#131A29] hover:bg-[#1E293B] border border-[#2A364F] text-slate-300 transition">
           ↻ 重新整理
@@ -43,17 +43,17 @@
       </div>
     </header>
 
-    <!-- 頂部四大資產卡片 (BTC 現價改為黃色，MSTR 標註 mNAV) -->
+    <!-- 頂部四大資產卡片 (BTC 現價採用高階翡翠綠 text-emerald-400) -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
       
-      <!-- BTC 卡片 (價格調整為 text-amber-400 黃色) -->
+      <!-- BTC 卡片 (Emerald 翡翠綠) -->
       <div class="bg-[#0F1420] border border-[#1C2436] p-4 rounded-lg flex flex-col justify-between">
         <div>
           <div class="flex justify-between items-center text-xs text-[#8A99AD] font-mono">
-            <span class="text-amber-400 font-bold">BTC / USDT</span>
+            <span class="text-emerald-400 font-bold">BTC / USDT</span>
             <span id="btc-dow-badge" class="text-[10px] px-1.5 py-0.5 rounded font-mono">--</span>
           </div>
-          <div id="btc-price" class="text-2xl font-bold font-mono text-amber-400 mt-1.5">--</div>
+          <div id="btc-price" class="text-2xl font-bold font-mono text-emerald-400 mt-1.5">--</div>
         </div>
         <div class="mt-3 pt-2.5 border-t border-[#182030] font-mono text-[11px] space-y-1">
           <div class="flex justify-between text-slate-400">
@@ -109,7 +109,7 @@
         </div>
       </div>
 
-      <!-- MSTR 卡片 (右上角徽章動態渲染為 mNAV: 1.21x) -->
+      <!-- MSTR 卡片 (mNAV: 1.21x 徽章) -->
       <div class="bg-[#0F1420] border border-[#1C2436] p-4 rounded-lg flex flex-col justify-between">
         <div>
           <div class="flex justify-between items-center text-xs text-[#8A99AD] font-mono">
@@ -140,13 +140,13 @@
         
         <div class="bg-[#0F1420] border border-[#1C2436] p-4 rounded-lg space-y-3">
           <div class="text-xs font-bold uppercase tracking-wider text-slate-200 font-mono flex items-center space-x-1.5 border-b border-[#1A2333] pb-2">
-            <span class="w-2 h-2 bg-amber-400 rounded-sm"></span>
+            <span class="w-2 h-2 bg-emerald-400 rounded-sm"></span>
             <span>多標的波段操作策略指南</span>
           </div>
 
           <!-- BTC -->
           <div class="bg-[#080B11] p-2.5 rounded border border-[#182030] font-mono text-xs">
-            <div class="flex justify-between text-amber-400 font-bold mb-1">
+            <div class="flex justify-between text-emerald-400 font-bold mb-1">
               <span>BTC · 比特幣</span>
               <span id="btc-dow-text" class="text-slate-400 font-normal">--</span>
             </div>
@@ -202,7 +202,7 @@
           
           <!-- 切換按鈕組 -->
           <div class="flex space-x-1.5 font-mono text-xs">
-            <button onclick="switchChart('BINANCE:BTCUSDT', 'BTC/USDT')" class="chart-btn px-2.5 py-1 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40">BTC</button>
+            <button onclick="switchChart('BINANCE:BTCUSDT', 'BTC/USDT')" class="chart-btn px-2.5 py-1 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">BTC</button>
             <button onclick="switchChart('BINANCE:ETHUSDT', 'ETH/USDT')" class="chart-btn px-2.5 py-1 rounded bg-[#131A29] text-slate-400 hover:text-slate-200 border border-[#2A364F]">ETH</button>
             <button onclick="switchChart('BINANCE:UNIUSDT', 'UNI/USDT')" class="chart-btn px-2.5 py-1 rounded bg-[#131A29] text-slate-400 hover:text-slate-200 border border-[#2A364F]">UNI</button>
             <button onclick="switchChart('NASDAQ:MSTR', 'MSTR (Stock)')" class="chart-btn px-2.5 py-1 rounded bg-[#131A29] text-slate-400 hover:text-slate-200 border border-[#2A364F]">MSTR</button>
@@ -250,7 +250,7 @@
       buttons.forEach(btn => {
         const btnText = btn.innerText.trim();
         if (title.startsWith(btnText)) {
-          btn.className = 'chart-btn px-2.5 py-1 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40';
+          btn.className = 'chart-btn px-2.5 py-1 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40';
         } else {
           btn.className = 'chart-btn px-2.5 py-1 rounded bg-[#131A29] text-slate-400 hover:text-slate-200 border border-[#2A364F]';
         }
@@ -262,7 +262,7 @@
       .then(data => {
         document.getElementById('update-time').innerText = data.updated_at;
 
-        // BTC (黃色字體 text-amber-400)
+        // BTC (經典翡翠綠 text-emerald-400)
         document.getElementById('btc-price').innerText = '$' + Number(data.btc.price).toLocaleString();
         document.getElementById('btc-buy').innerText = '$' + Number(data.btc.buy_target).toLocaleString();
         document.getElementById('btc-sell').innerText = '$' + Number(data.btc.sell_target).toLocaleString();
@@ -292,7 +292,7 @@
         document.getElementById('mstr-sell').innerText = '$' + Number(data.mstr.sell_target).toFixed(2);
         document.getElementById('mstr-wyckoff').innerText = data.mstr.wyckoff_hint;
 
-        // MSTR mNAV 徽章標記為 "mNAV: 1.21x"
+        // MSTR mNAV 徽章
         const mnav = data.mstr.mnav_multiple;
         const badge = document.getElementById('mnav-badge');
         badge.innerText = 'mNAV: ' + mnav + 'x';

@@ -43,7 +43,7 @@
               <span id="ws-status">LIVE TICKER</span>
             </span>
           </div>
-          <p class="text-xs text-[#8A99AD] mt-0.5 font-mono">Operator: <span class="text-slate-300">Lyphard</span> · OKX & Binance Real-time Terminal</p>
+          <p class="text-xs text-[#8A99AD] mt-0.5 font-mono">Operator: <span class="text-slate-300">Lyphard</span> · Multi-Asset Real-time Terminal</p>
         </div>
       </div>
       <div class="flex items-center space-x-3">
@@ -123,11 +123,11 @@
         </div>
       </div>
 
-      <!-- MSTR 卡片 (XMSTR) -->
+      <!-- MSTR 卡片 -->
       <div class="bg-[#0F1420] border border-[#1C2436] p-4 rounded-lg flex flex-col justify-between">
         <div>
           <div class="flex justify-between items-center text-xs text-[#8A99AD] font-mono">
-            <span class="text-cyan-400 font-bold">XMSTR / USDT (OKX)</span>
+            <span class="text-cyan-400 font-bold">MSTR / USDT</span>
             <div class="flex items-center space-x-1">
               <span id="mstr-dow-badge" class="text-[10px] px-1.5 py-0.5 rounded font-mono cursor-help">--</span>
               <span id="mnav-badge" class="text-[10px] px-1.5 py-0.5 rounded font-mono bg-[#162235] text-cyan-300 border border-cyan-500/30">mNAV: --</span>
@@ -190,7 +190,7 @@
           <!-- MSTR -->
           <div class="bg-[#080B11] p-2.5 rounded border border-[#182030] font-mono text-xs">
             <div class="flex justify-between text-cyan-400 font-bold mb-1">
-              <span>XMSTR · 微策略 (OKX)</span>
+              <span>MSTR · 微策略</span>
               <span id="mstr-dow-text" class="text-slate-400 font-normal">--</span>
             </div>
             <div id="mstr-wyckoff" class="text-[11px] text-slate-300 leading-normal">加載中...</div>
@@ -217,7 +217,7 @@
               <div id="uni-space" class="text-pink-300 font-bold mt-0.5">--</div>
             </div>
             <div class="bg-[#080B11] p-2 rounded border border-[#182030]">
-              <div class="text-slate-400 text-[10px]">XMSTR 空間</div>
+              <div class="text-slate-400 text-[10px]">MSTR 空間</div>
               <div id="mstr-space" class="text-cyan-300 font-bold mt-0.5">--</div>
             </div>
           </div>
@@ -237,7 +237,7 @@
             <button onclick="switchChart('BINANCE:BTCUSDT', 'BTC/USDT')" class="chart-btn px-2.5 py-1 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">BTC</button>
             <button onclick="switchChart('BINANCE:ETHUSDT', 'ETH/USDT')" class="chart-btn px-2.5 py-1 rounded bg-[#131A29] text-slate-400 hover:text-slate-200 border border-[#2A364F]">ETH</button>
             <button onclick="switchChart('BINANCE:UNIUSDT', 'UNI/USDT')" class="chart-btn px-2.5 py-1 rounded bg-[#131A29] text-slate-400 hover:text-slate-200 border border-[#2A364F]">UNI</button>
-            <button onclick="switchChart('BINANCE:MSTRUSDT.P', 'XMSTR/USDT')" class="chart-btn px-2.5 py-1 rounded bg-[#131A29] text-slate-400 hover:text-slate-200 border border-[#2A364F]">XMSTR</button>
+            <button onclick="switchChart('BINANCE:MSTRUSDT.P', 'MSTR/USDT')" class="chart-btn px-2.5 py-1 rounded bg-[#131A29] text-slate-400 hover:text-slate-200 border border-[#2A364F]">MSTR</button>
           </div>
         </div>
 
@@ -254,7 +254,7 @@
     </div>
 
     <footer class="text-center font-mono text-xs text-[#475569] pt-2 border-t border-[#131A29]">
-      CryptoAlpha // Designed & Operated by Lyphard · OKX XMSTR Integration
+      CryptoAlpha // Designed & Operated by Lyphard · Multi-Asset Swing Execution System
     </footer>
   </div>
 
@@ -358,7 +358,7 @@
         document.getElementById('uni-space').innerText = '$' + Number(data.uni.buy_target).toFixed(1) + ' ~$' + Number(data.uni.sell_target).toFixed(1);
         renderDowBadge('uni-dow-badge', data.uni.dow_status);
 
-        // XMSTR
+        // MSTR
         updateLivePriceUI('mstr-price', data.mstr.price, 'mstr', 2);
         document.getElementById('mstr-buy').innerText = '$' + Number(data.mstr.buy_target).toFixed(2);
         document.getElementById('mstr-sell').innerText = '$' + Number(data.mstr.sell_target).toFixed(2);
@@ -375,7 +375,7 @@
         startRealtimeEngines();
       });
 
-    // 2. 啟動雙通道實時引擎 (Binance Spot WS + OKX XMSTR 公開 WebSocket)
+    // 2. 啟動雙通道實時引擎
     function startRealtimeEngines() {
       // (A) BTC, ETH, UNI 現貨 WebSocket
       const spotStreams = 'btcusdt@miniTicker/ethusdt@miniTicker/uniusdt@miniTicker';
@@ -396,12 +396,11 @@
         }
       };
 
-      // (B) OKX XMSTR 實時 WebSocket (無 CORS 限制，全球暢通)
+      // (B) OKX XMSTR 實時 WebSocket 串流
       function connectOkxXmstrWS() {
         try {
           const wsOkx = new WebSocket('wss://ws.okx.com:8443/ws/v5/public');
           wsOkx.onopen = () => {
-            // 訂閱 OKX XMSTR-USDT ticker
             wsOkx.send(JSON.stringify({
               "op": "subscribe",
               "args": [{"channel": "tickers", "instId": "XMSTR-USDT"}]

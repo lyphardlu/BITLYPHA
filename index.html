@@ -43,7 +43,7 @@
       </div>
     </header>
 
-    <!-- 頂部四大資產卡片 (附帶滑鼠懸停 Tooltip 解釋) -->
+    <!-- 頂部四大資產卡片 -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
       
       <!-- BTC 卡片 -->
@@ -132,54 +132,84 @@
 
     </div>
 
-    <!-- 主區塊：左側 4 大標的診斷 (完全無下方擁擠方塊) + 右側 TradingView 圖表 -->
+    <!-- 主區塊：左側自然堆疊 + 右側 TradingView 圖表 -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
       
-      <!-- 左側：多標的量化結構診斷 (高度大方均勻) -->
-      <div class="bg-[#0F1420] border border-[#1C2436] p-4 rounded-lg flex flex-col justify-between space-y-3">
-        <div class="text-xs font-bold uppercase tracking-wider text-slate-200 font-mono flex items-center space-x-1.5 border-b border-[#1A2333] pb-2.5">
+      <!-- 左側：多標的盤口診斷 (移除大空隙，改為自然緊湊結構 + 底部空間速覽表) -->
+      <div class="bg-[#0F1420] border border-[#1C2436] p-4 rounded-lg flex flex-col space-y-3">
+        <div class="text-xs font-bold uppercase tracking-wider text-slate-200 font-mono flex items-center space-x-1.5 border-b border-[#1A2333] pb-2">
           <span class="w-2 h-2 bg-emerald-400 rounded-sm"></span>
           <span>多標的量化盤口診斷</span>
         </div>
 
-        <!-- BTC -->
-        <div class="bg-[#080B11] p-3 rounded border border-[#182030] font-mono text-xs">
-          <div class="flex justify-between text-emerald-400 font-bold mb-1.5">
-            <span>BTC · 比特幣</span>
-            <span id="btc-dow-text" class="text-slate-400 font-normal">--</span>
+        <!-- 4 標的緊湊排列 -->
+        <div class="space-y-2.5">
+          <!-- BTC -->
+          <div class="bg-[#080B11] p-2.5 rounded border border-[#182030] font-mono text-xs">
+            <div class="flex justify-between text-emerald-400 font-bold mb-1">
+              <span>BTC · 比特幣</span>
+              <span id="btc-dow-text" class="text-slate-400 font-normal">--</span>
+            </div>
+            <div id="btc-wyckoff" class="text-[11px] text-slate-300 leading-normal">加載中...</div>
           </div>
-          <div id="btc-wyckoff" class="text-[11px] text-slate-300 leading-relaxed">加載中...</div>
+
+          <!-- ETH -->
+          <div class="bg-[#080B11] p-2.5 rounded border border-[#182030] font-mono text-xs">
+            <div class="flex justify-between text-indigo-400 font-bold mb-1">
+              <span>ETH · 以太坊</span>
+              <span id="eth-dow-text" class="text-slate-400 font-normal">--</span>
+            </div>
+            <div id="eth-wyckoff" class="text-[11px] text-slate-300 leading-normal">加載中...</div>
+          </div>
+
+          <!-- UNI -->
+          <div class="bg-[#080B11] p-2.5 rounded border border-[#182030] font-mono text-xs">
+            <div class="flex justify-between text-pink-400 font-bold mb-1">
+              <span>UNI · Uniswap</span>
+              <span id="uni-dow-text" class="text-slate-400 font-normal">--</span>
+            </div>
+            <div id="uni-wyckoff" class="text-[11px] text-slate-300 leading-normal">加載中...</div>
+          </div>
+
+          <!-- MSTR -->
+          <div class="bg-[#080B11] p-2.5 rounded border border-[#182030] font-mono text-xs">
+            <div class="flex justify-between text-cyan-400 font-bold mb-1">
+              <span>MSTR · 微策略</span>
+              <span id="mstr-dow-text" class="text-slate-400 font-normal">Bullish</span>
+            </div>
+            <div id="mstr-wyckoff" class="text-[11px] text-slate-300 leading-normal">加載中...</div>
+          </div>
         </div>
 
-        <!-- ETH -->
-        <div class="bg-[#080B11] p-3 rounded border border-[#182030] font-mono text-xs">
-          <div class="flex justify-between text-indigo-400 font-bold mb-1.5">
-            <span>ETH · 以太坊</span>
-            <span id="eth-dow-text" class="text-slate-400 font-normal">--</span>
+        <!-- 左下方：多標的空間對比矩陣 (完美填補高度，消除空白拉伸) -->
+        <div class="mt-auto pt-3 border-t border-[#182030] font-mono text-xs">
+          <div class="text-[10px] text-slate-400 uppercase tracking-wider mb-2 flex justify-between">
+            <span>波段空間速覽 (Levels Summary)</span>
+            <span class="text-slate-500">4-Asset</span>
           </div>
-          <div id="eth-wyckoff" class="text-[11px] text-slate-300 leading-relaxed">加載中...</div>
+          <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <div class="bg-[#080B11] p-2 rounded border border-[#182030]">
+              <div class="text-slate-400 text-[10px]">BTC 空間</div>
+              <div class="text-emerald-300 font-bold mt-0.5">$78.1k ~ $87.9k</div>
+            </div>
+            <div class="bg-[#080B11] p-2 rounded border border-[#182030]">
+              <div class="text-slate-400 text-[10px]">ETH 空間</div>
+              <div class="text-indigo-300 font-bold mt-0.5">$2.53k ~ $2.88k</div>
+            </div>
+            <div class="bg-[#080B11] p-2 rounded border border-[#182030]">
+              <div class="text-slate-400 text-[10px]">UNI 空間</div>
+              <div class="text-pink-300 font-bold mt-0.5">$8.53 ~ $9.71</div>
+            </div>
+            <div class="bg-[#080B11] p-2 rounded border border-[#182030]">
+              <div class="text-slate-400 text-[10px]">MSTR 空間</div>
+              <div class="text-cyan-300 font-bold mt-0.5">$148 ~ $163</div>
+            </div>
+          </div>
         </div>
 
-        <!-- UNI -->
-        <div class="bg-[#080B11] p-3 rounded border border-[#182030] font-mono text-xs">
-          <div class="flex justify-between text-pink-400 font-bold mb-1.5">
-            <span>UNI · Uniswap</span>
-            <span id="uni-dow-text" class="text-slate-400 font-normal">--</span>
-          </div>
-          <div id="uni-wyckoff" class="text-[11px] text-slate-300 leading-relaxed">加載中...</div>
-        </div>
-
-        <!-- MSTR -->
-        <div class="bg-[#080B11] p-3 rounded border border-[#182030] font-mono text-xs">
-          <div class="flex justify-between text-cyan-400 font-bold mb-1.5">
-            <span>MSTR · 微策略</span>
-            <span id="mstr-dow-text" class="text-slate-400 font-normal">Bullish</span>
-          </div>
-          <div id="mstr-wyckoff" class="text-[11px] text-slate-300 leading-relaxed">加載中...</div>
-        </div>
       </div>
 
-      <!-- 右側：TradingView 專業圖表 (支援 BTC/ETH/UNI/MSTR 四向切換) -->
+      <!-- 右側：TradingView 專業圖表 -->
       <div class="lg:col-span-2 bg-[#0F1420] border border-[#1C2436] p-4 rounded-lg flex flex-col">
         <div class="flex flex-wrap justify-between items-center mb-3 gap-2">
           <div class="text-xs font-bold uppercase tracking-wider text-slate-200 font-mono flex items-center space-x-1.5">
@@ -208,7 +238,7 @@
 
     </div>
 
-    <footer class="text-center font-mono text-xs text-[#475569] pt-4 border-t border-[#131A29]">
+    <footer class="text-center font-mono text-xs text-[#475569] pt-2 border-t border-[#131A29]">
       CryptoAlpha // Designed & Operated by Lyphard · Multi-Asset Swing Execution System
     </footer>
   </div>
@@ -287,11 +317,11 @@
         const badge = document.getElementById('mnav-badge');
         badge.innerText = 'mNAV: ' + mnav + 'x';
         if (mnav > 1.8) {
-          badge.className = 'text-[10px] px-1.5 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800 font-mono';
+          badge.className = 'text-[10px] px-1.5 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800 font-mono cursor-help';
         } else if (mnav <= 1.15 && mnav > 0) {
-          badge.className = 'text-[10px] px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 font-mono';
+          badge.className = 'text-[10px] px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 font-mono cursor-help';
         } else {
-          badge.className = 'text-[10px] px-1.5 py-0.5 rounded bg-sky-950 text-sky-300 border border-sky-800 font-mono';
+          badge.className = 'text-[10px] px-1.5 py-0.5 rounded bg-sky-950 text-sky-300 border border-sky-800 font-mono cursor-help';
         }
       })
       .catch(err => console.error('Data loading error:', err));

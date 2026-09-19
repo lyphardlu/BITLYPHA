@@ -43,7 +43,7 @@
               <span id="ws-status">LIVE TICKER</span>
             </span>
           </div>
-          <p class="text-xs text-[#8A99AD] mt-0.5 font-mono">Operator: <span class="text-slate-300">Lyphard</span> · 24/7 Multi-Asset Real-time Terminal</p>
+          <p class="text-xs text-[#8A99AD] mt-0.5 font-mono">Operator: <span class="text-slate-300">Lyphard</span> · OKX & Binance Real-time Terminal</p>
         </div>
       </div>
       <div class="flex items-center space-x-3">
@@ -123,11 +123,11 @@
         </div>
       </div>
 
-      <!-- MSTR 卡片 -->
+      <!-- MSTR 卡片 (XMSTR) -->
       <div class="bg-[#0F1420] border border-[#1C2436] p-4 rounded-lg flex flex-col justify-between">
         <div>
           <div class="flex justify-between items-center text-xs text-[#8A99AD] font-mono">
-            <span class="text-cyan-400 font-bold">MSTR / USDT (Perp)</span>
+            <span class="text-cyan-400 font-bold">XMSTR / USDT (OKX)</span>
             <div class="flex items-center space-x-1">
               <span id="mstr-dow-badge" class="text-[10px] px-1.5 py-0.5 rounded font-mono cursor-help">--</span>
               <span id="mnav-badge" class="text-[10px] px-1.5 py-0.5 rounded font-mono bg-[#162235] text-cyan-300 border border-cyan-500/30">mNAV: --</span>
@@ -190,7 +190,7 @@
           <!-- MSTR -->
           <div class="bg-[#080B11] p-2.5 rounded border border-[#182030] font-mono text-xs">
             <div class="flex justify-between text-cyan-400 font-bold mb-1">
-              <span>MSTR · 微策略 (Perp)</span>
+              <span>XMSTR · 微策略 (OKX)</span>
               <span id="mstr-dow-text" class="text-slate-400 font-normal">--</span>
             </div>
             <div id="mstr-wyckoff" class="text-[11px] text-slate-300 leading-normal">加載中...</div>
@@ -217,7 +217,7 @@
               <div id="uni-space" class="text-pink-300 font-bold mt-0.5">--</div>
             </div>
             <div class="bg-[#080B11] p-2 rounded border border-[#182030]">
-              <div class="text-slate-400 text-[10px]">MSTR 空間</div>
+              <div class="text-slate-400 text-[10px]">XMSTR 空間</div>
               <div id="mstr-space" class="text-cyan-300 font-bold mt-0.5">--</div>
             </div>
           </div>
@@ -237,7 +237,7 @@
             <button onclick="switchChart('BINANCE:BTCUSDT', 'BTC/USDT')" class="chart-btn px-2.5 py-1 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">BTC</button>
             <button onclick="switchChart('BINANCE:ETHUSDT', 'ETH/USDT')" class="chart-btn px-2.5 py-1 rounded bg-[#131A29] text-slate-400 hover:text-slate-200 border border-[#2A364F]">ETH</button>
             <button onclick="switchChart('BINANCE:UNIUSDT', 'UNI/USDT')" class="chart-btn px-2.5 py-1 rounded bg-[#131A29] text-slate-400 hover:text-slate-200 border border-[#2A364F]">UNI</button>
-            <button onclick="switchChart('BINANCE:MSTRUSDT.P', 'MSTR/USDT (Perp)')" class="chart-btn px-2.5 py-1 rounded bg-[#131A29] text-slate-400 hover:text-slate-200 border border-[#2A364F]">MSTR</button>
+            <button onclick="switchChart('BINANCE:MSTRUSDT.P', 'XMSTR/USDT')" class="chart-btn px-2.5 py-1 rounded bg-[#131A29] text-slate-400 hover:text-slate-200 border border-[#2A364F]">XMSTR</button>
           </div>
         </div>
 
@@ -254,7 +254,7 @@
     </div>
 
     <footer class="text-center font-mono text-xs text-[#475569] pt-2 border-t border-[#131A29]">
-      CryptoAlpha // Designed & Operated by Lyphard · Multi-Asset Swing Execution System
+      CryptoAlpha // Designed & Operated by Lyphard · OKX XMSTR Integration
     </footer>
   </div>
 
@@ -285,15 +285,15 @@
       if (status === 'Bullish') {
         el.className = 'text-[10px] px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 font-mono cursor-help';
         el.innerText = 'UPTREND';
-        el.title = '【多頭推進】：頂頂高、底底高 (HH + HL)。多頭控盤，回踩波段 Buy 點縮量時分批佈局。';
+        el.title = '【多頭推進】：頂頂高、底底高 (HH + HL)。';
       } else if (status === 'Bearish') {
         el.className = 'text-[10px] px-1.5 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800 font-mono cursor-help';
         el.innerText = 'DOWNTREND';
-        el.title = '【空頭受阻】：反彈不過前高、跌破前波低點 (LH + LL)。反彈強阻力勿追高，防範再次探底。';
+        el.title = '【空頭受阻】：反彈不過前高、跌破前波低點。';
       } else {
         el.className = 'text-[10px] px-1.5 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800 font-mono cursor-help';
         el.innerText = 'RANGING';
-        el.title = '【區間震盪】：高低點方向收斂衝突，無明確趨勢。嚴禁追突破，恪守「下軌買、上軌賣」高拋低吸。';
+        el.title = '【區間震盪】：高低點方向收斂衝突，無明確趨勢。';
       }
     }
 
@@ -307,13 +307,6 @@
       const badge = document.getElementById('mnav-badge');
       if (badge) {
         badge.innerText = 'mNAV: ' + dynamicMnav + 'x';
-        if (dynamicMnav > 1.8) {
-          badge.className = 'text-[10px] px-1.5 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800 font-mono cursor-help';
-        } else if (dynamicMnav <= 1.15 && dynamicMnav > 0) {
-          badge.className = 'text-[10px] px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 font-mono cursor-help';
-        } else {
-          badge.className = 'text-[10px] px-1.5 py-0.5 rounded bg-sky-950 text-sky-300 border border-sky-800 font-mono cursor-help';
-        }
       }
     }
 
@@ -332,7 +325,7 @@
       });
     }
 
-    // 1. 初始化直接讀取純真實後端
+    // 1. 初始化讀取後端資料
     fetch('data.json?t=' + new Date().getTime())
       .then(res => res.json())
       .then(data => {
@@ -365,7 +358,7 @@
         document.getElementById('uni-space').innerText = '$' + Number(data.uni.buy_target).toFixed(1) + ' ~$' + Number(data.uni.sell_target).toFixed(1);
         renderDowBadge('uni-dow-badge', data.uni.dow_status);
 
-        // MSTR (完全取自 API 真實數據)
+        // XMSTR
         updateLivePriceUI('mstr-price', data.mstr.price, 'mstr', 2);
         document.getElementById('mstr-buy').innerText = '$' + Number(data.mstr.buy_target).toFixed(2);
         document.getElementById('mstr-sell').innerText = '$' + Number(data.mstr.sell_target).toFixed(2);
@@ -382,9 +375,9 @@
         startRealtimeEngines();
       });
 
-    // 2. 啟動 WebSocket 與後端輪詢機制
+    // 2. 啟動雙通道實時引擎 (Binance Spot WS + OKX XMSTR 公開 WebSocket)
     function startRealtimeEngines() {
-      // (A) BTC, ETH, UNI 現貨 WebSocket (秒級高頻流)
+      // (A) BTC, ETH, UNI 現貨 WebSocket
       const spotStreams = 'btcusdt@miniTicker/ethusdt@miniTicker/uniusdt@miniTicker';
       const wsSpot = new WebSocket(`wss://stream.binance.com:9443/ws/${spotStreams}`);
       
@@ -403,27 +396,36 @@
         }
       };
 
-      // (B) 幣安期貨 MSTR WebSocket (嘗試直連訂閱)
-      function connectMstrStream() {
+      // (B) OKX XMSTR 實時 WebSocket (無 CORS 限制，全球暢通)
+      function connectOkxXmstrWS() {
         try {
-          const wsMstr = new WebSocket('wss://fstream.binance.com/ws/mstrusdt@ticker');
-          wsMstr.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            if (data && data.c) {
-              const livePrice = parseFloat(data.c);
-              if (livePrice > 0) {
-                updateLivePriceUI('mstr-price', livePrice, 'mstr', 2);
-                updateMnavBadge(livePrice, lastPrices.btc);
+          const wsOkx = new WebSocket('wss://ws.okx.com:8443/ws/v5/public');
+          wsOkx.onopen = () => {
+            // 訂閱 OKX XMSTR-USDT ticker
+            wsOkx.send(JSON.stringify({
+              "op": "subscribe",
+              "args": [{"channel": "tickers", "instId": "XMSTR-USDT"}]
+            }));
+          };
+          wsOkx.onmessage = (event) => {
+            const res = JSON.parse(event.data);
+            if (res.data && res.data.length > 0 && res.data[0].last) {
+              const xmstrPrice = parseFloat(res.data[0].last);
+              if (xmstrPrice > 0) {
+                updateLivePriceUI('mstr-price', xmstrPrice, 'mstr', 2);
+                updateMnavBadge(xmstrPrice, lastPrices.btc);
               }
             }
           };
-          wsMstr.onerror = () => wsMstr.close();
-          wsMstr.onclose = () => setTimeout(connectMstrStream, 5000);
-        } catch (e) {}
+          wsOkx.onerror = () => wsOkx.close();
+          wsOkx.onclose = () => setTimeout(connectOkxXmstrWS, 5000);
+        } catch (e) {
+          console.log('OKX WS connection notice:', e);
+        }
       }
-      connectMstrStream();
+      connectOkxXmstrWS();
 
-      // (C) 定時自動獲取後端最新產出的真實運算檔
+      // (C) 備援輪詢：每 10 秒同步後端 data.json
       setInterval(() => {
         fetch('data.json?nocache=' + new Date().getTime())
           .then(res => res.json())

@@ -1,33 +1,33 @@
 {
-  "updated_at": "2026-09-19 14:23 UTC",
+  "updated_at": "2026-09-19 14:26 UTC",
   "btc": {
-    "price": 81486.96,
+    "price": 81449.48,
     "dow_status": "Bearish",
     "dow_signal": "空頭受阻 (Lower High + Lower Low)",
     "support": 75364.71,
     "resistance": 82275.08,
-    "buy_target": 78390.23,
-    "sell_target": 88167.64,
+    "buy_target": 78352.85,
+    "sell_target": 88129.95,
     "wyckoff_hint": "【阻力邊界】挑戰上方強壓，防範 UTAD 假突破，觀察有無放量 SOS。"
   },
   "eth": {
-    "price": 2641.05,
+    "price": 2641.56,
     "dow_status": "Neutral",
     "dow_signal": "結構收斂 / 區間震盪",
     "support": 2380.96,
-    "resistance": 2862.8,
-    "buy_target": 2538.25,
-    "sell_target": 2812.36,
+    "resistance": 2863.32,
+    "buy_target": 2538.77,
+    "sell_target": 2812.88,
     "wyckoff_hint": "【區間運行】處於結構通道中段，主力籌碼穩定換手中。"
   },
   "uni": {
-    "price": 8.993,
+    "price": 9.007,
     "dow_status": "Bullish",
     "dow_signal": "多頭推進 (Higher High + Higher Low)",
     "support": 5.8,
-    "resistance": 9.93,
-    "buy_target": 8.558,
-    "sell_target": 9.717,
+    "resistance": 9.945,
+    "buy_target": 8.572,
+    "sell_target": 9.731,
     "wyckoff_hint": "【區間運行】處於結構通道中段，主力籌碼穩定換手中。"
   },
   "mstr": {

@@ -51,7 +51,7 @@
         <div>
           <div class="flex justify-between items-center text-xs text-[#8A99AD] font-mono">
             <span class="text-emerald-400 font-bold">BTC / USDT</span>
-            <span id="btc-dow-badge" class="text-[10px] px-1.5 py-0.5 rounded font-mono cursor-help" title="">--</span>
+            <span id="btc-dow-badge" class="text-[10px] px-1.5 py-0.5 rounded font-mono cursor-help">--</span>
           </div>
           <div id="btc-price" class="text-2xl font-bold font-mono text-emerald-400 mt-1.5">--</div>
         </div>
@@ -72,7 +72,7 @@
         <div>
           <div class="flex justify-between items-center text-xs text-[#8A99AD] font-mono">
             <span class="text-indigo-400 font-bold">ETH / USDT</span>
-            <span id="eth-dow-badge" class="text-[10px] px-1.5 py-0.5 rounded font-mono cursor-help" title="">--</span>
+            <span id="eth-dow-badge" class="text-[10px] px-1.5 py-0.5 rounded font-mono cursor-help">--</span>
           </div>
           <div id="eth-price" class="text-2xl font-bold font-mono text-indigo-400 mt-1.5">--</div>
         </div>
@@ -93,7 +93,7 @@
         <div>
           <div class="flex justify-between items-center text-xs text-[#8A99AD] font-mono">
             <span class="text-pink-400 font-bold">UNI / USDT</span>
-            <span id="uni-dow-badge" class="text-[10px] px-1.5 py-0.5 rounded font-mono cursor-help" title="">--</span>
+            <span id="uni-dow-badge" class="text-[10px] px-1.5 py-0.5 rounded font-mono cursor-help">--</span>
           </div>
           <div id="uni-price" class="text-2xl font-bold font-mono text-pink-400 mt-1.5">--</div>
         </div>
@@ -132,84 +132,51 @@
 
     </div>
 
-    <!-- 主區塊：左側診斷與指標指南 + 右側可切換 TradingView 圖表 -->
+    <!-- 主區塊：左側診斷列表 + 右側 TradingView 圖表 -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
       
-      <!-- 左側：波段操作與結構診斷 -->
-      <div class="space-y-3.5">
-        
-        <!-- 結構診斷 -->
-        <div class="bg-[#0F1420] border border-[#1C2436] p-4 rounded-lg space-y-3">
-          <div class="text-xs font-bold uppercase tracking-wider text-slate-200 font-mono flex items-center space-x-1.5 border-b border-[#1A2333] pb-2">
-            <span class="w-2 h-2 bg-emerald-400 rounded-sm"></span>
-            <span>多標的波段操作策略指南</span>
-          </div>
-
-          <!-- BTC -->
-          <div class="bg-[#080B11] p-2.5 rounded border border-[#182030] font-mono text-xs">
-            <div class="flex justify-between text-emerald-400 font-bold mb-1">
-              <span>BTC · 比特幣</span>
-              <span id="btc-dow-text" class="text-slate-400 font-normal">--</span>
-            </div>
-            <div id="btc-wyckoff" class="text-[11px] text-slate-300">加載中...</div>
-          </div>
-
-          <!-- ETH -->
-          <div class="bg-[#080B11] p-2.5 rounded border border-[#182030] font-mono text-xs">
-            <div class="flex justify-between text-indigo-400 font-bold mb-1">
-              <span>ETH · 以太坊</span>
-              <span id="eth-dow-text" class="text-slate-400 font-normal">--</span>
-            </div>
-            <div id="eth-wyckoff" class="text-[11px] text-slate-300">加載中...</div>
-          </div>
-
-          <!-- UNI -->
-          <div class="bg-[#080B11] p-2.5 rounded border border-[#182030] font-mono text-xs">
-            <div class="flex justify-between text-pink-400 font-bold mb-1">
-              <span>UNI · Uniswap</span>
-              <span id="uni-dow-text" class="text-slate-400 font-normal">--</span>
-            </div>
-            <div id="uni-wyckoff" class="text-[11px] text-slate-300">加載中...</div>
-          </div>
-
-          <!-- MSTR -->
-          <div class="bg-[#080B11] p-2.5 rounded border border-[#182030] font-mono text-xs">
-            <div class="flex justify-between text-cyan-400 font-bold mb-1">
-              <span>MSTR · 微策略股票</span>
-              <span id="mstr-dow-text" class="text-slate-400 font-normal">Bullish</span>
-            </div>
-            <div id="mstr-wyckoff" class="text-[11px] text-slate-300">加載中...</div>
-          </div>
+      <!-- 左側：多標的量化結構診斷 (空間充裕，字體舒適) -->
+      <div class="bg-[#0F1420] border border-[#1C2436] p-4 rounded-lg flex flex-col justify-between space-y-3">
+        <div class="text-xs font-bold uppercase tracking-wider text-slate-200 font-mono flex items-center space-x-1.5 border-b border-[#1A2333] pb-2.5">
+          <span class="w-2 h-2 bg-emerald-400 rounded-sm"></span>
+          <span>多標的量化盤口診斷</span>
         </div>
 
-        <!-- 狀態指標定義與實戰規則 (新增詳細解說卡片) -->
-        <div class="bg-[#0F1420] border border-[#1C2436] p-3.5 rounded-lg text-xs font-mono space-y-2.5">
-          <div class="text-[#8A99AD] text-[10px] uppercase font-bold tracking-wider border-b border-[#1A2333] pb-1.5 flex justify-between">
-            <span>指標狀態解讀 (Dow & Swing Rules)</span>
-            <span class="text-slate-500">指引</span>
+        <!-- BTC -->
+        <div class="bg-[#080B11] p-3 rounded border border-[#182030] font-mono text-xs">
+          <div class="flex justify-between text-emerald-400 font-bold mb-1.5">
+            <span>BTC · 比特幣</span>
+            <span id="btc-dow-text" class="text-slate-400 font-normal">--</span>
           </div>
-          
-          <div class="space-y-1.5 text-[11px]">
-            <div>
-              <span class="text-emerald-400 font-bold">● UPTREND (多頭推進)</span>:
-              <span class="text-slate-300">頂頂高、底底高 (HH + HL)。順勢持倉，回踩 Buy 點分批加倉。</span>
-            </div>
-            <div>
-              <span class="text-rose-400 font-bold">● DOWNTREND (空頭受阻)</span>:
-              <span class="text-slate-300">反彈不過前高、低點跌破前低 (LH + LL)。反彈強壓勿追高，防範再次探底。</span>
-            </div>
-            <div>
-              <span class="text-amber-400 font-bold">● RANGING (區間震盪)</span>:
-              <span class="text-slate-300">高低點互相收斂或衝突。趨勢不明，嚴禁追單，恪守「下軌買、上軌賣」高拋低吸。</span>
-            </div>
-          </div>
-
-          <div class="pt-2 border-t border-[#182030] text-[11px] text-slate-400 space-y-0.5">
-            <div>• <strong class="text-slate-200">波段買入 (Buy)</strong>: 回踩至此且縮量時進場，跌破支撐嚴格止損。</div>
-            <div>• <strong class="text-slate-200">目標止盈 (Sell)</strong>: 接近上方強阻時分批獲利 50%，其餘設保本止損。</div>
-          </div>
+          <div id="btc-wyckoff" class="text-[11px] text-slate-300 leading-relaxed">加載中...</div>
         </div>
 
+        <!-- ETH -->
+        <div class="bg-[#080B11] p-3 rounded border border-[#182030] font-mono text-xs">
+          <div class="flex justify-between text-indigo-400 font-bold mb-1.5">
+            <span>ETH · 以太坊</span>
+            <span id="eth-dow-text" class="text-slate-400 font-normal">--</span>
+          </div>
+          <div id="eth-wyckoff" class="text-[11px] text-slate-300 leading-relaxed">加載中...</div>
+        </div>
+
+        <!-- UNI -->
+        <div class="bg-[#080B11] p-3 rounded border border-[#182030] font-mono text-xs">
+          <div class="flex justify-between text-pink-400 font-bold mb-1.5">
+            <span>UNI · Uniswap</span>
+            <span id="uni-dow-text" class="text-slate-400 font-normal">--</span>
+          </div>
+          <div id="uni-wyckoff" class="text-[11px] text-slate-300 leading-relaxed">加載中...</div>
+        </div>
+
+        <!-- MSTR -->
+        <div class="bg-[#080B11] p-3 rounded border border-[#182030] font-mono text-xs">
+          <div class="flex justify-between text-cyan-400 font-bold mb-1.5">
+            <span>MSTR · 微策略</span>
+            <span id="mstr-dow-text" class="text-slate-400 font-normal">Bullish</span>
+          </div>
+          <div id="mstr-wyckoff" class="text-[11px] text-slate-300 leading-relaxed">加載中...</div>
+        </div>
       </div>
 
       <!-- 右側：TradingView 專業圖表 (支援 BTC/ETH/UNI/MSTR 四向切換) -->
@@ -241,7 +208,58 @@
 
     </div>
 
-    <footer class="text-center font-mono text-xs text-[#475569] pt-4 border-t border-[#131A29]">
+    <!-- 底部：寬敞舒適的指標狀態定義與波段交易指南 (橫向 3 欄排列) -->
+    <div class="bg-[#0F1420] border border-[#1C2436] p-4 rounded-lg font-mono text-xs">
+      <div class="text-[#8A99AD] text-[10px] uppercase font-bold tracking-wider border-b border-[#1A2333] pb-2 mb-3 flex items-center justify-between">
+        <span class="flex items-center space-x-1.5">
+          <span class="w-1.5 h-1.5 bg-slate-400 rounded-full"></span>
+          <span>量化指標定義與波段執行指南 (Dow Theory & Swing Rules)</span>
+        </span>
+        <span class="text-slate-500 text-[10px]">TERMINAL MANUAL</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <!-- UPTREND -->
+        <div class="bg-[#080B11] p-3 rounded border border-[#182030] space-y-1">
+          <div class="text-emerald-400 font-bold flex items-center space-x-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span>UPTREND (多頭推進)</span>
+          </div>
+          <p class="text-[11px] text-slate-300 leading-relaxed">
+            結構呈現一頂比一頂高、一底比一底高 (HH + HL)。多頭掌控盤面，順應趨勢持倉，回踩 Buy 價位縮量時分批加倉。
+          </p>
+        </div>
+
+        <!-- DOWNTREND -->
+        <div class="bg-[#080B11] p-3 rounded border border-[#182030] space-y-1">
+          <div class="text-rose-400 font-bold flex items-center space-x-1.5">
+            <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+            <span>DOWNTREND (空頭受阻)</span>
+          </div>
+          <p class="text-[11px] text-slate-300 leading-relaxed">
+            反彈不過前高、低點跌破前波防守點 (LH + LL)。反彈強壓處切勿盲目追多，注意受阻回落風險，防範再次探底。
+          </p>
+        </div>
+
+        <!-- RANGING -->
+        <div class="bg-[#080B11] p-3 rounded border border-[#182030] space-y-1">
+          <div class="text-amber-400 font-bold flex items-center space-x-1.5">
+            <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+            <span>RANGING (區間震盪)</span>
+          </div>
+          <p class="text-[11px] text-slate-300 leading-relaxed">
+            高低點方向互相衝突或收斂。盤面無明確單邊方向，嚴禁追單，恪守「支撐下軌買入、阻力上軌分批止盈」高拋低吸。
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-3 pt-2.5 border-t border-[#182030] flex flex-col sm:flex-row sm:justify-between text-[11px] text-slate-400 gap-1.5">
+        <div>• <strong class="text-emerald-400">波段買入 (Buy)</strong>: 價格回踩至 Buy 價位且縮量企穩時進場，跌破結構支撐嚴格止損。</div>
+        <div>• <strong class="text-rose-400">目標止盈 (Sell)</strong>: 接近上方強阻時分批止盈 50%，剩餘推移移動保本止損。</div>
+      </div>
+    </div>
+
+    <footer class="text-center font-mono text-xs text-[#475569] pt-2 border-t border-[#131A29]">
       CryptoAlpha // Designed & Operated by Lyphard · Multi-Asset Swing Execution System
     </footer>
   </div>

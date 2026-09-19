@@ -43,17 +43,17 @@
       </div>
     </header>
 
-    <!-- 頂部四大資產卡片 (附波段買賣策略) -->
+    <!-- 頂部四大資產卡片 (BTC 現價改為黃色，MSTR 標註 mNAV) -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
       
-      <!-- BTC 卡片 -->
+      <!-- BTC 卡片 (價格調整為 text-amber-400 黃色) -->
       <div class="bg-[#0F1420] border border-[#1C2436] p-4 rounded-lg flex flex-col justify-between">
         <div>
           <div class="flex justify-between items-center text-xs text-[#8A99AD] font-mono">
             <span class="text-amber-400 font-bold">BTC / USDT</span>
             <span id="btc-dow-badge" class="text-[10px] px-1.5 py-0.5 rounded font-mono">--</span>
           </div>
-          <div id="btc-price" class="text-2xl font-bold font-mono text-emerald-400 mt-1.5">--</div>
+          <div id="btc-price" class="text-2xl font-bold font-mono text-amber-400 mt-1.5">--</div>
         </div>
         <div class="mt-3 pt-2.5 border-t border-[#182030] font-mono text-[11px] space-y-1">
           <div class="flex justify-between text-slate-400">
@@ -109,12 +109,12 @@
         </div>
       </div>
 
-      <!-- MSTR 卡片 (新增) -->
+      <!-- MSTR 卡片 (右上角徽章動態渲染為 mNAV: 1.21x) -->
       <div class="bg-[#0F1420] border border-[#1C2436] p-4 rounded-lg flex flex-col justify-between">
         <div>
           <div class="flex justify-between items-center text-xs text-[#8A99AD] font-mono">
             <span class="text-cyan-400 font-bold">MSTR (Stock)</span>
-            <span id="mnav-badge" class="text-[10px] px-1.5 py-0.5 rounded font-mono">1.21x</span>
+            <span id="mnav-badge" class="text-[10px] px-1.5 py-0.5 rounded font-mono bg-[#162235] text-cyan-300 border border-cyan-500/30">mNAV: 1.21x</span>
           </div>
           <div id="mstr-price" class="text-2xl font-bold font-mono text-cyan-400 mt-1.5">--</div>
         </div>
@@ -262,7 +262,7 @@
       .then(data => {
         document.getElementById('update-time').innerText = data.updated_at;
 
-        // BTC
+        // BTC (黃色字體 text-amber-400)
         document.getElementById('btc-price').innerText = '$' + Number(data.btc.price).toLocaleString();
         document.getElementById('btc-buy').innerText = '$' + Number(data.btc.buy_target).toLocaleString();
         document.getElementById('btc-sell').innerText = '$' + Number(data.btc.sell_target).toLocaleString();
@@ -292,9 +292,10 @@
         document.getElementById('mstr-sell').innerText = '$' + Number(data.mstr.sell_target).toFixed(2);
         document.getElementById('mstr-wyckoff').innerText = data.mstr.wyckoff_hint;
 
+        // MSTR mNAV 徽章標記為 "mNAV: 1.21x"
         const mnav = data.mstr.mnav_multiple;
         const badge = document.getElementById('mnav-badge');
-        badge.innerText = mnav + 'x';
+        badge.innerText = 'mNAV: ' + mnav + 'x';
         if (mnav > 1.8) {
           badge.className = 'text-[10px] px-1.5 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800 font-mono';
         } else if (mnav <= 1.15 && mnav > 0) {

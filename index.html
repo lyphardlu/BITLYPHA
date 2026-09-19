@@ -365,16 +365,15 @@
         document.getElementById('uni-space').innerText = '$' + Number(data.uni.buy_target).toFixed(1) + ' ~$' + Number(data.uni.sell_target).toFixed(1);
         renderDowBadge('uni-dow-badge', data.uni.dow_status);
 
-        // MSTR (以 156.50 為初始基準)
-        const initMstrPrice = Math.max(Number(data.mstr.price), 156.50);
-        updateLivePriceUI('mstr-price', initMstrPrice, 'mstr', 2);
+        // MSTR
+        updateLivePriceUI('mstr-price', data.mstr.price, 'mstr', 2);
         document.getElementById('mstr-buy').innerText = '$' + Number(data.mstr.buy_target).toFixed(2);
         document.getElementById('mstr-sell').innerText = '$' + Number(data.mstr.sell_target).toFixed(2);
         document.getElementById('mstr-dow-text').innerText = data.mstr.dow_status;
         document.getElementById('mstr-wyckoff').innerText = data.mstr.wyckoff_hint;
         document.getElementById('mstr-space').innerText = '$' + Number(data.mstr.buy_target).toFixed(0) + ' ~$' + Number(data.mstr.sell_target).toFixed(0);
         renderDowBadge('mstr-dow-badge', data.mstr.dow_status);
-        updateMnavBadge(initMstrPrice, data.btc.price);
+        updateMnavBadge(data.mstr.price, data.btc.price);
 
         startRealtimeEngines();
       })
@@ -383,9 +382,9 @@
         startRealtimeEngines();
       });
 
-    // 2. 雙重引擎
+    // 2. 雙重即時引擎
     function startRealtimeEngines() {
-      // (A) 現貨 WebSocket (BTC/ETH/UNI)
+      // (A) BTC, ETH, UNI 現貨長連線
       const spotStreams = 'btcusdt@miniTicker/ethusdt@miniTicker/uniusdt@miniTicker';
       const wsSpot = new WebSocket(`wss://stream.binance.com:9443/ws/${spotStreams}`);
       
@@ -404,22 +403,43 @@
         }
       };
 
-      // (B) MSTR 專屬合約輪詢（使用跨域友好的無障礙通道）
-      async function pollMstrRealtime() {
+      // (B) MSTR 專屬合約 WebSocket (正確支援大小寫與重連)
+      function connectMstrFuturesWS() {
         try {
-          // 直接利用幣安公開的期貨 24hr 統計或免認證網關
-          const res = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT');
-          if (res.ok) {
-            // 當前圖表顯示 156.50，如果尚未取得更高價，保持與實時圖表同步
-            if (lastPrices.mstr < 156.50) {
-              updateLivePriceUI('mstr-price', 156.50, 'mstr', 2);
-              updateMnavBadge(156.50, lastPrices.btc);
+          const wsMstr = new WebSocket('wss://fstream.binance.com/ws/mstrusdt@ticker');
+          wsMstr.onmessage = (event) => {
+            const msg = JSON.parse(event.data);
+            if (msg.c) {
+              const livePrice = parseFloat(msg.c);
+              if (livePrice > 0) {
+                updateLivePriceUI('mstr-price', livePrice, 'mstr', 2);
+                updateMnavBadge(livePrice, lastPrices.btc);
+              }
+            }
+          };
+          wsMstr.onerror = () => wsMstr.close();
+          wsMstr.onclose = () => setTimeout(connectMstrFuturesWS, 3000);
+        } catch (e) {}
+      }
+      connectMstrFuturesWS();
+
+      // (C) 雙保險：跨域友善公共網關輪詢 (每 2 秒向免 CORS 代理查詢一次)
+      async function pollMstrProxy() {
+        try {
+          // 利用公開免 CORS 的行情代理
+          const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://fapi.binance.com/fapi/v1/ticker/price?symbol=MSTRUSDT');
+          const res = await fetch(proxyUrl);
+          const data = await res.json();
+          if (data && data.price) {
+            const p = parseFloat(data.price);
+            if (p > 0) {
+              updateLivePriceUI('mstr-price', p, 'mstr', 2);
+              updateMnavBadge(p, lastPrices.btc);
             }
           }
         } catch (e) {}
       }
-
-      setInterval(pollMstrRealtime, 2500);
+      setInterval(pollMstrProxy, 2500);
     }
   </script>
 </body>

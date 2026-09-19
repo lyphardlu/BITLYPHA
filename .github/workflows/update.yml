@@ -1,4 +1,4 @@
-name: Update BTC and MSTR Data
+name: Update Crypto Data
 
 on:
   workflow_dispatch:

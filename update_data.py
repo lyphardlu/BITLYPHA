@@ -38,7 +38,7 @@ def calculate_swing_trade(current_price, support, resistance, atr, decimals=2):
     }
 
 def analyze_crypto_symbol(symbol_binance, coingecko_id):
-    """通用加密貨幣分析 (BTC, ETH, UNI) - 100% 動態 API 抓取"""
+    """通用加密貨幣分析 (BTC, ETH, UNI)"""
     current_price = 0.0
     highs, lows, closes = [], [], []
 
@@ -54,7 +54,7 @@ def analyze_crypto_symbol(symbol_binance, coingecko_id):
             highs = [p * 1.025 for p in prices]
             lows = [p * 0.975 for p in prices]
     except Exception as e:
-        print(f"CoinGecko API notice for {coingecko_id}: {e}")
+        print(f"CoinGecko error {coingecko_id}: {e}")
 
     # 2. 次選 Binance 現貨
     if current_price == 0.0:
@@ -68,10 +68,9 @@ def analyze_crypto_symbol(symbol_binance, coingecko_id):
                 lows = [float(k[3]) for k in res]
                 current_price = closes[-1]
         except Exception as e:
-            print(f"Binance API notice for {symbol_binance}: {e}")
+            print(f"Binance error {symbol_binance}: {e}")
 
     if current_price == 0.0:
-        # 從舊資料無縫承接，絕不捏造固定假價
         try:
             with open("data.json", "r", encoding="utf-8") as f:
                 old = json.load(f)
@@ -128,35 +127,38 @@ def analyze_crypto_symbol(symbol_binance, coingecko_id):
     }
 
 def analyze_mstr(btc_price):
-    """MSTR 100% 真實動態分析，移除一切手動寫死數值"""
+    """透過 OKX XMSTR 進行 100% 動態實盤分析"""
     current_price = 0.0
     highs, lows, closes = [], [], []
-    headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
+    headers = {"User-Agent": "Mozilla/5.0"}
 
-    # 1. 幣安期貨即時 ticker 端點 (MSTRUSDT)
+    # 1. 優先透過 OKX API 抓取 XMSTR 即時行情
     try:
-        url = "https://fapi.binance.com/fapi/v1/ticker/price?symbol=MSTRUSDT"
-        res = requests.get(url, headers=headers, timeout=6).json()
-        if isinstance(res, dict) and "price" in res:
-            current_price = float(res["price"])
-            print(f"[Dynamic API] Fetched MSTR Binance Futures Price: {current_price}")
+        okx_url = "https://www.okx.com/api/v5/market/ticker?instId=XMSTR-USDT"
+        res = requests.get(okx_url, headers=headers, timeout=6).json()
+        if res.get("code") == "0" and len(res.get("data", [])) > 0:
+            current_price = float(res["data"][0]["last"])
+            print(f"[OKX XMSTR] Fetched live price: {current_price}")
     except Exception as e:
-        print(f"MSTR Futures ticker fetch notice: {e}")
+        print(f"OKX XMSTR ticker fetch notice: {e}")
 
-    # 2. 幣安期貨日線 K 線
+    # 2. 抓取 OKX XMSTR 歷史 K 線計算道氏結構與 ATR
     try:
-        url = "https://fapi.binance.com/fapi/v1/klines?symbol=MSTRUSDT&interval=1d&limit=45"
-        res = requests.get(url, headers=headers, timeout=6).json()
-        if isinstance(res, list) and len(res) > 0 and isinstance(res[0], list):
-            closes = [float(k[4]) for k in res]
-            highs = [float(k[2]) for k in res]
-            lows = [float(k[3]) for k in res]
-            if current_price == 0.0:
+        okx_kline = "https://www.okx.com/api/v5/market/candles?instId=XMSTR-USDT&bar=1D&limit=45"
+        res = requests.get(okx_kline, headers=headers, timeout=6).json()
+        if res.get("code") == "0" and len(res.get("data", [])) > 0:
+            candles = res["data"]
+            # OKX candles format: [ts, o, h, l, c, vol, ...] (Newest first)
+            candles.reverse()
+            closes = [float(k[4]) for k in candles]
+            highs = [float(k[2]) for k in candles]
+            lows = [float(k[3]) for k in candles]
+            if current_price == 0.0 and closes:
                 current_price = closes[-1]
     except Exception as e:
-        print(f"MSTR Futures klines fetch notice: {e}")
+        print(f"OKX XMSTR klines fetch notice: {e}")
 
-    # 3. Yahoo Finance 實盤備援
+    # 3. 備援：若 OKX 逾時，嘗試 Yahoo Finance MSTR
     if current_price == 0.0:
         try:
             url = "https://query1.finance.yahoo.com/v8/finance/chart/MSTR?interval=1d&range=45d"
@@ -168,11 +170,10 @@ def analyze_mstr(btc_price):
             if c_list:
                 closes, highs, lows = c_list, h_list, l_list
                 current_price = closes[-1]
-                print(f"[Dynamic API] Fetched MSTR Yahoo Price: {current_price}")
         except Exception as e:
-            print(f"Yahoo Finance fallback notice: {e}")
+            print(f"Yahoo fallback notice: {e}")
 
-    # 4. 若當次網路連線皆逾時，讀取前一次的真實歷史存檔（不寫死任何假數字）
+    # 4. 最終防禦：從歷史 data.json 繼承
     if current_price == 0.0:
         try:
             with open("data.json", "r", encoding="utf-8") as f:
@@ -208,7 +209,7 @@ def analyze_mstr(btc_price):
 
     swing_plan = calculate_swing_trade(current_price, support, resistance, atr, 2)
 
-    # 官方 mNAV 估值模型
+    # mNAV 計算模型
     official_base_btc = 81240.0
     official_base_stock = 153.92
     official_base_mnav = 1.21
@@ -255,7 +256,7 @@ def main():
 
     with open("data.json", "w", encoding="utf-8") as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
-    print(f"Dynamic generation done. MSTR Real Price: ${mstr_data['price']}")
+    print(f"OKX XMSTR Sync complete. Price: ${mstr_data['price']}")
 
 if __name__ == "__main__":
     main()

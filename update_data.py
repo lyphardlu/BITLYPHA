@@ -7,7 +7,7 @@ def get_mstr_mnav(btc_price):
     share_price = 0.0
     try:
         url = "https://query1.finance.yahoo.com/v8/finance/chart/MSTR"
-        headers = {"User-Agent": "Mozilla/5.0"}
+        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
         res = requests.get(url, headers=headers, timeout=10).json()
         share_price = float(res['chart']['result'][0]['meta']['regularMarketPrice'])
     except Exception as e:
@@ -51,40 +51,55 @@ def find_fractal_pivots(highs, lows, closes):
     
     return swing_highs, swing_lows, atr
 
-def analyze_symbol(symbol, default_price):
-    """通用幣種分析函數 (Binance API + 道氏分形 + 威科夫邏輯)"""
+def fetch_crypto_data(symbol_binance, coingecko_id, default_price):
+    """雙通道抓取：優先使用 CoinGecko (雲端不擋)，次選 Binance"""
     current_price = 0.0
     highs, lows, closes = [], [], []
 
+    # 1. 首選：CoinGecko API (雲端最穩定)
     try:
-        url = f"https://api.binance.com/api/v3/klines?symbol={symbol}&interval=1d&limit=60"
-        headers = {"User-Agent": "Mozilla/5.0"}
-        res = requests.get(url, headers=headers, timeout=10).json()
-        if isinstance(res, list) and len(res) >= 20 and isinstance(res[0], list):
-            closes = [float(k[4]) for k in res]
-            highs = [float(k[2]) for k in res]
-            lows = [float(k[3]) for k in res]
-            current_price = closes[-1]
+        cg_url = f"https://api.coingecko.com/api/v3/coins/{coingecko_id}/market_chart?vs_currency=usd&days=45&interval=daily"
+        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
+        res = requests.get(cg_url, headers=headers, timeout=10).json()
+        prices = [p[1] for p in res.get('prices', [])]
+        if len(prices) >= 20:
+            current_price = prices[-1]
+            closes = prices
+            # 以日收盤估算日高低振幅
+            highs = [p * 1.02 for p in prices]
+            lows = [p * 0.98 for p in prices]
     except Exception as e:
-        print(f"Error fetching {symbol}: {e}")
+        print(f"CoinGecko failed for {coingecko_id}: {e}")
 
-    # 備援兜底數據
+    # 2. 次選：Binance API (若 CoinGecko 異常)
+    if current_price == 0.0:
+        try:
+            bn_url = f"https://api.binance.com/api/v3/klines?symbol={symbol_binance}&interval=1d&limit=45"
+            headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
+            res = requests.get(bn_url, headers=headers, timeout=10).json()
+            if isinstance(res, list) and len(res) >= 20 and isinstance(res[0], list):
+                closes = [float(k[4]) for k in res]
+                highs = [float(k[2]) for k in res]
+                lows = [float(k[3]) for k in res]
+                current_price = closes[-1]
+        except Exception as e:
+            print(f"Binance failed for {symbol_binance}: {e}")
+
+    # 3. 兜底
     if current_price == 0.0:
         current_price = default_price
-        closes = [default_price] * 60
-        highs = [default_price * 1.02] * 60
-        lows = [default_price * 0.98] * 60
+        closes = [default_price] * 30
+        highs = [default_price * 1.02] * 30
+        lows = [default_price * 0.98] * 30
 
-    # 提取道氏波段分形拐點
+    # 道氏拐點與支撐阻力
     swing_highs, swing_lows, atr = find_fractal_pivots(highs, lows, closes)
-    
     overhead = [h for h in swing_highs if h > current_price]
     resistance = min(overhead) if overhead else (current_price + atr * 1.618)
-
     underlying = [l for l in swing_lows if l < current_price]
     support = max(underlying) if underlying else (current_price - atr * 1.618)
 
-    # 道氏理論狀態
+    # 道氏趨勢
     if len(swing_highs) >= 2 and len(swing_lows) >= 2:
         if swing_highs[-1] >= swing_highs[-2] and swing_lows[-1] >= swing_lows[-2]:
             dow_signal = "多頭推進 (Higher High + Higher Low)"
@@ -99,10 +114,8 @@ def analyze_symbol(symbol, default_price):
         dow_signal = "趨勢延續中"
         dow_status = "Bullish" if current_price >= closes[0] else "Neutral"
 
-    # 威科夫區間位置提示
     range_span = resistance - support
     pos = (current_price - support) / range_span if range_span > 0 else 0.5
-
     if pos < 0.20:
         wyckoff_hint = "【支撐邊界】逼近波段防守點，留意 Spring 彈簧洗盤或 ST 二次測試。"
     elif pos > 0.80:
@@ -110,9 +123,7 @@ def analyze_symbol(symbol, default_price):
     else:
         wyckoff_hint = "【區間運行】處於結構通道中段，主力籌碼穩定換手中。"
 
-    # 格式化小數位數 (UNI 取 3 位，BTC/ETH 取 2 位)
     decimals = 3 if current_price < 50 else 2
-
     return {
         "price": round(current_price, decimals),
         "dow_status": dow_status,
@@ -123,9 +134,9 @@ def analyze_symbol(symbol, default_price):
     }
 
 def main():
-    btc_data = analyze_symbol("BTCUSDT", 81200.0)
-    eth_data = analyze_symbol("ETHUSDT", 2700.0)
-    uni_data = analyze_symbol("UNIUSDT", 9.0)
+    btc_data = fetch_crypto_data("BTCUSDT", "bitcoin", 81250.0)
+    eth_data = fetch_crypto_data("ETHUSDT", "ethereum", 2637.0)
+    uni_data = fetch_crypto_data("UNIUSDT", "uniswap", 8.85)
 
     mstr_data = get_mstr_mnav(btc_data["price"])
 
@@ -139,7 +150,7 @@ def main():
 
     with open("data.json", "w", encoding="utf-8") as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
-    print("Multi-asset data (BTC, ETH, UNI) updated successfully.")
+    print("Market data fetched successfully.")
 
 if __name__ == "__main__":
     main()

@@ -43,7 +43,7 @@
       </div>
     </header>
 
-    <!-- 頂部四大資產卡片 -->
+    <!-- 頂部四大資產卡片 (附帶滑鼠懸停 Tooltip 解釋) -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
       
       <!-- BTC 卡片 -->
@@ -132,10 +132,10 @@
 
     </div>
 
-    <!-- 主區塊：左側診斷列表 + 右側 TradingView 圖表 -->
+    <!-- 主區塊：左側 4 大標的診斷 (完全無下方擁擠方塊) + 右側 TradingView 圖表 -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
       
-      <!-- 左側：多標的量化結構診斷 (空間充裕，字體舒適) -->
+      <!-- 左側：多標的量化結構診斷 (高度大方均勻) -->
       <div class="bg-[#0F1420] border border-[#1C2436] p-4 rounded-lg flex flex-col justify-between space-y-3">
         <div class="text-xs font-bold uppercase tracking-wider text-slate-200 font-mono flex items-center space-x-1.5 border-b border-[#1A2333] pb-2.5">
           <span class="w-2 h-2 bg-emerald-400 rounded-sm"></span>
@@ -208,58 +208,7 @@
 
     </div>
 
-    <!-- 底部：寬敞舒適的指標狀態定義與波段交易指南 (橫向 3 欄排列) -->
-    <div class="bg-[#0F1420] border border-[#1C2436] p-4 rounded-lg font-mono text-xs">
-      <div class="text-[#8A99AD] text-[10px] uppercase font-bold tracking-wider border-b border-[#1A2333] pb-2 mb-3 flex items-center justify-between">
-        <span class="flex items-center space-x-1.5">
-          <span class="w-1.5 h-1.5 bg-slate-400 rounded-full"></span>
-          <span>量化指標定義與波段執行指南 (Dow Theory & Swing Rules)</span>
-        </span>
-        <span class="text-slate-500 text-[10px]">TERMINAL MANUAL</span>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-        <!-- UPTREND -->
-        <div class="bg-[#080B11] p-3 rounded border border-[#182030] space-y-1">
-          <div class="text-emerald-400 font-bold flex items-center space-x-1.5">
-            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-            <span>UPTREND (多頭推進)</span>
-          </div>
-          <p class="text-[11px] text-slate-300 leading-relaxed">
-            結構呈現一頂比一頂高、一底比一底高 (HH + HL)。多頭掌控盤面，順應趨勢持倉，回踩 Buy 價位縮量時分批加倉。
-          </p>
-        </div>
-
-        <!-- DOWNTREND -->
-        <div class="bg-[#080B11] p-3 rounded border border-[#182030] space-y-1">
-          <div class="text-rose-400 font-bold flex items-center space-x-1.5">
-            <span class="w-2 h-2 rounded-full bg-rose-500"></span>
-            <span>DOWNTREND (空頭受阻)</span>
-          </div>
-          <p class="text-[11px] text-slate-300 leading-relaxed">
-            反彈不過前高、低點跌破前波防守點 (LH + LL)。反彈強壓處切勿盲目追多，注意受阻回落風險，防範再次探底。
-          </p>
-        </div>
-
-        <!-- RANGING -->
-        <div class="bg-[#080B11] p-3 rounded border border-[#182030] space-y-1">
-          <div class="text-amber-400 font-bold flex items-center space-x-1.5">
-            <span class="w-2 h-2 rounded-full bg-amber-500"></span>
-            <span>RANGING (區間震盪)</span>
-          </div>
-          <p class="text-[11px] text-slate-300 leading-relaxed">
-            高低點方向互相衝突或收斂。盤面無明確單邊方向，嚴禁追單，恪守「支撐下軌買入、阻力上軌分批止盈」高拋低吸。
-          </p>
-        </div>
-      </div>
-
-      <div class="mt-3 pt-2.5 border-t border-[#182030] flex flex-col sm:flex-row sm:justify-between text-[11px] text-slate-400 gap-1.5">
-        <div>• <strong class="text-emerald-400">波段買入 (Buy)</strong>: 價格回踩至 Buy 價位且縮量企穩時進場，跌破結構支撐嚴格止損。</div>
-        <div>• <strong class="text-rose-400">目標止盈 (Sell)</strong>: 接近上方強阻時分批止盈 50%，剩餘推移移動保本止損。</div>
-      </div>
-    </div>
-
-    <footer class="text-center font-mono text-xs text-[#475569] pt-2 border-t border-[#131A29]">
+    <footer class="text-center font-mono text-xs text-[#475569] pt-4 border-t border-[#131A29]">
       CryptoAlpha // Designed & Operated by Lyphard · Multi-Asset Swing Execution System
     </footer>
   </div>
@@ -271,15 +220,15 @@
       if (status === 'Bullish') {
         el.className = 'text-[10px] px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 font-mono cursor-help';
         el.innerText = 'UPTREND';
-        el.title = '道氏多頭結構：頂頂高、底底高 (Higher High + Higher Low)';
+        el.title = '【多頭推進】：頂頂高、底底高 (HH + HL)。多頭控盤，回踩波段 Buy 點縮量時分批佈局。';
       } else if (status === 'Bearish') {
         el.className = 'text-[10px] px-1.5 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800 font-mono cursor-help';
         el.innerText = 'DOWNTREND';
-        el.title = '道氏空頭結構：反彈受阻不過前高、波段低點跌破前低 (Lower High + Lower Low)';
+        el.title = '【空頭受阻】：反彈不過前高、跌破前波低點 (LH + LL)。反彈強阻力勿追高，防範再次探底。';
       } else {
         el.className = 'text-[10px] px-1.5 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800 font-mono cursor-help';
         el.innerText = 'RANGING';
-        el.title = '區間震盪結構：高低點方向衝突或收斂，無明確趨勢，遵循高拋低吸';
+        el.title = '【區間震盪】：高低點方向收斂衝突，無明確趨勢。嚴禁追突破，恪守「下軌買、上軌賣」高拋低吸。';
       }
     }
 

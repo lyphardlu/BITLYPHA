@@ -13,7 +13,6 @@
     .font-mono { font-family: 'JetBrains Mono', monospace; }
     .font-display { font-family: 'Chakra Petch', sans-serif; }
     
-    /* 價格跳動微光動畫 */
     @keyframes flashGreen {
       0% { color: #34d399; text-shadow: 0 0 10px rgba(52, 211, 153, 0.8); }
       100% { color: inherit; text-shadow: none; }
@@ -39,10 +38,9 @@
           <div class="flex items-center space-x-2">
             <h1 class="text-xl font-bold tracking-tight text-white font-display">CryptoAlpha</h1>
             <span class="text-[10px] px-1.5 py-0.5 rounded bg-[#161F30] text-emerald-400 border border-emerald-500/20 font-mono">SWING PRO</span>
-            <!-- 實時跳動燈號 -->
             <span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono flex items-center space-x-1">
               <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
-              <span id="ws-status">LIVE TICKER</span>
+              <span id="ws-status">24/7 TICKER</span>
             </span>
           </div>
           <p class="text-xs text-[#8A99AD] mt-0.5 font-mono">Operator: <span class="text-slate-300">Lyphard</span> · 24/7 WebSocket Real-time Ticker</p>
@@ -59,7 +57,7 @@
       </div>
     </header>
 
-    <!-- 頂部四大資產卡片 (全部支援秒級 WebSocket 即時跳動) -->
+    <!-- 頂部四大資產卡片 -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
       
       <!-- BTC 卡片 -->
@@ -125,7 +123,7 @@
         </div>
       </div>
 
-      <!-- MSTR 卡片 (即時合約跳動 + 動態 mNAV) -->
+      <!-- MSTR 卡片 -->
       <div class="bg-[#0F1420] border border-[#1C2436] p-4 rounded-lg flex flex-col justify-between">
         <div>
           <div class="flex justify-between items-center text-xs text-[#8A99AD] font-mono">
@@ -227,7 +225,7 @@
 
       </div>
 
-      <!-- 右側：TradingView 專業圖表 (點擊即時切換) -->
+      <!-- 右側：TradingView 專業圖表 -->
       <div class="lg:col-span-2 bg-[#0F1420] border border-[#1C2436] p-4 rounded-lg flex flex-col">
         <div class="flex flex-wrap justify-between items-center mb-3 gap-2">
           <div class="text-xs font-bold uppercase tracking-wider text-slate-200 font-mono flex items-center space-x-1.5">
@@ -262,7 +260,6 @@
   </div>
 
   <script>
-    // 全域價格快取 (用來判斷跳動時是漲是跌，給予閃爍動畫)
     const lastPrices = {
       btc: 0,
       eth: 0,
@@ -275,9 +272,9 @@
       if (!el || !newPrice) return;
 
       const oldPrice = lastPrices[key];
-      if (oldPrice > 0 && oldPrice !== newPrice) {
+      if (oldPrice > 0 && Math.abs(oldPrice - newPrice) > 0.001) {
         el.classList.remove('price-up', 'price-down');
-        void el.offsetWidth; // 強制重繪觸發 CSS 動畫
+        void el.offsetWidth;
         if (newPrice > oldPrice) {
           el.classList.add('price-up');
         } else {
@@ -341,13 +338,13 @@
       });
     }
 
-    // 1. 初始化讀取後端量化波段點位 (data.json)
+    // 1. 初始化讀取後端量化數據
     fetch('data.json?t=' + new Date().getTime())
       .then(res => res.json())
       .then(data => {
         document.getElementById('update-time').innerText = data.updated_at;
 
-        // BTC 靜態基底
+        // BTC
         updateLivePriceUI('btc-price', data.btc.price, 'btc', 2);
         document.getElementById('btc-buy').innerText = '$' + Number(data.btc.buy_target).toLocaleString();
         document.getElementById('btc-sell').innerText = '$' + Number(data.btc.sell_target).toLocaleString();
@@ -356,7 +353,7 @@
         document.getElementById('btc-space').innerText = '$' + Math.round(data.btc.buy_target/1000*10)/10 + 'k ~ $' + Math.round(data.btc.sell_target/1000*10)/10 + 'k';
         renderDowBadge('btc-dow-badge', data.btc.dow_status);
 
-        // ETH 靜態基底
+        // ETH
         updateLivePriceUI('eth-price', data.eth.price, 'eth', 2);
         document.getElementById('eth-buy').innerText = '$' + Number(data.eth.buy_target).toLocaleString();
         document.getElementById('eth-sell').innerText = '$' + Number(data.eth.sell_target).toLocaleString();
@@ -365,7 +362,7 @@
         document.getElementById('eth-space').innerText = '$' + Number(data.eth.buy_target).toFixed(0) + ' ~$' + Number(data.eth.sell_target).toFixed(0);
         renderDowBadge('eth-dow-badge', data.eth.dow_status);
 
-        // UNI 靜態基底
+        // UNI
         updateLivePriceUI('uni-price', data.uni.price, 'uni', 2);
         document.getElementById('uni-buy').innerText = '$' + Number(data.uni.buy_target).toFixed(2);
         document.getElementById('uni-sell').innerText = '$' + Number(data.uni.sell_target).toFixed(2);
@@ -374,7 +371,7 @@
         document.getElementById('uni-space').innerText = '$' + Number(data.uni.buy_target).toFixed(1) + ' ~$' + Number(data.uni.sell_target).toFixed(1);
         renderDowBadge('uni-dow-badge', data.uni.dow_status);
 
-        // MSTR 靜態基底
+        // MSTR
         updateLivePriceUI('mstr-price', data.mstr.price, 'mstr', 2);
         document.getElementById('mstr-buy').innerText = '$' + Number(data.mstr.buy_target).toFixed(2);
         document.getElementById('mstr-sell').innerText = '$' + Number(data.mstr.sell_target).toFixed(2);
@@ -384,7 +381,6 @@
         renderDowBadge('mstr-dow-badge', data.mstr.dow_status);
         updateMnavBadge(data.mstr.price, data.btc.price);
 
-        // 2. 啓動原生長連線 WebSocket (秒級即時跳動)
         connectBinanceWebSocket();
       })
       .catch(err => {
@@ -392,9 +388,9 @@
         connectBinanceWebSocket();
       });
 
-    // 幣安即時報價 WebSocket 連線
+    // 2. 雙重 WebSocket：同時訂閱現貨流與期貨高頻標記價格流
     function connectBinanceWebSocket() {
-      // 聚合訂閱 BTC、ETH、UNI 的現貨或合約 miniTicker
+      // BTC, ETH, UNI 現貨流
       const spotStreams = 'btcusdt@miniTicker/ethusdt@miniTicker/uniusdt@miniTicker';
       const wsSpot = new WebSocket(`wss://stream.binance.com:9443/ws/${spotStreams}`);
       
@@ -413,19 +409,32 @@
         }
       };
 
-      // 訂閱 MSTRUSDT 永續合約 WebSocket
+      // MSTR 幣安期貨流 (聚合 markPrice@1s + ticker)
       try {
-        const wsFutures = new WebSocket('wss://fstream.binance.com/ws/mstrusdt@miniTicker');
+        const futuresStreams = 'mstrusdt@markPrice@1s/mstrusdt@ticker';
+        const wsFutures = new WebSocket(`wss://fstream.binance.com/stream?streams=${futuresStreams}`);
+        
         wsFutures.onmessage = (event) => {
-          const msg = JSON.parse(event.data);
-          if (msg.s === 'MSTRUSDT') {
-            const mstrPrice = parseFloat(msg.c);
+          const res = JSON.parse(event.data);
+          const data = res.data;
+          if (!data) return;
+          
+          let mstrPrice = 0;
+          if (data.e === 'markPriceUpdate') {
+            mstrPrice = parseFloat(data.p); // 1秒一次的高頻標記價格
+          } else if (data.e === '24hrTicker') {
+            mstrPrice = parseFloat(data.c); // 最新撮合成交價
+          }
+
+          if (mstrPrice > 0) {
             updateLivePriceUI('mstr-price', mstrPrice, 'mstr', 2);
             updateMnavBadge(mstrPrice, lastPrices.btc);
           }
         };
+
+        wsFutures.onerror = (e) => console.log('Futures WS error, retrying...', e);
       } catch (e) {
-        console.log('Futures WS connection notice:', e);
+        console.log('Futures WS error:', e);
       }
     }
   </script>

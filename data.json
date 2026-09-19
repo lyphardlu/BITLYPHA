@@ -1,19 +1,19 @@
 {
-  "updated_at": "INIT",
-  "btc_price": 0,
+  "updated_at": "2026-09-19 13:07 UTC",
+  "btc_price": 81301.12,
   "mstr": {
-    "mstr_price": 0,
-    "market_cap_b": 0,
-    "mnav_multiple": 0,
+    "mstr_price": 153.92,
+    "market_cap_b": 37.71,
+    "mnav_multiple": 1.03,
     "btc_holdings": 500000
   },
   "dow": {
-    "dow_status": "Neutral",
-    "dow_signal": "模型校準中...",
-    "support_level": 0,
-    "resistance_level": 0
+    "dow_status": "Bullish",
+    "dow_signal": "多頭格局 (Higher High + Higher Low)",
+    "support_level": 75590.24,
+    "resistance_level": 81301.12
   },
   "wyckoff": {
-    "current_phase_hint": "系統初始化中，等待 GitHub Actions 首次排程拉取..."
+    "current_phase_hint": "【Phase C-D / 壓力邊界】價格觸及區間上軌，警惕 UTAD（誘多假突破）或確認是否有爆量強勢突破（SOS）。"
   }
 }

@@ -12,6 +12,18 @@
     body { font-family: 'Inter', sans-serif; }
     .font-mono { font-family: 'JetBrains Mono', monospace; }
     .font-display { font-family: 'Chakra Petch', sans-serif; }
+    
+    /* 價格跳動微光動畫 */
+    @keyframes flashGreen {
+      0% { color: #34d399; text-shadow: 0 0 10px rgba(52, 211, 153, 0.8); }
+      100% { color: inherit; text-shadow: none; }
+    }
+    @keyframes flashRed {
+      0% { color: #f43f5e; text-shadow: 0 0 10px rgba(244, 63, 94, 0.8); }
+      100% { color: inherit; text-shadow: none; }
+    }
+    .price-up { animation: flashGreen 0.6s ease-out; }
+    .price-down { animation: flashRed 0.6s ease-out; }
   </style>
 </head>
 <body class="bg-[#080B11] text-[#E2E8F0] min-h-screen p-4 md:p-8">
@@ -27,9 +39,13 @@
           <div class="flex items-center space-x-2">
             <h1 class="text-xl font-bold tracking-tight text-white font-display">CryptoAlpha</h1>
             <span class="text-[10px] px-1.5 py-0.5 rounded bg-[#161F30] text-emerald-400 border border-emerald-500/20 font-mono">SWING PRO</span>
-            <span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono">24/7 FUTURES</span>
+            <!-- 實時跳動燈號 -->
+            <span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono flex items-center space-x-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+              <span id="ws-status">LIVE TICKER</span>
+            </span>
           </div>
-          <p class="text-xs text-[#8A99AD] mt-0.5 font-mono">Operator: <span class="text-slate-300">Lyphard</span> · BTC · ETH · UNI · MSTR Quantitative Levels</p>
+          <p class="text-xs text-[#8A99AD] mt-0.5 font-mono">Operator: <span class="text-slate-300">Lyphard</span> · 24/7 WebSocket Real-time Ticker</p>
         </div>
       </div>
       <div class="flex items-center space-x-3">
@@ -43,7 +59,7 @@
       </div>
     </header>
 
-    <!-- 頂部四大資產卡片 (MSTR 升級為即時合約 + 道氏徽章) -->
+    <!-- 頂部四大資產卡片 (全部支援秒級 WebSocket 即時跳動) -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
       
       <!-- BTC 卡片 -->
@@ -53,7 +69,7 @@
             <span class="text-emerald-400 font-bold">BTC / USDT</span>
             <span id="btc-dow-badge" class="text-[10px] px-1.5 py-0.5 rounded font-mono cursor-help">--</span>
           </div>
-          <div id="btc-price" class="text-2xl font-bold font-mono text-emerald-400 mt-1.5">--</div>
+          <div id="btc-price" class="text-2xl font-bold font-mono text-emerald-400 mt-1.5 transition-all">--</div>
         </div>
         <div class="mt-3 pt-2.5 border-t border-[#182030] font-mono text-[11px] space-y-1">
           <div class="flex justify-between text-slate-400">
@@ -74,7 +90,7 @@
             <span class="text-indigo-400 font-bold">ETH / USDT</span>
             <span id="eth-dow-badge" class="text-[10px] px-1.5 py-0.5 rounded font-mono cursor-help">--</span>
           </div>
-          <div id="eth-price" class="text-2xl font-bold font-mono text-indigo-400 mt-1.5">--</div>
+          <div id="eth-price" class="text-2xl font-bold font-mono text-indigo-400 mt-1.5 transition-all">--</div>
         </div>
         <div class="mt-3 pt-2.5 border-t border-[#182030] font-mono text-[11px] space-y-1">
           <div class="flex justify-between text-slate-400">
@@ -95,7 +111,7 @@
             <span class="text-pink-400 font-bold">UNI / USDT</span>
             <span id="uni-dow-badge" class="text-[10px] px-1.5 py-0.5 rounded font-mono cursor-help">--</span>
           </div>
-          <div id="uni-price" class="text-2xl font-bold font-mono text-pink-400 mt-1.5">--</div>
+          <div id="uni-price" class="text-2xl font-bold font-mono text-pink-400 mt-1.5 transition-all">--</div>
         </div>
         <div class="mt-3 pt-2.5 border-t border-[#182030] font-mono text-[11px] space-y-1">
           <div class="flex justify-between text-slate-400">
@@ -109,7 +125,7 @@
         </div>
       </div>
 
-      <!-- MSTR 卡片 (24/7 合約定價 + 道氏標籤 + mNAV 雙徽章) -->
+      <!-- MSTR 卡片 (即時合約跳動 + 動態 mNAV) -->
       <div class="bg-[#0F1420] border border-[#1C2436] p-4 rounded-lg flex flex-col justify-between">
         <div>
           <div class="flex justify-between items-center text-xs text-[#8A99AD] font-mono">
@@ -119,7 +135,7 @@
               <span id="mnav-badge" class="text-[10px] px-1.5 py-0.5 rounded font-mono bg-[#162235] text-cyan-300 border border-cyan-500/30">mNAV: 1.21x</span>
             </div>
           </div>
-          <div id="mstr-price" class="text-2xl font-bold font-mono text-cyan-400 mt-1.5">--</div>
+          <div id="mstr-price" class="text-2xl font-bold font-mono text-cyan-400 mt-1.5 transition-all">--</div>
         </div>
         <div class="mt-3 pt-2.5 border-t border-[#182030] font-mono text-[11px] space-y-1">
           <div class="flex justify-between text-slate-400">
@@ -138,7 +154,7 @@
     <!-- 主區塊：左側盤口診斷 + 右側 TradingView 圖表 -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
       
-      <!-- 左側盤口診斷 (緊湊排列 + 底部速覽小表) -->
+      <!-- 左側盤口診斷 -->
       <div class="bg-[#0F1420] border border-[#1C2436] p-4 rounded-lg flex flex-col space-y-3">
         <div class="text-xs font-bold uppercase tracking-wider text-slate-200 font-mono flex items-center space-x-1.5 border-b border-[#1A2333] pb-2">
           <span class="w-2 h-2 bg-emerald-400 rounded-sm"></span>
@@ -183,7 +199,7 @@
           </div>
         </div>
 
-        <!-- 波段空間速覽小表 -->
+        <!-- 波段空間速覽表 -->
         <div class="mt-auto pt-3 border-t border-[#182030] font-mono text-xs">
           <div class="text-[10px] text-slate-400 uppercase tracking-wider mb-2 flex justify-between">
             <span>波段空間速覽 (Levels Summary)</span>
@@ -211,7 +227,7 @@
 
       </div>
 
-      <!-- 右側：TradingView 專業圖表 (MSTR 直連 BINANCE:MSTRUSDT.P 永續合約) -->
+      <!-- 右側：TradingView 專業圖表 (點擊即時切換) -->
       <div class="lg:col-span-2 bg-[#0F1420] border border-[#1C2436] p-4 rounded-lg flex flex-col">
         <div class="flex flex-wrap justify-between items-center mb-3 gap-2">
           <div class="text-xs font-bold uppercase tracking-wider text-slate-200 font-mono flex items-center space-x-1.5">
@@ -246,6 +262,32 @@
   </div>
 
   <script>
+    // 全域價格快取 (用來判斷跳動時是漲是跌，給予閃爍動畫)
+    const lastPrices = {
+      btc: 0,
+      eth: 0,
+      uni: 0,
+      mstr: 0
+    };
+
+    function updateLivePriceUI(elemId, newPrice, key, decimals = 2) {
+      const el = document.getElementById(elemId);
+      if (!el || !newPrice) return;
+
+      const oldPrice = lastPrices[key];
+      if (oldPrice > 0 && oldPrice !== newPrice) {
+        el.classList.remove('price-up', 'price-down');
+        void el.offsetWidth; // 強制重繪觸發 CSS 動畫
+        if (newPrice > oldPrice) {
+          el.classList.add('price-up');
+        } else {
+          el.classList.add('price-down');
+        }
+      }
+      lastPrices[key] = newPrice;
+      el.innerText = '$' + Number(newPrice).toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+    }
+
     function renderDowBadge(elemId, status) {
       const el = document.getElementById(elemId);
       if (!el) return;
@@ -264,6 +306,26 @@
       }
     }
 
+    function updateMnavBadge(mstrPrice, btcPrice) {
+      if (!mstrPrice || !btcPrice) return;
+      const baseStock = 153.92;
+      const baseBtc = 81240.0;
+      const baseMnav = 1.21;
+      const dynamicMnav = (baseMnav * (mstrPrice / baseStock) / (btcPrice / baseBtc)).toFixed(2);
+      
+      const badge = document.getElementById('mnav-badge');
+      if (badge) {
+        badge.innerText = 'mNAV: ' + dynamicMnav + 'x';
+        if (dynamicMnav > 1.8) {
+          badge.className = 'text-[10px] px-1.5 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800 font-mono cursor-help';
+        } else if (dynamicMnav <= 1.15 && dynamicMnav > 0) {
+          badge.className = 'text-[10px] px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 font-mono cursor-help';
+        } else {
+          badge.className = 'text-[10px] px-1.5 py-0.5 rounded bg-sky-950 text-sky-300 border border-sky-800 font-mono cursor-help';
+        }
+      }
+    }
+
     function switchChart(symbol, title) {
       document.getElementById('current-chart-title').innerText = title + ' 即時走勢';
       document.getElementById('tv-iframe').src = `https://s.tradingview.com/widgetembed/?symbol=${symbol}&interval=D&hidesidetoolbar=0&symboledit=1&toolbarbg=080B11&theme=dark`;
@@ -279,13 +341,14 @@
       });
     }
 
+    // 1. 初始化讀取後端量化波段點位 (data.json)
     fetch('data.json?t=' + new Date().getTime())
       .then(res => res.json())
       .then(data => {
         document.getElementById('update-time').innerText = data.updated_at;
 
-        // BTC
-        document.getElementById('btc-price').innerText = '$' + Number(data.btc.price).toLocaleString();
+        // BTC 靜態基底
+        updateLivePriceUI('btc-price', data.btc.price, 'btc', 2);
         document.getElementById('btc-buy').innerText = '$' + Number(data.btc.buy_target).toLocaleString();
         document.getElementById('btc-sell').innerText = '$' + Number(data.btc.sell_target).toLocaleString();
         document.getElementById('btc-dow-text').innerText = data.btc.dow_status;
@@ -293,8 +356,8 @@
         document.getElementById('btc-space').innerText = '$' + Math.round(data.btc.buy_target/1000*10)/10 + 'k ~ $' + Math.round(data.btc.sell_target/1000*10)/10 + 'k';
         renderDowBadge('btc-dow-badge', data.btc.dow_status);
 
-        // ETH
-        document.getElementById('eth-price').innerText = '$' + Number(data.eth.price).toLocaleString();
+        // ETH 靜態基底
+        updateLivePriceUI('eth-price', data.eth.price, 'eth', 2);
         document.getElementById('eth-buy').innerText = '$' + Number(data.eth.buy_target).toLocaleString();
         document.getElementById('eth-sell').innerText = '$' + Number(data.eth.sell_target).toLocaleString();
         document.getElementById('eth-dow-text').innerText = data.eth.dow_status;
@@ -302,8 +365,8 @@
         document.getElementById('eth-space').innerText = '$' + Number(data.eth.buy_target).toFixed(0) + ' ~$' + Number(data.eth.sell_target).toFixed(0);
         renderDowBadge('eth-dow-badge', data.eth.dow_status);
 
-        // UNI
-        document.getElementById('uni-price').innerText = '$' + Number(data.uni.price).toFixed(2);
+        // UNI 靜態基底
+        updateLivePriceUI('uni-price', data.uni.price, 'uni', 2);
         document.getElementById('uni-buy').innerText = '$' + Number(data.uni.buy_target).toFixed(2);
         document.getElementById('uni-sell').innerText = '$' + Number(data.uni.sell_target).toFixed(2);
         document.getElementById('uni-dow-text').innerText = data.uni.dow_status;
@@ -311,28 +374,60 @@
         document.getElementById('uni-space').innerText = '$' + Number(data.uni.buy_target).toFixed(1) + ' ~$' + Number(data.uni.sell_target).toFixed(1);
         renderDowBadge('uni-dow-badge', data.uni.dow_status);
 
-        // MSTR (Binance Futures MSTRUSDT)
-        document.getElementById('mstr-price').innerText = '$' + Number(data.mstr.price).toFixed(2);
+        // MSTR 靜態基底
+        updateLivePriceUI('mstr-price', data.mstr.price, 'mstr', 2);
         document.getElementById('mstr-buy').innerText = '$' + Number(data.mstr.buy_target).toFixed(2);
         document.getElementById('mstr-sell').innerText = '$' + Number(data.mstr.sell_target).toFixed(2);
         document.getElementById('mstr-dow-text').innerText = data.mstr.dow_status;
         document.getElementById('mstr-wyckoff').innerText = data.mstr.wyckoff_hint;
         document.getElementById('mstr-space').innerText = '$' + Number(data.mstr.buy_target).toFixed(0) + ' ~$' + Number(data.mstr.sell_target).toFixed(0);
         renderDowBadge('mstr-dow-badge', data.mstr.dow_status);
+        updateMnavBadge(data.mstr.price, data.btc.price);
 
-        // MSTR mNAV 徽章
-        const mnav = data.mstr.mnav_multiple;
-        const badge = document.getElementById('mnav-badge');
-        badge.innerText = 'mNAV: ' + mnav + 'x';
-        if (mnav > 1.8) {
-          badge.className = 'text-[10px] px-1.5 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800 font-mono cursor-help';
-        } else if (mnav <= 1.15 && mnav > 0) {
-          badge.className = 'text-[10px] px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 font-mono cursor-help';
-        } else {
-          badge.className = 'text-[10px] px-1.5 py-0.5 rounded bg-sky-950 text-sky-300 border border-sky-800 font-mono cursor-help';
-        }
+        // 2. 啓動原生長連線 WebSocket (秒級即時跳動)
+        connectBinanceWebSocket();
       })
-      .catch(err => console.error('Data loading error:', err));
+      .catch(err => {
+        console.error('Data loading error:', err);
+        connectBinanceWebSocket();
+      });
+
+    // 幣安即時報價 WebSocket 連線
+    function connectBinanceWebSocket() {
+      // 聚合訂閱 BTC、ETH、UNI 的現貨或合約 miniTicker
+      const spotStreams = 'btcusdt@miniTicker/ethusdt@miniTicker/uniusdt@miniTicker';
+      const wsSpot = new WebSocket(`wss://stream.binance.com:9443/ws/${spotStreams}`);
+      
+      wsSpot.onmessage = (event) => {
+        const msg = JSON.parse(event.data);
+        const symbol = msg.s;
+        const price = parseFloat(msg.c);
+
+        if (symbol === 'BTCUSDT') {
+          updateLivePriceUI('btc-price', price, 'btc', 2);
+          updateMnavBadge(lastPrices.mstr, price);
+        } else if (symbol === 'ETHUSDT') {
+          updateLivePriceUI('eth-price', price, 'eth', 2);
+        } else if (symbol === 'UNIUSDT') {
+          updateLivePriceUI('uni-price', price, 'uni', 2);
+        }
+      };
+
+      // 訂閱 MSTRUSDT 永續合約 WebSocket
+      try {
+        const wsFutures = new WebSocket('wss://fstream.binance.com/ws/mstrusdt@miniTicker');
+        wsFutures.onmessage = (event) => {
+          const msg = JSON.parse(event.data);
+          if (msg.s === 'MSTRUSDT') {
+            const mstrPrice = parseFloat(msg.c);
+            updateLivePriceUI('mstr-price', mstrPrice, 'mstr', 2);
+            updateMnavBadge(mstrPrice, lastPrices.btc);
+          }
+        };
+      } catch (e) {
+        console.log('Futures WS connection notice:', e);
+      }
+    }
   </script>
 </body>
 </html>

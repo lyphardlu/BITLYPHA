@@ -5,19 +5,22 @@ import requests
 def get_mstr_mnav(btc_price):
     """
     計算 MSTR mNAV 溢價倍數
-    數據基準源自 Strategy.com 官方即時指標：
-    - 官方持幣量：845,050 顆 BTC (佔總流通約 4.02%)
+    對齊 Strategy.com 官方即時數據：
+    - 持幣量：845,050 BTC
+    - 基準股價：$153.92
+    - 基準比特幣價：$81,240.0
     - 官方基準 mNAV：1.21x
-    - 官方參考股價：$153.92
     """
     headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
     
-    # 官方基準參數
     mstr_btc_holdings = 845050
-    share_price = 153.92
-    mnav_multiple = 1.21
+    official_base_stock = 153.92
+    official_base_btc = 81240.0
+    official_base_mnav = 1.21
+    
+    share_price = official_base_stock
 
-    # 1. 嘗試抓取 Yahoo Finance 即時股價做動態校準
+    # 嘗試從 Yahoo Finance 獲取 MSTR 最新即時股價
     try:
         url = "https://query1.finance.yahoo.com/v8/finance/chart/MSTR"
         res = requests.get(url, headers=headers, timeout=5).json()
@@ -25,21 +28,17 @@ def get_mstr_mnav(btc_price):
         if live_price > 0:
             share_price = live_price
     except Exception as e:
-        print(f"MSTR Yahoo price fallback: {e}")
+        print(f"MSTR price fetch fallback: {e}")
 
-    # 2. 依據官方公布的淨負債與總股本動態精算 mNAV
-    # 稀釋總股數約 2.45 億股，淨負債約 204 億美元
-    shares_outstanding = 245000000
-    net_debt = 20395000000 
+    # 以官方 1.21x 為核心錨定，依據 (MSTR 股價變動比 / BTC 現價變動比) 動態聯動
+    stock_ratio = share_price / official_base_stock
+    btc_ratio = btc_price / official_base_btc if btc_price > 0 else 1.0
     
-    market_cap = share_price * shares_outstanding
-    enterprise_value = market_cap + net_debt
-    btc_nav = mstr_btc_holdings * btc_price
-    
-    if btc_nav > 0:
-        # 動態計算並結合官方基準
-        calc_mnav = enterprise_value / btc_nav
-        mnav_multiple = round(calc_mnav, 2)
+    dynamic_mnav = official_base_mnav * (stock_ratio / btc_ratio)
+    mnav_multiple = round(dynamic_mnav, 2)
+
+    # 全稀釋總股本（含可轉債與優先股）估算市值
+    market_cap = share_price * 540000000
 
     return {
         "mstr_price": round(share_price, 2),
@@ -50,9 +49,9 @@ def get_mstr_mnav(btc_price):
 
 def find_fractal_pivots(highs, lows, closes):
     """
-    識別道氏理論波段分形拐點 (5-bar Fractal Pivot) 與 14 日 ATR
-    - Swing High: 高於前後各 2 根 K 線的波段阻力
-    - Swing Low: 低於前後各 2 根 K 線的波段防守點 (HL)
+    識別道氏理論 5-bar 波段分形拐點與 ATR
+    - Swing High: 高於前後各 2 根 K 線的高點拐點
+    - Swing Low: 低於前後各 2 根 K 線的低點拐點
     """
     swing_highs = []
     swing_lows = []
@@ -75,8 +74,8 @@ def find_fractal_pivots(highs, lows, closes):
 
 def fetch_crypto_data(symbol_binance, coingecko_id, default_price):
     """
-    雙通道穩定數據獲取：
-    1. 首選 CoinGecko (雲端環境最穩定不擋 IP)
+    雙通道市場數據拉取：
+    1. 首選 CoinGecko (對 GitHub 雲端環境最穩定)
     2. 次選 Binance API
     3. 兜底基準
     """
@@ -97,7 +96,7 @@ def fetch_crypto_data(symbol_binance, coingecko_id, default_price):
     except Exception as e:
         print(f"CoinGecko failed for {coingecko_id}: {e}")
 
-    # 通道 2: Binance API (若 CoinGecko 失敗)
+    # 通道 2: Binance API (備援)
     if current_price == 0.0:
         try:
             bn_url = f"https://api.binance.com/api/v3/klines?symbol={symbol_binance}&interval=1d&limit=45"
@@ -118,18 +117,18 @@ def fetch_crypto_data(symbol_binance, coingecko_id, default_price):
         highs = [default_price * 1.02] * 30
         lows = [default_price * 0.98] * 30
 
-    # 道氏理論波段拐點提取
+    # 提取波段分形拐點
     swing_highs, swing_lows, atr = find_fractal_pivots(highs, lows, closes)
     
-    # 阻力計算：尋找現價上方的有效波段高點（若破新高則以 ATR 向上動態投影）
+    # 阻力位：上方最近的有效波段高點（若無則透過 ATR 1.618 動態向上投影）
     overhead = [h for h in swing_highs if h > current_price]
     resistance = min(overhead) if overhead else (current_price + atr * 1.618)
 
-    # 支撐計算：尋找現價下方的有效波段低點防守線
+    # 支撐位：下方最近的有效波段低點防守線
     underlying = [l for l in swing_lows if l < current_price]
     support = max(underlying) if underlying else (current_price - atr * 1.618)
 
-    # 道氏結構判定
+    # 道氏理論趨勢結構判定
     if len(swing_highs) >= 2 and len(swing_lows) >= 2:
         if swing_highs[-1] >= swing_highs[-2] and swing_lows[-1] >= swing_lows[-2]:
             dow_signal = "多頭推進 (Higher High + Higher Low)"

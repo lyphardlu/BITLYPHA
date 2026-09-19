@@ -95,16 +95,15 @@ def analyze_crypto_symbol(symbol_binance, coingecko_id):
     range_span = resistance - support
     pos = (current_price - support) / range_span if range_span > 0 else 0.5
 
-    # 威科夫階段動態判定
     if pos < 0.22:
         wyckoff_phase = "PHASE C"
-        wyckoff_hint = "【支撐邊界】威科夫 Phase C (試盤/洗盤區)，逼近防守點，留意 Spring 彈簧洗盤或 ST 二次測試。"
+        wyckoff_hint = "【支撐邊界】(試盤/洗盤階段)，逼近防守點，留意 Spring 彈簧洗盤或 ST 二次測試。"
     elif pos > 0.78:
         wyckoff_phase = "PHASE D"
-        wyckoff_hint = "【阻力邊界】威科夫 Phase D (突破/派發測試)，挑戰上方強壓，防範 UTAD 假突破。"
+        wyckoff_hint = "【阻力邊界】(突破/測試階段)，挑戰上方強壓，防範 UTAD 假突破。"
     else:
         wyckoff_phase = "PHASE B"
-        wyckoff_hint = "【區間運行】威科夫 Phase B (區間橫向築底/換手)，處於結構通道中段，主力籌碼穩定換手中。"
+        wyckoff_hint = "【區間運行】(橫向築底/換手階段)，處於結構通道中段，主力籌碼穩定換手中。"
 
     decimals = 3 if current_price < 50 else 2
     swing_plan = calculate_swing_trade(current_price, support, resistance, atr, decimals)
@@ -212,13 +211,13 @@ def analyze_mstr(btc_price):
 
     if pos < 0.22:
         wyckoff_phase = "PHASE C"
-        wyckoff_hint = "【支撐邊界】威科夫 Phase C (洗盤防守區)，mNAV 處於安全邊際，留意強力支撐。"
+        wyckoff_hint = "【支撐邊界】(試盤/洗盤階段)，mNAV 處於安全邊際，留意強力支撐。"
     elif pos > 0.78:
         wyckoff_phase = "PHASE D"
-        wyckoff_hint = "【阻力邊界】威科夫 Phase D (溢價過熱區)，挑戰上方強壓，防範假突破。"
+        wyckoff_hint = "【阻力邊界】(突破/測試階段)，溢價過熱，防範假突破。"
     else:
         wyckoff_phase = "PHASE B"
-        wyckoff_hint = "【合理估值常態運作】威科夫 Phase B (通道中段換手)，隨 BTC 槓桿 Beta 同步震盪。"
+        wyckoff_hint = "【通道中段】(橫向換手階段)，隨 BTC 槓桿 Beta 同步震盪。"
 
     return {
         "price": round(current_price, 2),
@@ -250,7 +249,7 @@ def main():
 
     with open("data.json", "w", encoding="utf-8") as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
-    print("Data.json updated successfully with Wyckoff Phases.")
+    print("Data.json updated successfully.")
 
 if __name__ == "__main__":
     main()

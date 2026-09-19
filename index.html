@@ -43,15 +43,15 @@
       </div>
     </header>
 
-    <!-- 頂部四大資產卡片 (BTC 現價採用高階翡翠綠 text-emerald-400) -->
+    <!-- 頂部四大資產卡片 -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
       
-      <!-- BTC 卡片 (Emerald 翡翠綠) -->
+      <!-- BTC 卡片 -->
       <div class="bg-[#0F1420] border border-[#1C2436] p-4 rounded-lg flex flex-col justify-between">
         <div>
           <div class="flex justify-between items-center text-xs text-[#8A99AD] font-mono">
             <span class="text-emerald-400 font-bold">BTC / USDT</span>
-            <span id="btc-dow-badge" class="text-[10px] px-1.5 py-0.5 rounded font-mono">--</span>
+            <span id="btc-dow-badge" class="text-[10px] px-1.5 py-0.5 rounded font-mono cursor-help" title="">--</span>
           </div>
           <div id="btc-price" class="text-2xl font-bold font-mono text-emerald-400 mt-1.5">--</div>
         </div>
@@ -72,7 +72,7 @@
         <div>
           <div class="flex justify-between items-center text-xs text-[#8A99AD] font-mono">
             <span class="text-indigo-400 font-bold">ETH / USDT</span>
-            <span id="eth-dow-badge" class="text-[10px] px-1.5 py-0.5 rounded font-mono">--</span>
+            <span id="eth-dow-badge" class="text-[10px] px-1.5 py-0.5 rounded font-mono cursor-help" title="">--</span>
           </div>
           <div id="eth-price" class="text-2xl font-bold font-mono text-indigo-400 mt-1.5">--</div>
         </div>
@@ -93,7 +93,7 @@
         <div>
           <div class="flex justify-between items-center text-xs text-[#8A99AD] font-mono">
             <span class="text-pink-400 font-bold">UNI / USDT</span>
-            <span id="uni-dow-badge" class="text-[10px] px-1.5 py-0.5 rounded font-mono">--</span>
+            <span id="uni-dow-badge" class="text-[10px] px-1.5 py-0.5 rounded font-mono cursor-help" title="">--</span>
           </div>
           <div id="uni-price" class="text-2xl font-bold font-mono text-pink-400 mt-1.5">--</div>
         </div>
@@ -109,7 +109,7 @@
         </div>
       </div>
 
-      <!-- MSTR 卡片 (mNAV: 1.21x 徽章) -->
+      <!-- MSTR 卡片 -->
       <div class="bg-[#0F1420] border border-[#1C2436] p-4 rounded-lg flex flex-col justify-between">
         <div>
           <div class="flex justify-between items-center text-xs text-[#8A99AD] font-mono">
@@ -132,12 +132,13 @@
 
     </div>
 
-    <!-- 主區塊：左側威科夫量化結構 + 右側可切換 TradingView 圖表 -->
+    <!-- 主區塊：左側診斷與指標指南 + 右側可切換 TradingView 圖表 -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
       
       <!-- 左側：波段操作與結構診斷 -->
       <div class="space-y-3.5">
         
+        <!-- 結構診斷 -->
         <div class="bg-[#0F1420] border border-[#1C2436] p-4 rounded-lg space-y-3">
           <div class="text-xs font-bold uppercase tracking-wider text-slate-200 font-mono flex items-center space-x-1.5 border-b border-[#1A2333] pb-2">
             <span class="w-2 h-2 bg-emerald-400 rounded-sm"></span>
@@ -181,12 +182,31 @@
           </div>
         </div>
 
-        <!-- 交易原則標尺 -->
-        <div class="bg-[#0F1420] border border-[#1C2436] p-3.5 rounded-lg text-xs font-mono">
-          <div class="text-[#8A99AD] text-[10px] uppercase mb-1.5">Swing Execution Rules</div>
-          <div class="text-slate-300 space-y-1 text-[11px]">
-            <div>• <strong class="text-emerald-400">買入法則</strong>: 價格回踩至 Buy 價位且縮量時進場，以支撐位破位為嚴格止損。</div>
-            <div>• <strong class="text-rose-400">賣出法則</strong>: 價格接近 Sell 目標時分批止盈 50%，剩餘推移動態止損保護獲利。</div>
+        <!-- 狀態指標定義與實戰規則 (新增詳細解說卡片) -->
+        <div class="bg-[#0F1420] border border-[#1C2436] p-3.5 rounded-lg text-xs font-mono space-y-2.5">
+          <div class="text-[#8A99AD] text-[10px] uppercase font-bold tracking-wider border-b border-[#1A2333] pb-1.5 flex justify-between">
+            <span>指標狀態解讀 (Dow & Swing Rules)</span>
+            <span class="text-slate-500">指引</span>
+          </div>
+          
+          <div class="space-y-1.5 text-[11px]">
+            <div>
+              <span class="text-emerald-400 font-bold">● UPTREND (多頭推進)</span>:
+              <span class="text-slate-300">頂頂高、底底高 (HH + HL)。順勢持倉，回踩 Buy 點分批加倉。</span>
+            </div>
+            <div>
+              <span class="text-rose-400 font-bold">● DOWNTREND (空頭受阻)</span>:
+              <span class="text-slate-300">反彈不過前高、低點跌破前低 (LH + LL)。反彈強壓勿追高，防範再次探底。</span>
+            </div>
+            <div>
+              <span class="text-amber-400 font-bold">● RANGING (區間震盪)</span>:
+              <span class="text-slate-300">高低點互相收斂或衝突。趨勢不明，嚴禁追單，恪守「下軌買、上軌賣」高拋低吸。</span>
+            </div>
+          </div>
+
+          <div class="pt-2 border-t border-[#182030] text-[11px] text-slate-400 space-y-0.5">
+            <div>• <strong class="text-slate-200">波段買入 (Buy)</strong>: 回踩至此且縮量時進場，跌破支撐嚴格止損。</div>
+            <div>• <strong class="text-slate-200">目標止盈 (Sell)</strong>: 接近上方強阻時分批獲利 50%，其餘設保本止損。</div>
           </div>
         </div>
 
@@ -231,14 +251,17 @@
       const el = document.getElementById(elemId);
       if (!el) return;
       if (status === 'Bullish') {
-        el.className = 'text-[10px] px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 font-mono';
+        el.className = 'text-[10px] px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 font-mono cursor-help';
         el.innerText = 'UPTREND';
+        el.title = '道氏多頭結構：頂頂高、底底高 (Higher High + Higher Low)';
       } else if (status === 'Bearish') {
-        el.className = 'text-[10px] px-1.5 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800 font-mono';
+        el.className = 'text-[10px] px-1.5 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800 font-mono cursor-help';
         el.innerText = 'DOWNTREND';
+        el.title = '道氏空頭結構：反彈受阻不過前高、波段低點跌破前低 (Lower High + Lower Low)';
       } else {
-        el.className = 'text-[10px] px-1.5 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800 font-mono';
+        el.className = 'text-[10px] px-1.5 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800 font-mono cursor-help';
         el.innerText = 'RANGING';
+        el.title = '區間震盪結構：高低點方向衝突或收斂，無明確趨勢，遵循高拋低吸';
       }
     }
 
@@ -262,7 +285,7 @@
       .then(data => {
         document.getElementById('update-time').innerText = data.updated_at;
 
-        // BTC (經典翡翠綠 text-emerald-400)
+        // BTC
         document.getElementById('btc-price').innerText = '$' + Number(data.btc.price).toLocaleString();
         document.getElementById('btc-buy').innerText = '$' + Number(data.btc.buy_target).toLocaleString();
         document.getElementById('btc-sell').innerText = '$' + Number(data.btc.sell_target).toLocaleString();

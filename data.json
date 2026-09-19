@@ -1,49 +1,49 @@
 {
-  "updated_at": "2026-09-19 15:22 UTC",
+  "updated_at": "2026-09-19 15:24 UTC",
   "btc": {
-    "price": 81648.07,
+    "price": 81614.48,
     "dow_status": "Bearish",
     "dow_signal": "空頭受阻 (Lower High + Lower Low)",
     "support": 75364.71,
     "resistance": 82275.08,
-    "buy_target": 78550.91,
-    "sell_target": 88329.69,
+    "buy_target": 78517.41,
+    "sell_target": 88295.89,
     "wyckoff_phase": "PHASE D",
-    "wyckoff_hint": "【阻力邊界】威科夫 Phase D (突破/派發測試)，挑戰上方強壓，防範 UTAD 假突破。"
+    "wyckoff_hint": "【阻力邊界】(突破/測試階段)，挑戰上方強壓，防範 UTAD 假突破。"
   },
   "eth": {
-    "price": 2640.76,
+    "price": 2640.8,
     "dow_status": "Neutral",
     "dow_signal": "結構收斂 / 區間震盪",
     "support": 2380.96,
-    "resistance": 2862.52,
-    "buy_target": 2537.97,
-    "sell_target": 2812.08,
+    "resistance": 2862.55,
+    "buy_target": 2538.01,
+    "sell_target": 2812.11,
     "wyckoff_phase": "PHASE B",
-    "wyckoff_hint": "【區間運行】威科夫 Phase B (區間橫向築底/換手)，處於結構通道中段，主力籌碼穩定換手中。"
+    "wyckoff_hint": "【區間運行】(橫向築底/換手階段)，處於結構通道中段，主力籌碼穩定換手中。"
   },
   "uni": {
-    "price": 8.928,
+    "price": 8.904,
     "dow_status": "Bullish",
     "dow_signal": "多頭推進 (Higher High + Higher Low)",
     "support": 5.8,
-    "resistance": 9.866,
-    "buy_target": 8.494,
-    "sell_target": 9.652,
+    "resistance": 9.841,
+    "buy_target": 8.47,
+    "sell_target": 9.628,
     "wyckoff_phase": "PHASE B",
-    "wyckoff_hint": "【區間運行】威科夫 Phase B (區間橫向築底/換手)，處於結構通道中段，主力籌碼穩定換手中。"
+    "wyckoff_hint": "【區間運行】(橫向築底/換手階段)，處於結構通道中段，主力籌碼穩定換手中。"
   },
   "mstr": {
-    "price": 158.62,
+    "price": 158.31,
     "mnav_multiple": 1.24,
     "btc_holdings": 845050,
     "dow_status": "Bearish",
     "dow_signal": "空頭受阻 (Lower High + Lower Low)",
     "support": 126.88,
-    "resistance": 172.27,
-    "buy_target": 152.29,
-    "sell_target": 169.17,
+    "resistance": 171.96,
+    "buy_target": 151.98,
+    "sell_target": 168.86,
     "wyckoff_phase": "PHASE B",
-    "wyckoff_hint": "【合理估值常態運作】威科夫 Phase B (通道中段換手)，隨 BTC 槓桿 Beta 同步震盪。"
+    "wyckoff_hint": "【通道中段】(橫向換手階段)，隨 BTC 槓桿 Beta 同步震盪。"
   }
 }

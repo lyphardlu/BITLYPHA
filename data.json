@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-09-20 16:04 UTC",
+  "updated_at": "2026-09-20 16:12 UTC",
   "btc": {
-    "price": 80832.85,
+    "price": 80973.62,
     "dow_status": "Bearish",
-    "dow_signal": "空頭受阻 (Lower High + Lower Low)",
+    "dow_signal": "空頭受阻",
     "support": 75364.71,
     "resistance": 82275.08,
     "buy_target": 73290.07,
@@ -15,11 +15,11 @@
     "fib_618": 67108.19
   },
   "eth": {
-    "price": 2607.0,
+    "price": 2616.31,
     "dow_status": "Neutral",
-    "dow_signal": "結構收斂 / 區間震盪",
+    "dow_signal": "結構收斂",
     "support": 2380.96,
-    "resistance": 2829.24,
+    "resistance": 2838.6,
     "buy_target": 2250.51,
     "sell_target": 2832.7,
     "wyckoff_phase": "PHASE D",
@@ -29,11 +29,11 @@
     "fib_618": 1974.16
   },
   "ethbtc": {
-    "price": 0.03209,
+    "price": 0.0322,
     "dow_status": "Bullish",
-    "dow_signal": "多頭推進 (Higher High + Higher Low)",
+    "dow_signal": "多頭推進",
     "support": 0.03091,
-    "resistance": 0.03219,
+    "resistance": 0.03248,
     "buy_target": 0.03023,
     "sell_target": 0.03518,
     "wyckoff_phase": "PHASE D",
@@ -43,9 +43,9 @@
     "fib_618": 0.02822
   },
   "sol": {
-    "price": 108.51,
+    "price": 108.71,
     "dow_status": "Neutral",
-    "dow_signal": "結構收斂 / 區間震盪",
+    "dow_signal": "結構收斂",
     "support": 97.47,
     "resistance": 109.15,
     "buy_target": 96.26,
@@ -57,9 +57,9 @@
     "fib_618": 84.36
   },
   "uni": {
-    "price": 8.698,
+    "price": 8.739,
     "dow_status": "Bullish",
-    "dow_signal": "多頭推進 (Higher High + Higher Low)",
+    "dow_signal": "多頭推進",
     "support": 5.8,
     "resistance": 9.084,
     "buy_target": 6.544,
@@ -71,19 +71,15 @@
     "fib_618": 4.976
   },
   "mstr": {
-    "price": 154.89,
-    "mnav_multiple": 1.22,
-    "btc_holdings": 845050,
-    "dow_status": "Bearish",
-    "dow_signal": "空頭受阻 (Lower High + Lower Low)",
-    "support": 126.88,
-    "resistance": 168.57,
-    "buy_target": 132.98,
-    "sell_target": 167.85,
+    "price": 156.09,
+    "mnav_multiple": 1.23,
+    "dow_status": "Neutral",
+    "buy_target": 129.56,
+    "sell_target": 168.2,
     "wyckoff_phase": "PHASE B",
     "wyckoff_hint": "🛑【逃頂賣出】需求不足 (No Demand)：近三日無量過高，追買意願極度低迷，提防假突破！",
-    "fib_382": 132.98,
-    "fib_500": 124.68,
-    "fib_618": 116.38
+    "fib_382": 129.56,
+    "fib_500": 120.09,
+    "fib_618": 110.63
   }
 }

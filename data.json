@@ -1,7 +1,7 @@
 {
-  "updated_at": "2026-09-20 16:12 UTC",
+  "updated_at": "2026-09-20 16:22 UTC",
   "btc": {
-    "price": 80973.62,
+    "price": 81066.86,
     "dow_status": "Bearish",
     "dow_signal": "空頭受阻",
     "support": 75364.71,
@@ -15,11 +15,11 @@
     "fib_618": 67108.19
   },
   "eth": {
-    "price": 2616.31,
+    "price": 2620.6,
     "dow_status": "Neutral",
     "dow_signal": "結構收斂",
     "support": 2380.96,
-    "resistance": 2838.6,
+    "resistance": 2842.92,
     "buy_target": 2250.51,
     "sell_target": 2832.7,
     "wyckoff_phase": "PHASE D",
@@ -29,7 +29,7 @@
     "fib_618": 1974.16
   },
   "ethbtc": {
-    "price": 0.0322,
+    "price": 0.03222,
     "dow_status": "Bullish",
     "dow_signal": "多頭推進",
     "support": 0.03091,
@@ -43,7 +43,7 @@
     "fib_618": 0.02822
   },
   "sol": {
-    "price": 108.71,
+    "price": 108.99,
     "dow_status": "Neutral",
     "dow_signal": "結構收斂",
     "support": 97.47,
@@ -57,7 +57,7 @@
     "fib_618": 84.36
   },
   "uni": {
-    "price": 8.739,
+    "price": 8.8,
     "dow_status": "Bullish",
     "dow_signal": "多頭推進",
     "support": 5.8,
@@ -65,19 +65,19 @@
     "buy_target": 6.544,
     "sell_target": 9.538,
     "wyckoff_phase": "PHASE D",
-    "wyckoff_hint": "【頂部突破】挑戰上方強壓區，關注多頭量能是否持續堆積。",
+    "wyckoff_hint": "【展現強勢】(SOS) 近三日放量突破 382 且收盤飽滿，需求強勁，主升段確認。",
     "fib_382": 6.544,
     "fib_500": 5.76,
     "fib_618": 4.976
   },
   "mstr": {
-    "price": 156.09,
+    "price": 155.96,
     "mnav_multiple": 1.23,
     "dow_status": "Neutral",
     "buy_target": 129.56,
     "sell_target": 168.2,
-    "wyckoff_phase": "PHASE B",
-    "wyckoff_hint": "🛑【逃頂賣出】需求不足 (No Demand)：近三日無量過高，追買意願極度低迷，提防假突破！",
+    "wyckoff_phase": "FAIR VALUE",
+    "wyckoff_hint": "⚖️【合理區間】mNAV 位於 1.15x - 1.6x 常態區間，隨 BTC 現貨連動，無極端情緒干擾。",
     "fib_382": 129.56,
     "fib_500": 120.09,
     "fib_618": 110.63

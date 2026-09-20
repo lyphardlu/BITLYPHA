@@ -149,7 +149,7 @@
 
     </div>
 
-    <!-- 主區塊：左側盤口診斷 (含 Wyckoff Phase) + 右側 TradingView 圖表 -->
+    <!-- 主區塊：左側盤口診斷 (含 Wyckoff Phase & 費氏檔位) + 右側 TradingView 圖表 -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
       
       <!-- 左側盤口診斷 -->
@@ -212,28 +212,40 @@
           </div>
         </div>
 
-        <!-- 波段空間速覽表 -->
+        <!-- 全新：1D 費氏大支撐矩陣 (替換原本的波段空間速覽表) -->
         <div class="mt-auto pt-3 border-t border-[#182030] font-mono text-xs">
-          <div class="text-[10px] text-slate-400 uppercase tracking-wider mb-2 flex justify-between">
-            <span>波段空間速覽 (Levels Summary)</span>
-            <span class="text-slate-500">4-Asset</span>
+          <div class="text-[10px] text-slate-400 uppercase tracking-wider mb-2 flex justify-between items-center">
+            <span>日線費氏大支撐 (1D FIB LEVELS)</span>
+            <span class="text-slate-500 bg-[#161F30] px-1.5 py-0.5 rounded">MACRO-SWING</span>
           </div>
           <div class="grid grid-cols-2 gap-2 text-[11px]">
+            <!-- BTC 檔位 -->
             <div class="bg-[#080B11] p-2 rounded border border-[#182030]">
-              <div class="text-slate-400 text-[10px]">BTC 空間</div>
-              <div id="btc-space" class="text-emerald-300 font-bold mt-0.5">--</div>
+              <div class="text-emerald-400 font-bold mb-1 border-b border-[#1A2333] pb-1">BTC 檔位</div>
+              <div class="flex justify-between text-slate-400 mb-0.5"><span>382:</span> <span id="btc-fib-382" class="text-emerald-300 font-bold">--</span></div>
+              <div class="flex justify-between text-slate-400 mb-0.5"><span>500:</span> <span id="btc-fib-500" class="text-emerald-300 font-bold">--</span></div>
+              <div class="flex justify-between text-slate-400"><span>618:</span> <span id="btc-fib-618" class="text-emerald-300 font-bold">--</span></div>
             </div>
+            <!-- ETH 檔位 -->
             <div class="bg-[#080B11] p-2 rounded border border-[#182030]">
-              <div class="text-slate-400 text-[10px]">ETH 空間</div>
-              <div id="eth-space" class="text-indigo-300 font-bold mt-0.5">--</div>
+              <div class="text-indigo-400 font-bold mb-1 border-b border-[#1A2333] pb-1">ETH 檔位</div>
+              <div class="flex justify-between text-slate-400 mb-0.5"><span>382:</span> <span id="eth-fib-382" class="text-indigo-300 font-bold">--</span></div>
+              <div class="flex justify-between text-slate-400 mb-0.5"><span>500:</span> <span id="eth-fib-500" class="text-indigo-300 font-bold">--</span></div>
+              <div class="flex justify-between text-slate-400"><span>618:</span> <span id="eth-fib-618" class="text-indigo-300 font-bold">--</span></div>
             </div>
+            <!-- UNI 檔位 -->
             <div class="bg-[#080B11] p-2 rounded border border-[#182030]">
-              <div class="text-slate-400 text-[10px]">UNI 空間</div>
-              <div id="uni-space" class="text-pink-300 font-bold mt-0.5">--</div>
+              <div class="text-pink-400 font-bold mb-1 border-b border-[#1A2333] pb-1">UNI 檔位</div>
+              <div class="flex justify-between text-slate-400 mb-0.5"><span>382:</span> <span id="uni-fib-382" class="text-pink-300 font-bold">--</span></div>
+              <div class="flex justify-between text-slate-400 mb-0.5"><span>500:</span> <span id="uni-fib-500" class="text-pink-300 font-bold">--</span></div>
+              <div class="flex justify-between text-slate-400"><span>618:</span> <span id="uni-fib-618" class="text-pink-300 font-bold">--</span></div>
             </div>
+            <!-- MSTR 檔位 -->
             <div class="bg-[#080B11] p-2 rounded border border-[#182030]">
-              <div class="text-slate-400 text-[10px]">MSTR 空間</div>
-              <div id="mstr-space" class="text-cyan-300 font-bold mt-0.5">--</div>
+              <div class="text-cyan-400 font-bold mb-1 border-b border-[#1A2333] pb-1">MSTR 檔位</div>
+              <div class="flex justify-between text-slate-400 mb-0.5"><span>382:</span> <span id="mstr-fib-382" class="text-cyan-300 font-bold">--</span></div>
+              <div class="flex justify-between text-slate-400 mb-0.5"><span>500:</span> <span id="mstr-fib-500" class="text-cyan-300 font-bold">--</span></div>
+              <div class="flex justify-between text-slate-400"><span>618:</span> <span id="mstr-fib-618" class="text-cyan-300 font-bold">--</span></div>
             </div>
           </div>
         </div>
@@ -356,46 +368,58 @@
       .then(data => {
         document.getElementById('update-time').innerText = data.updated_at;
 
-        // BTC
+        // BTC 頂部狀態與動態網格買賣點
         updateLivePriceUI('btc-price', data.btc.price, 'btc', 2);
         document.getElementById('btc-buy').innerText = '$' + Number(data.btc.buy_target).toLocaleString();
         document.getElementById('btc-sell').innerText = '$' + Number(data.btc.sell_target).toLocaleString();
         document.getElementById('btc-dow-text').innerText = data.btc.dow_status;
         document.getElementById('btc-wyckoff').innerText = data.btc.wyckoff_hint;
-        document.getElementById('btc-space').innerText = '$' + Math.round(data.btc.buy_target/1000*10)/10 + 'k ~ $' + Math.round(data.btc.sell_target/1000*10)/10 + 'k';
         renderDowBadge('btc-dow-badge', data.btc.dow_status);
         renderPhaseBadge('btc-phase-badge', data.btc.wyckoff_phase);
+        // BTC 1D 費氏檔位
+        document.getElementById('btc-fib-382').innerText = '$' + Number(data.btc.fib_382).toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0});
+        document.getElementById('btc-fib-500').innerText = '$' + Number(data.btc.fib_500).toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0});
+        document.getElementById('btc-fib-618').innerText = '$' + Number(data.btc.fib_618).toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0});
 
-        // ETH
+        // ETH 頂部狀態與動態網格買賣點
         updateLivePriceUI('eth-price', data.eth.price, 'eth', 2);
         document.getElementById('eth-buy').innerText = '$' + Number(data.eth.buy_target).toLocaleString();
         document.getElementById('eth-sell').innerText = '$' + Number(data.eth.sell_target).toLocaleString();
         document.getElementById('eth-dow-text').innerText = data.eth.dow_status;
         document.getElementById('eth-wyckoff').innerText = data.eth.wyckoff_hint;
-        document.getElementById('eth-space').innerText = '$' + Number(data.eth.buy_target).toFixed(0) + ' ~$' + Number(data.eth.sell_target).toFixed(0);
         renderDowBadge('eth-dow-badge', data.eth.dow_status);
         renderPhaseBadge('eth-phase-badge', data.eth.wyckoff_phase);
+        // ETH 1D 費氏檔位
+        document.getElementById('eth-fib-382').innerText = '$' + Number(data.eth.fib_382).toLocaleString('en-US', {minimumFractionDigits: 1, maximumFractionDigits: 1});
+        document.getElementById('eth-fib-500').innerText = '$' + Number(data.eth.fib_500).toLocaleString('en-US', {minimumFractionDigits: 1, maximumFractionDigits: 1});
+        document.getElementById('eth-fib-618').innerText = '$' + Number(data.eth.fib_618).toLocaleString('en-US', {minimumFractionDigits: 1, maximumFractionDigits: 1});
 
-        // UNI
+        // UNI 頂部狀態與動態網格買賣點
         updateLivePriceUI('uni-price', data.uni.price, 'uni', 2);
         document.getElementById('uni-buy').innerText = '$' + Number(data.uni.buy_target).toFixed(2);
         document.getElementById('uni-sell').innerText = '$' + Number(data.uni.sell_target).toFixed(2);
         document.getElementById('uni-dow-text').innerText = data.uni.dow_status;
         document.getElementById('uni-wyckoff').innerText = data.uni.wyckoff_hint;
-        document.getElementById('uni-space').innerText = '$' + Number(data.uni.buy_target).toFixed(1) + ' ~$' + Number(data.uni.sell_target).toFixed(1);
         renderDowBadge('uni-dow-badge', data.uni.dow_status);
         renderPhaseBadge('uni-phase-badge', data.uni.wyckoff_phase);
+        // UNI 1D 費氏檔位
+        document.getElementById('uni-fib-382').innerText = '$' + Number(data.uni.fib_382).toFixed(2);
+        document.getElementById('uni-fib-500').innerText = '$' + Number(data.uni.fib_500).toFixed(2);
+        document.getElementById('uni-fib-618').innerText = '$' + Number(data.uni.fib_618).toFixed(2);
 
-        // MSTR
+        // MSTR 頂部狀態與動態網格買賣點
         updateLivePriceUI('mstr-price', data.mstr.price, 'mstr', 2);
         document.getElementById('mstr-buy').innerText = '$' + Number(data.mstr.buy_target).toFixed(2);
         document.getElementById('mstr-sell').innerText = '$' + Number(data.mstr.sell_target).toFixed(2);
         document.getElementById('mstr-dow-text').innerText = data.mstr.dow_status;
         document.getElementById('mstr-wyckoff').innerText = data.mstr.wyckoff_hint;
-        document.getElementById('mstr-space').innerText = '$' + Number(data.mstr.buy_target).toFixed(0) + ' ~$' + Number(data.mstr.sell_target).toFixed(0);
         renderDowBadge('mstr-dow-badge', data.mstr.dow_status);
         renderPhaseBadge('mstr-phase-badge', data.mstr.wyckoff_phase);
         updateMnavBadge(data.mstr.price, data.btc.price);
+        // MSTR 1D 費氏檔位
+        document.getElementById('mstr-fib-382').innerText = '$' + Number(data.mstr.fib_382).toFixed(2);
+        document.getElementById('mstr-fib-500').innerText = '$' + Number(data.mstr.fib_500).toFixed(2);
+        document.getElementById('mstr-fib-618').innerText = '$' + Number(data.mstr.fib_618).toFixed(2);
 
         startRealtimeEngines();
       })

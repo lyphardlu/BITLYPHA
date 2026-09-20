@@ -1,7 +1,7 @@
 {
-  "updated_at": "2026-09-20 15:58 UTC",
+  "updated_at": "2026-09-20 16:04 UTC",
   "btc": {
-    "price": 80912.05,
+    "price": 80832.85,
     "dow_status": "Bearish",
     "dow_signal": "空頭受阻 (Lower High + Lower Low)",
     "support": 75364.71,
@@ -15,11 +15,11 @@
     "fib_618": 67108.19
   },
   "eth": {
-    "price": 2609.13,
+    "price": 2607.0,
     "dow_status": "Neutral",
     "dow_signal": "結構收斂 / 區間震盪",
     "support": 2380.96,
-    "resistance": 2831.39,
+    "resistance": 2829.24,
     "buy_target": 2250.51,
     "sell_target": 2832.7,
     "wyckoff_phase": "PHASE D",
@@ -29,7 +29,7 @@
     "fib_618": 1974.16
   },
   "ethbtc": {
-    "price": 0.03212,
+    "price": 0.03209,
     "dow_status": "Bullish",
     "dow_signal": "多頭推進 (Higher High + Higher Low)",
     "support": 0.03091,
@@ -43,7 +43,7 @@
     "fib_618": 0.02822
   },
   "sol": {
-    "price": 108.62,
+    "price": 108.51,
     "dow_status": "Neutral",
     "dow_signal": "結構收斂 / 區間震盪",
     "support": 97.47,
@@ -57,7 +57,7 @@
     "fib_618": 84.36
   },
   "uni": {
-    "price": 8.71,
+    "price": 8.698,
     "dow_status": "Bullish",
     "dow_signal": "多頭推進 (Higher High + Higher Low)",
     "support": 5.8,
@@ -71,17 +71,17 @@
     "fib_618": 4.976
   },
   "mstr": {
-    "price": 154.67,
+    "price": 154.89,
     "mnav_multiple": 1.22,
     "btc_holdings": 845050,
     "dow_status": "Bearish",
     "dow_signal": "空頭受阻 (Lower High + Lower Low)",
     "support": 126.88,
-    "resistance": 169.13,
+    "resistance": 168.57,
     "buy_target": 132.98,
     "sell_target": 167.85,
-    "wyckoff_phase": "PHASE D",
-    "wyckoff_hint": "【頂部突破】挑戰上方強壓區，關注多頭量能是否持續堆積。",
+    "wyckoff_phase": "PHASE B",
+    "wyckoff_hint": "🛑【逃頂賣出】需求不足 (No Demand)：近三日無量過高，追買意願極度低迷，提防假突破！",
     "fib_382": 132.98,
     "fib_500": 124.68,
     "fib_618": 116.38

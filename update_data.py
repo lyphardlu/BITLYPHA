@@ -42,8 +42,7 @@ def calculate_grid_targets(current_price, fib_levels, decimals=2):
     return {"buy_target": round(buy_target, decimals), "sell_target": round(sell_target, decimals)}
 
 def analyze_wyckoff_vsa(highs, lows, closes, volumes, fib_levels):
-    if len(closes) < 20 or len(volumes) < 20:
-        return "PHASE B", "資料不足，預設為區間震盪 (Phase B)。"
+    if len(closes) < 20 or len(volumes) < 20: return "PHASE B", "資料不足，預設為區間震盪 (Phase B)。"
     vol_sma = sum(volumes[-20:]) / 20
     recent_3d_vol = sum(volumes[-3:]) / 3
     curr_close, prev_close = closes[-1], (closes[-4] if len(closes) >= 4 else closes[0])
@@ -67,6 +66,19 @@ def analyze_wyckoff_vsa(highs, lows, closes, volumes, fib_levels):
         if curr_close < prev_close and is_low_vol: return "PHASE C", "【二次測試】(Secondary Test) 區間內回調且連續縮量，測試下方浮動籌碼。"
         elif curr_close > prev_close and is_high_vol: return "PHASE D", "【標記躍升】(Minor SOS) 區間內連續放量上攻，買盤積極換手。"
         else: return "PHASE B", "【區間震盪】(Building Cause) 於黃金區間內縮量換手，籌碼沉澱中。"
+
+# 🌟 新增：MSTR 專屬的 mNAV 溢價套利模型
+def analyze_mstr_mnav(mnav):
+    if mnav >= 2.0:
+        return "OVERVALUED", "🛑【溢價過高】mNAV 超過 2.0x！回顧 2025 牛市見頂特徵，散戶極度 FOMO 產生巨大泡沫，強烈建議獲利了結換倉 BTC！"
+    elif mnav >= 1.6:
+        return "PREMIUM", "⚠️【高位溢價】mNAV 達 1.6x 以上，處於歷史相對高位，建議停止追高，開始分批派發。"
+    elif mnav <= 0.95:
+        return "DISCOUNT", "🚀【極度低估】mNAV 罕見跌破 1.0x 產生折價！猶如 2026 熊市底部的恐慌錯殺，絕對的黃金抄底坑！"
+    elif mnav <= 1.15:
+        return "UNDERVALUED", "🔥【折價買進】mNAV 接近基準線 (< 1.15x)，溢價泡沫已洗淨，此時買入 MSTR 具備極高安全邊際！"
+    else:
+        return "FAIR VALUE", "⚖️【合理區間】mNAV 位於 1.15x - 1.6x 常態區間，隨 BTC 現貨連動，無極端情緒干擾。"
 
 def analyze_crypto_symbol(symbol_binance, coingecko_id, vs_currency="usd"):
     current_price = 0.0
@@ -121,7 +133,7 @@ def analyze_crypto_symbol(symbol_binance, coingecko_id, vs_currency="usd"):
         elif swing_highs[-1] <= swing_highs[-2] and swing_lows[-1] <= swing_lows[-2]: dow_status, dow_signal = "Bearish", "空頭受阻"
         else: dow_status, dow_signal = "Neutral", "結構收斂"
     else:
-        dow_status, dow_signal = ("Bullish", "趨勢延續中") if current_price >= recent_closes[0] else ("Neutral", "趨勢延續中")
+        dow_status, dow_signal = ("Bullish", "趨勢延續") if current_price >= recent_closes[0] else ("Neutral", "趨勢延續")
 
     return {
         "price": round(current_price, decimals), "dow_status": dow_status, "dow_signal": dow_signal,
@@ -131,14 +143,12 @@ def analyze_crypto_symbol(symbol_binance, coingecko_id, vs_currency="usd"):
         "fib_382": fib_levels["fib_382"], "fib_500": fib_levels["fib_500"], "fib_618": fib_levels["fib_618"]
     }
 
-# 🌟 強化 MSTR 處理模組：精準 OKX 抓取 + 假日量能過濾器
 def analyze_mstr(btc_price):
     current_price = 0.0
     highs, lows, closes, volumes = [], [], [], []
     headers = {"User-Agent": "Mozilla/5.0"}
     limit_days = 100
 
-    # 1. 優先嘗試 OKX 抓取 (支援 MSTR-USDT 或 MSTR-USD-SWAP)
     okx_inst_ids = ["MSTR-USDT", "MSTR-USDT-SWAP", "XMSTR-USDT"]
     for instId in okx_inst_ids:
         if current_price != 0.0: break
@@ -147,17 +157,14 @@ def analyze_mstr(btc_price):
             res = requests.get(okx_url, headers=headers, timeout=4).json()
             if res.get("code") == "0" and len(res.get("data", [])) > 0:
                 current_price = float(res["data"][0]["last"])
-                # 抓取對應 K 線
                 okx_kline = f"https://www.okx.com/api/v5/market/candles?instId={instId}&bar=1D&limit={limit_days}"
                 k_res = requests.get(okx_kline, headers=headers, timeout=4).json()
                 if k_res.get("code") == "0" and len(k_res.get("data", [])) > 0:
                     candles = k_res["data"]
                     candles.reverse()
                     closes, highs, lows, volumes = [float(k[4]) for k in candles], [float(k[2]) for k in candles], [float(k[3]) for k in candles], [float(k[5]) for k in candles]
-        except Exception:
-            continue
+        except Exception: continue
 
-    # 2. 如果 OKX 無資料，退回 Yahoo Finance 並啟動「假日量能修復」
     if current_price == 0.0 or not volumes:
         try:
             url = f"https://query1.finance.yahoo.com/v8/finance/chart/MSTR?interval=1d&range={limit_days}d"
@@ -167,18 +174,12 @@ def analyze_mstr(btc_price):
             if valid:
                 closes, highs, lows, volumes = [x[0] for x in valid], [x[1] for x in valid], [x[2] for x in valid], [x[3] for x in valid]
                 if current_price == 0.0: current_price = closes[-1]
-                
-                # 🌟 假日量能過濾器 (Weekend Volume Smoothing)
-                # 傳統美股假日的量為 0，會導致 VSA 誤判。我們把低於均量 15% 的日子視為假日，用 20 日均量填補它
                 if len(volumes) >= 20:
                     avg_vol = sum(volumes[-20:]) / 20
                     for i in range(len(volumes)):
-                        if volumes[i] < avg_vol * 0.15:
-                            volumes[i] = avg_vol
-        except Exception as e:
-            print(f"Yahoo fallback error: {e}")
+                        if volumes[i] < avg_vol * 0.15: volumes[i] = avg_vol
+        except Exception: pass
 
-    # 防呆機制
     if not closes or len(closes) < 20:
         if current_price == 0.0: current_price = 150.0
         closes = [current_price * (1 + 0.005 * (i - 15)) for i in range(30)]
@@ -186,8 +187,7 @@ def analyze_mstr(btc_price):
 
     fib_levels = calculate_fibonacci_levels(highs, lows, 2)
     swing_plan = calculate_grid_targets(current_price, fib_levels, 2)
-    wyckoff_phase, wyckoff_hint = analyze_wyckoff_vsa(highs, lows, closes, volumes, fib_levels)
-
+    
     recent_highs, recent_lows, recent_closes = highs[-45:], lows[-45:], closes[-45:]
     swing_highs, swing_lows, atr = find_fractal_pivots(recent_highs, recent_lows, recent_closes)
 
@@ -198,15 +198,19 @@ def analyze_mstr(btc_price):
     else:
         dow_status, dow_signal = ("Bullish", "趨勢延續") if current_price >= recent_closes[0] else ("Neutral", "趨勢延續")
 
+    # 計算 mNAV 倍數
     official_base_btc, official_base_stock, official_base_mnav = 81240.0, 153.92, 1.21
     stock_ratio = current_price / official_base_stock
     btc_ratio = btc_price / official_base_btc if btc_price > 0 else 1.0
     mnav_multiple = round(official_base_mnav * (stock_ratio / btc_ratio), 2)
 
+    # 🌟 捨棄 VSA，改用 mNAV 模型判定 MSTR 買賣點
+    mstr_phase, mstr_hint = analyze_mstr_mnav(mnav_multiple)
+
     return {
         "price": round(current_price, 2), "mnav_multiple": mnav_multiple,
         "dow_status": dow_status, "buy_target": swing_plan["buy_target"], "sell_target": swing_plan["sell_target"],
-        "wyckoff_phase": wyckoff_phase, "wyckoff_hint": wyckoff_hint,
+        "wyckoff_phase": mstr_phase, "wyckoff_hint": mstr_hint, # 傳入 mNAV 結果
         "fib_382": fib_levels["fib_382"], "fib_500": fib_levels["fib_500"], "fib_618": fib_levels["fib_618"]
     }
 
@@ -226,7 +230,7 @@ def main():
 
     with open("data.json", "w", encoding="utf-8") as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
-    print("Data.json updated successfully.")
+    print("Data.json updated successfully with MSTR mNAV Logic.")
 
 if __name__ == "__main__":
     main()

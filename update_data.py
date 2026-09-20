@@ -2,7 +2,7 @@ import json
 import datetime
 import requests
 
-# 1. 道氏結構碎形 (維持原樣，用來判斷趨勢 Higher High / Lower Low)
+# 1. 道氏結構碎形 (用於判斷近期趨勢與短期支撐/壓力)
 def find_fractal_pivots(highs, lows, closes):
     swing_highs = []
     swing_lows = []
@@ -20,7 +20,7 @@ def find_fractal_pivots(highs, lows, closes):
     atr = sum(tr_list) / len(tr_list) if tr_list else (highs[-1] * 0.035)
     return swing_highs, swing_lows, atr
 
-# 2. 100 天宏觀日線費氏大支撐
+# 2. 100 天宏觀日線費氏大支撐 (定錨用)
 def calculate_fibonacci_levels(highs, lows, decimals=2):
     if not highs or not lows:
         return {"macro_high": 0.0, "fib_382": 0.0, "fib_500": 0.0, "fib_618": 0.0}
@@ -58,72 +58,68 @@ def calculate_grid_targets(current_price, fib_levels, decimals=2):
         "sell_target": round(sell_target, decimals)
     }
 
-# 🌟 4. 全新核心：Wyckoff VSA (量價分析引擎)
+# 🌟 4. 終極 VSA 引擎：3日連續量能堆積 + 買賣警報
 def analyze_wyckoff_vsa(highs, lows, closes, volumes, fib_levels):
     if len(closes) < 20 or len(volumes) < 20:
         return "PHASE B", "資料不足，預設為區間震盪 (Phase B)。"
 
-    # 計算 20 日均量
+    # 基準：20 日宏觀均量
     vol_sma = sum(volumes[-20:]) / 20
-    curr_vol = volumes[-1]
+    # 近 3 日量能堆積與價格聚合 (3-Day Macro Candle)
+    recent_3d_vol = sum(volumes[-3:]) / 3
     
-    # 價格動能與收盤位置 (K線型態)
     curr_close = closes[-1]
-    curr_high = highs[-1]
-    curr_low = lows[-1]
-    prev_close = closes[-2]
+    curr_high = max(highs[-3:]) 
+    curr_low = min(lows[-3:])   
+    prev_close = closes[-4] if len(closes) >= 4 else closes[0]
     
     curr_spread = curr_high - curr_low if curr_high - curr_low > 0 else 0.001
-    close_pos = (curr_close - curr_low) / curr_spread # 0 到 1 之間，大於 0.5 代表收在上半部
+    close_pos = (curr_close - curr_low) / curr_spread 
 
-    # 量能判定
-    is_high_vol = curr_vol > vol_sma * 1.2
-    is_low_vol = curr_vol < vol_sma * 0.8
+    is_high_vol = recent_3d_vol > vol_sma * 1.2
+    is_low_vol = recent_3d_vol < vol_sma * 0.8
 
-    # 取得費氏位階
     fib_382 = fib_levels["fib_382"]
     fib_618 = fib_levels["fib_618"]
-
-    # --- VSA 量價邏輯判定 ---
     
-    # 底部區：價格逼近或跌破 618 支撐
+    # --- 底部區：深水區 618 支撐 ---
     if curr_low <= fib_618 * 1.015:
         if is_low_vol:
-            return "PHASE C", "【無供應測試】(No Supply) 測試 618 支撐但成交量萎縮，賣壓枯竭，醞釀反轉。"
+            return "PHASE C", "🔥【強力買進】無供應測試 (No Supply)：近三日量縮測底，賣壓枯竭，右側絕佳買點！"
         elif is_high_vol and close_pos >= 0.5:
-            return "PHASE C", "【彈簧洗盤】(Spring) 爆量下殺但收長下影線，主力於深水區強力承接停止量。"
+            return "PHASE C", "🔥【強力買進】彈簧洗盤 (Spring)：爆量下殺但收盤強勢拉回，主力深水區強力吃貨！"
         elif is_high_vol and close_pos < 0.5:
-            return "PHASE A", "【恐慌拋售】(Selling Climax) 放量跌破 618，賣壓沉重，底部尚未確認。"
+            return "PHASE A", "【恐慌拋售】(Selling Climax) 近三日放量跌破 618，賣壓沉重，觀望勿接飛刀。"
         else:
-            return "PHASE C", "【邊界測試】位於 618 深水區防守測試中。"
+            return "PHASE C", "【邊界測試】位於 618 深水區防守測試中，等待量能表態。"
 
-    # 頂部區：價格逼近或突破 382 阻力
+    # --- 頂部區：強壓區 382 阻力 ---
     elif curr_high >= fib_382 * 0.985:
         if curr_close > prev_close and is_high_vol and close_pos >= 0.5:
-            return "PHASE D", "【展現強勢】(SOS) 放量突破 382，需求強勁且收盤飽滿，啟動主升段。"
+            return "PHASE D", "【展現強勢】(SOS) 近三日放量突破 382 且收盤飽滿，需求強勁，主升段確認。"
         elif curr_close > prev_close and is_low_vol:
-            return "PHASE B", "【需求不足】(No Demand) 逼近壓力區但量能萎縮，追價意願低，提防假突破。"
+            return "PHASE B", "🛑【逃頂賣出】需求不足 (No Demand)：近三日無量過高，追買意願極度低迷，提防假突破！"
         elif is_high_vol and close_pos <= 0.4 and curr_close < prev_close:
-            return "PHASE B", "【上衝回落】(Upthrust) 挑戰前高爆量且留長上影線，遭遇主力派發供應。"
+            return "PHASE B", "🛑【逃頂賣出】上衝回落 (Upthrust)：近三日爆量挑戰前高卻留長上影線，主力趁機派發，高位危險！"
         else:
-            return "PHASE D", "【頂部突破】挑戰上方強壓區，關注量能是否延續。"
+            return "PHASE D", "【頂部突破】挑戰上方強壓區，關注多頭量能是否持續堆積。"
 
-    # 通道中段：價格在 382 ~ 618 之間
+    # --- 通道中段：382 ~ 618 之間 ---
     else:
         if curr_close < prev_close and is_low_vol:
-            return "PHASE C", "【二次測試】(Secondary Test) 區間內回調且縮量，主力測試下方浮動籌碼。"
+            return "PHASE C", "【二次測試】(Secondary Test) 區間內回調且連續縮量，測試下方浮動籌碼。"
         elif curr_close > prev_close and is_high_vol:
-            return "PHASE D", "【標記躍升】(Minor SOS) 區間內放量上攻，買盤積極換手。"
+            return "PHASE D", "【標記躍升】(Minor SOS) 區間內連續放量上攻，買盤積極換手。"
         else:
             return "PHASE B", "【區間震盪】(Building Cause) 於黃金區間內縮量換手，籌碼沉澱中。"
 
-
+# 5. 加密貨幣標的處理模組
 def analyze_crypto_symbol(symbol_binance, coingecko_id):
     current_price = 0.0
     highs, lows, closes, volumes = [], [], [], []
     limit_days = 100 
 
-    # 優先從 Binance 獲取精準 OHLCV (含成交量)
+    # 優先從 Binance 獲取精準 OHLCV
     try:
         bn_url = f"https://api.binance.com/api/v3/klines?symbol={symbol_binance}&interval=1d&limit={limit_days}"
         res = requests.get(bn_url, headers={"User-Agent": "Mozilla/5.0"}, timeout=8).json()
@@ -131,12 +127,12 @@ def analyze_crypto_symbol(symbol_binance, coingecko_id):
             closes = [float(k[4]) for k in res]
             highs = [float(k[2]) for k in res]
             lows = [float(k[3]) for k in res]
-            volumes = [float(k[5]) for k in res] # K線第6個參數是 Volume
+            volumes = [float(k[5]) for k in res]
             current_price = closes[-1]
     except Exception as e:
         print(f"Binance error {symbol_binance}: {e}")
 
-    # Fallback 到 CoinGecko
+    # Fallback: CoinGecko
     if current_price == 0.0:
         try:
             cg_url = f"https://api.coingecko.com/api/v3/coins/{coingecko_id}/market_chart?vs_currency=usd&days={limit_days}&interval=daily"
@@ -153,7 +149,7 @@ def analyze_crypto_symbol(symbol_binance, coingecko_id):
         except Exception as e:
             print(f"CoinGecko error {coingecko_id}: {e}")
 
-    # Fallback 本地
+    # Fallback: 本地舊資料防護
     if current_price == 0.0:
         try:
             with open("data.json", "r", encoding="utf-8") as f:
@@ -167,14 +163,11 @@ def analyze_crypto_symbol(symbol_binance, coingecko_id):
 
     decimals = 3 if current_price < 50 else 2
     
-    # 費氏與網格
+    # 執行策略引擎
     fib_levels = calculate_fibonacci_levels(highs, lows, decimals)
     swing_plan = calculate_grid_targets(current_price, fib_levels, decimals)
-
-    # 威科夫 VSA 量價引擎
     wyckoff_phase, wyckoff_hint = analyze_wyckoff_vsa(highs, lows, closes, volumes, fib_levels)
 
-    # 道氏趨勢判斷 (近期 45 天碎形)
     recent_highs, recent_lows, recent_closes = highs[-45:], lows[-45:], closes[-45:]
     swing_highs, swing_lows, atr = find_fractal_pivots(recent_highs, recent_lows, recent_closes)
     overhead = [h for h in swing_highs if h > current_price]
@@ -207,12 +200,14 @@ def analyze_crypto_symbol(symbol_binance, coingecko_id):
         "fib_618": fib_levels["fib_618"]
     }
 
+# 6. MSTR 股票處理模組
 def analyze_mstr(btc_price):
     current_price = 0.0
     highs, lows, closes, volumes = [], [], [], []
     headers = {"User-Agent": "Mozilla/5.0"}
     limit_days = 100
 
+    # 優先從 OKX 獲取 Tokenized MSTR 報價
     try:
         okx_url = "https://www.okx.com/api/v5/market/ticker?instId=XMSTR-USDT"
         res = requests.get(okx_url, headers=headers, timeout=6).json()
@@ -235,6 +230,7 @@ def analyze_mstr(btc_price):
     except Exception as e:
         print(f"OKX XMSTR klines error: {e}")
 
+    # Fallback: Yahoo Finance
     if current_price == 0.0 or not volumes:
         try:
             url = f"https://query1.finance.yahoo.com/v8/finance/chart/MSTR?interval=1d&range={limit_days}d"
@@ -247,6 +243,7 @@ def analyze_mstr(btc_price):
         except Exception as e:
             print(f"Yahoo fallback error: {e}")
 
+    # 本地防護
     if not closes or len(closes) < 20:
         if current_price == 0.0: current_price = 150.0
         closes = [current_price * (1 + 0.005 * (i - 15)) for i in range(30)]
@@ -273,6 +270,7 @@ def analyze_mstr(btc_price):
     else:
         dow_status, dow_signal = ("Bullish", "趨勢延續中") if current_price >= recent_closes[0] else ("Neutral", "趨勢延續中")
 
+    # MNAV 溢價計算 (靜態基準值)
     official_base_btc, official_base_stock, official_base_mnav = 81240.0, 153.92, 1.21
     stock_ratio = current_price / official_base_stock
     btc_ratio = btc_price / official_base_btc if btc_price > 0 else 1.0
@@ -295,6 +293,7 @@ def analyze_mstr(btc_price):
         "fib_618": fib_levels["fib_618"]
     }
 
+# 7. 主程式進入點
 def main():
     btc_data = analyze_crypto_symbol("BTCUSDT", "bitcoin")
     eth_data = analyze_crypto_symbol("ETHUSDT", "ethereum")
@@ -311,7 +310,7 @@ def main():
 
     with open("data.json", "w", encoding="utf-8") as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
-    print("Data.json updated successfully with VSA Wyckoff.")
+    print("Data.json updated successfully with VSA Buy/Sell Triggers.")
 
 if __name__ == "__main__":
     main()

@@ -46,7 +46,6 @@
                 <div class="bg-emerald-500/20 text-emerald-400 p-2 rounded-lg font-bold text-xl leading-none">α</div>
                 <h1 class="text-2xl font-bold tracking-wider">CryptoAlpha <span class="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-1 rounded ml-2 align-middle animate-pulse tracking-widest font-mono">● LIVE TICKER WS</span></h1>
             </div>
-            <!-- 🌟 副標題：移除字距加寬，保持俐落 -->
             <p class="text-[#64748B] text-[10px] font-mono uppercase mt-2.5 font-semibold">
                 System Architect & Quant Trader: <span class="text-[#94A3B8] font-bold">Lyphard</span> <span class="text-[#2A2E39] mx-1.5">|</span> Multi-Asset Real-time Terminal
             </p>
@@ -133,9 +132,10 @@
         <div class="glass-panel rounded-xl p-5">
             <div class="flex justify-between items-start mb-2">
                 <h2 class="text-cyan-400 font-bold text-xs tracking-wide">MSTR / USDT</h2>
-                <div class="flex items-center gap-1.5">
+                <div class="flex flex-col items-end gap-1.5">
                     <span id="mstr-trend" class="text-[10px] px-1.5 py-0.5 rounded font-bold uppercase shrink-0">-</span>
-                    <span id="mstr-mnav-badge" class="text-[10px] px-1.5 py-0.5 rounded font-bold uppercase shrink-0 bg-cyan-900/50 text-cyan-400 tracking-wider">mNAV: <span id="mstr-mnav" class="font-mono">0.00</span>x</span>
+                    <!-- 🌟 修正為 mNAV -->
+                    <span id="mstr-mnav-badge" class="text-[10px] px-1.5 py-0.5 rounded font-bold shrink-0 bg-cyan-900/50 text-cyan-400 tracking-wider">mNAV: <span id="mstr-mnav" class="font-mono">0.00</span>x</span>
                 </div>
             </div>
             <div id="mstr-price" class="text-[26px] font-bold text-cyan-400 mb-4 font-mono price-base">加載中...</div>
@@ -158,12 +158,10 @@
                     <h3 class="text-sm font-bold text-slate-300 flex items-center gap-2">
                         <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span> 深度量化盤口診斷
                     </h3>
-                    <!-- 🌟 標題文字改回 [威科夫階段] 道氏趨勢 -->
                     <span class="text-[10px] text-slate-500">[威科夫階段] 道氏趨勢</span>
                 </div>
                 
                 <div class="space-y-5">
-                    <!-- BTC -->
                     <div>
                         <div class="flex justify-between items-center mb-1.5">
                             <span class="font-bold text-sm text-emerald-400">BTC · 比特幣</span>
@@ -175,7 +173,6 @@
                         <p id="btc-wyckoff-hint" class="text-[11.5px] text-slate-300 leading-relaxed">等待 Python 運算...</p>
                     </div>
                     
-                    <!-- ETH -->
                     <div>
                         <div class="flex justify-between items-center mb-1.5">
                             <span class="font-bold text-sm text-blue-400">ETH · 以太坊</span>
@@ -187,7 +184,6 @@
                         <p id="eth-wyckoff-hint" class="text-[11.5px] text-slate-300 leading-relaxed">等待 Python 運算...</p>
                     </div>
 
-                    <!-- ETH/BTC -->
                     <div>
                         <div class="flex justify-between items-center mb-1.5">
                             <span class="font-bold text-sm text-amber-500">ETH/BTC 匯率強度</span>
@@ -199,7 +195,6 @@
                         <p id="ethbtc-wyckoff-hint" class="text-[11.5px] text-slate-300 leading-relaxed">等待 Python 運算...</p>
                     </div>
 
-                    <!-- SOL -->
                     <div>
                         <div class="flex justify-between items-center mb-1.5">
                             <span class="font-bold text-sm text-purple-400">SOL · Solana</span>
@@ -211,7 +206,6 @@
                         <p id="sol-wyckoff-hint" class="text-[11.5px] text-slate-300 leading-relaxed">等待 Python 運算...</p>
                     </div>
 
-                    <!-- UNI -->
                     <div>
                         <div class="flex justify-between items-center mb-1.5">
                             <span class="font-bold text-sm text-pink-400">UNI · Uniswap</span>
@@ -223,10 +217,10 @@
                         <p id="uni-wyckoff-hint" class="text-[11.5px] text-slate-300 leading-relaxed">等待 Python 運算...</p>
                     </div>
 
-                    <!-- MSTR -->
                     <div>
                         <div class="flex justify-between items-center mb-1.5">
-                            <span class="font-bold text-sm text-cyan-400">MSTR · 微策略 <span class="text-[10px] text-cyan-700 font-normal ml-1 border border-cyan-800/30 px-1 rounded">mNAV套利模型</span></span>
+                            <!-- 🌟 修正為 mNAV 模型 -->
+                            <span class="font-bold text-sm text-cyan-400">MSTR · 微策略 <span class="text-[9px] text-cyan-700 font-normal ml-1 border border-cyan-800/30 px-1 rounded">mNAV 模型</span></span>
                             <div class="flex items-center gap-2">
                                 <span id="mstr-wyckoff-phase" class="text-[10px] font-bold px-1.5 py-0.5 rounded">-</span>
                                 <span id="mstr-dow-mini" class="text-xs text-slate-300 font-mono">-</span>
@@ -245,7 +239,6 @@
                 </div>
                 
                 <div class="grid grid-cols-2 gap-x-8 gap-y-6">
-                    <!-- BTC Fib -->
                     <div>
                         <div class="text-xs font-bold text-emerald-400 mb-2">BTC 檔位</div>
                         <ul class="text-xs font-mono space-y-1.5">
@@ -254,7 +247,6 @@
                             <li class="flex justify-between"><span class="text-slate-500">618:</span> <span id="btc-fib-618" class="text-emerald-400 font-semibold">-</span></li>
                         </ul>
                     </div>
-                    <!-- ETH Fib -->
                     <div>
                         <div class="text-xs font-bold text-blue-400 mb-2">ETH 檔位</div>
                         <ul class="text-xs font-mono space-y-1.5">
@@ -263,7 +255,6 @@
                             <li class="flex justify-between"><span class="text-slate-500">618:</span> <span id="eth-fib-618" class="text-blue-400 font-semibold">-</span></li>
                         </ul>
                     </div>
-                    <!-- ETH/BTC Fib -->
                     <div>
                         <div class="text-xs font-bold text-amber-500 mb-2">ETH/BTC 檔位</div>
                         <ul class="text-xs font-mono space-y-1.5">
@@ -272,7 +263,6 @@
                             <li class="flex justify-between"><span class="text-slate-500">618:</span> <span id="ethbtc-fib-618" class="text-amber-500 font-semibold">-</span></li>
                         </ul>
                     </div>
-                    <!-- SOL Fib -->
                     <div>
                         <div class="text-xs font-bold text-purple-400 mb-2">SOL 檔位</div>
                         <ul class="text-xs font-mono space-y-1.5">
@@ -281,7 +271,6 @@
                             <li class="flex justify-between"><span class="text-slate-500">618:</span> <span id="sol-fib-618" class="text-purple-400 font-semibold">-</span></li>
                         </ul>
                     </div>
-                    <!-- UNI Fib -->
                     <div>
                         <div class="text-xs font-bold text-pink-400 mb-2">UNI 檔位</div>
                         <ul class="text-xs font-mono space-y-1.5">
@@ -290,7 +279,6 @@
                             <li class="flex justify-between"><span class="text-slate-500">618:</span> <span id="uni-fib-618" class="text-pink-400 font-semibold">-</span></li>
                         </ul>
                     </div>
-                    <!-- MSTR Fib -->
                     <div>
                         <div class="text-xs font-bold text-cyan-400 mb-2">MSTR 檔位</div>
                         <ul class="text-xs font-mono space-y-1.5">
@@ -499,7 +487,7 @@
                 document.getElementById('mstr-mnav').innerText = data.mnav_multiple;
                 const mnavBadge = document.getElementById('mstr-mnav-badge');
                 if (mnavBadge) {
-                    mnavBadge.className = "text-[10px] px-1.5 py-0.5 rounded font-bold uppercase shrink-0";
+                    mnavBadge.className = "text-[10px] px-1.5 py-0.5 rounded font-bold shrink-0";
                     const phase = data.wyckoff_phase;
                     if (phase === "OVERVALUED" || phase === "PREMIUM") {
                         mnavBadge.classList.add("bg-rose-900/50", "text-rose-400");

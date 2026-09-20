@@ -34,7 +34,6 @@
         <div class="flex items-center gap-4 text-sm">
             <div class="text-right">
                 <div class="text-slate-500">LAST SYNC (UTC)</div>
-                <!-- 🌟 時間顏色改回科技綠 -->
                 <div id="last-sync" class="text-emerald-400 font-mono text-base">-</div>
             </div>
             <button onclick="fetchData()" class="bg-[#1A202C] hover:bg-[#2D3748] border border-[#2A2E39] text-slate-300 px-4 py-2 rounded transition-colors flex items-center gap-2">
@@ -128,7 +127,7 @@
     </div>
 
     <!-- 底部主內容區 -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1">
         
         <!-- 左側：量化診斷與費氏支撐 -->
         <div class="lg:col-span-4 flex flex-col gap-6">
@@ -139,7 +138,7 @@
                     <h3 class="text-sm font-bold text-slate-300 flex items-center gap-2">
                         <span class="w-2 h-2 bg-emerald-400 rounded-full"></span> 多標的量化盤口診斷
                     </h3>
-                    <span class="text-[10px] text-slate-500">[威科夫階段] 趨勢</span>
+                    <span class="text-[10px] text-slate-500">[狀態評估] 趨勢</span>
                 </div>
                 
                 <div class="space-y-5">
@@ -203,10 +202,10 @@
                         <p id="uni-wyckoff-hint" class="text-[11.5px] text-slate-300 leading-relaxed"></p>
                     </div>
 
-                    <!-- MSTR -->
+                    <!-- MSTR (標題加上 mNAV 模型提示) -->
                     <div>
                         <div class="flex justify-between items-center mb-1.5">
-                            <span class="font-bold text-sm text-cyan-400">MSTR · 微策略</span>
+                            <span class="font-bold text-sm text-cyan-400">MSTR · 微策略 <span class="text-[10px] text-cyan-700 font-normal ml-1 border border-cyan-800/30 px-1 rounded">mNAV套利模型</span></span>
                             <div class="flex items-center gap-2">
                                 <span id="mstr-wyckoff-phase" class="text-[10px] font-bold px-1.5 py-0.5 rounded">-</span>
                                 <span id="mstr-dow-mini" class="text-xs text-slate-300 font-mono">-</span>
@@ -310,9 +309,9 @@
 
     </div>
 
-    <!-- 🌟 原汁原味的專屬 Footer 簽名 (拉高位置) 🌟 -->
+    <!-- 🌟 原汁原味的專屬 Footer 簽名 (完美高度) 🌟 -->
     <footer class="mt-6 mb-4 text-center">
-        <p class="text-xs text-slate-600 font-mono tracking-wide">
+        <p class="text-[11.5px] text-[#4A5568] font-mono tracking-wide">
             CryptoAlpha // Designed & Architected by Lyphard · Multi-Asset Swing Execution System
         </p>
     </footer>
@@ -368,12 +367,21 @@
             return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(num);
         };
 
+        // 🌟 強化字體顏色解析：支援 mNAV 專屬字眼
         function formatWyckoffHint(hintText) {
             if (!hintText) return "";
-            if (hintText.includes("🔥【強力買進】")) {
+            if (hintText.includes("🔥【強力買進】") || hintText.includes("🔥【折價買進】")) {
                 return `<span class="text-orange-400 font-bold">${hintText}</span>`;
-            } else if (hintText.includes("🛑【逃頂賣出】")) {
-                return `<span class="text-rose-400 font-bold">${hintText}</span>`;
+            } else if (hintText.includes("🚀【極度低估】")) {
+                return `<span class="text-emerald-400 font-bold">${hintText}</span>`;
+            } else if (hintText.includes("🛑【逃頂賣出】") || hintText.includes("🛑【溢價過高】")) {
+                return `<span class="text-rose-500 font-bold">${hintText}</span>`;
+            } else if (hintText.includes("⚠️【高位溢價】") || hintText.includes("【恐慌拋售】")) {
+                return `<span class="text-rose-300">${hintText}</span>`;
+            } else if (hintText.includes("⚖️【合理區間】")) {
+                return `<span class="text-cyan-300">${hintText}</span>`;
+            } else if (hintText.includes("【無供應測試】") || hintText.includes("【彈簧洗盤】")) {
+                return `<span class="text-orange-300">${hintText}</span>`;
             }
             return `<span class="text-slate-300">${hintText}</span>`;
         }
@@ -391,14 +399,25 @@
             }
         };
 
+        // 🌟 支援 MSTR mNAV 的自定義標籤底色
         const formatPhaseBadge = (phase, elementId) => {
             const el = document.getElementById(elementId);
             el.innerText = phase;
             el.className = "text-[10px] font-bold px-1.5 py-0.5 rounded text-slate-800"; 
+            
+            // VSA Phases
             if (phase === "PHASE A") el.classList.add("bg-rose-400");
             else if (phase === "PHASE B") el.classList.add("bg-slate-400");
             else if (phase === "PHASE C") el.classList.add("bg-amber-500");
             else if (phase === "PHASE D" || phase === "PHASE E") el.classList.add("bg-emerald-500");
+            
+            // mNAV Phases
+            else if (phase === "OVERVALUED") el.classList.add("bg-rose-600", "text-white", "animate-pulse");
+            else if (phase === "PREMIUM") el.classList.add("bg-rose-400");
+            else if (phase === "FAIR VALUE") el.classList.add("bg-slate-500", "text-white");
+            else if (phase === "UNDERVALUED") el.classList.add("bg-emerald-500");
+            else if (phase === "DISCOUNT") el.classList.add("bg-emerald-400", "animate-pulse");
+            
             else el.classList.add("bg-slate-400");
         };
 

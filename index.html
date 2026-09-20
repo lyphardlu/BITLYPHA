@@ -9,11 +9,9 @@
     <style>
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            /* 🌟 還原極致深空黑背景 */
             background-color: #0A0E17;
             color: #f8fafc;
         }
-        /* 🌟 還原專屬的卡片底色與邊框 */
         .glass-panel {
             background-color: #131722;
             border: 1px solid #2A2E39;
@@ -36,7 +34,8 @@
         <div class="flex items-center gap-4 text-sm">
             <div class="text-right">
                 <div class="text-slate-500">LAST SYNC (UTC)</div>
-                <div id="last-sync" class="text-slate-300 font-mono text-base">-</div>
+                <!-- 🌟 時間顏色改回科技綠 -->
+                <div id="last-sync" class="text-emerald-400 font-mono text-base">-</div>
             </div>
             <button onclick="fetchData()" class="bg-[#1A202C] hover:bg-[#2D3748] border border-[#2A2E39] text-slate-300 px-4 py-2 rounded transition-colors flex items-center gap-2">
                 <span>↻ 重新整理</span>
@@ -44,7 +43,7 @@
         </div>
     </header>
 
-    <!-- 🌟 6 宮格頂部數據卡片 (還原乾淨排版與色彩) -->
+    <!-- 🌟 6 宮格頂部數據卡片 -->
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
         <!-- BTC -->
         <div class="glass-panel rounded-xl p-5">
@@ -111,7 +110,7 @@
             </div>
         </div>
 
-        <!-- MSTR (還原 mNAV 排列位置) -->
+        <!-- MSTR -->
         <div class="glass-panel rounded-xl p-5">
             <div class="flex justify-between items-start mb-2">
                 <h2 class="text-cyan-400 font-bold text-xs tracking-wide">MSTR / USDT</h2>
@@ -129,7 +128,7 @@
     </div>
 
     <!-- 底部主內容區 -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
         <!-- 左側：量化診斷與費氏支撐 -->
         <div class="lg:col-span-4 flex flex-col gap-6">
@@ -218,7 +217,7 @@
                 </div>
             </div>
 
-            <!-- 🌟 1D FIB LEVELS (還原數字顏色與排版) -->
+            <!-- 1D FIB LEVELS -->
             <div class="glass-panel rounded-xl p-5">
                 <div class="flex justify-between items-center mb-5 border-b border-[#2A2E39] pb-2">
                     <h3 class="text-sm font-bold text-slate-300">日線費氏大支撐 (1D FIB LEVELS)</h3>
@@ -284,7 +283,7 @@
             </div>
         </div>
 
-        <!-- 🌟 右側：互動式 Tabs TradingView 走勢圖 (還原極簡文字標籤) -->
+        <!-- 🌟 右側：互動式 Tabs TradingView 走勢圖 -->
         <div class="lg:col-span-8 h-full">
             <div class="glass-panel rounded-xl p-5 h-full min-h-[500px] flex flex-col">
                 <div class="flex flex-col xl:flex-row xl:justify-between items-start xl:items-center mb-4 border-b border-[#2A2E39] pb-3 gap-3">
@@ -293,7 +292,6 @@
                         <span id="chart-title">BTC/USDT 即時走勢</span>
                     </h3>
                     
-                    <!-- 原版極簡 Tabs 切換按鈕 -->
                     <div class="flex gap-2 text-xs font-bold">
                         <button onclick="changeChart('BINANCE:BTCUSDT', this, 'btc')" class="tv-tab active text-emerald-400 bg-emerald-900/20 px-2 py-1 rounded transition">BTC</button>
                         <button onclick="changeChart('BINANCE:ETHUSDT', this, 'eth')" class="tv-tab text-slate-500 hover:text-slate-300 px-2 py-1 rounded transition">ETH</button>
@@ -304,7 +302,6 @@
                     </div>
                 </div>
                 
-                <!-- TradingView Widget Container -->
                 <div id="tv_container" class="tradingview-widget-container flex-1 rounded overflow-hidden">
                     <div id="tradingview_chart" class="h-full"></div>
                 </div>
@@ -313,8 +310,8 @@
 
     </div>
 
-    <!-- 🌟 原汁原味的專屬 Footer 簽名 🌟 -->
-    <footer class="mt-8 pt-6 pb-2 text-center">
+    <!-- 🌟 原汁原味的專屬 Footer 簽名 (拉高位置) 🌟 -->
+    <footer class="mt-6 mb-4 text-center">
         <p class="text-xs text-slate-600 font-mono tracking-wide">
             CryptoAlpha // Designed & Architected by Lyphard · Multi-Asset Swing Execution System
         </p>
@@ -334,7 +331,7 @@
                 "style": "1",
                 "locale": "zh_TW",
                 "enable_publishing": false,
-                "backgroundColor": "#131722", /* 配合極致黑底色 */
+                "backgroundColor": "#131722",
                 "gridColor": "#1e222d",
                 "hide_top_toolbar": false,
                 "hide_legend": false,
@@ -343,10 +340,8 @@
             });
         }
 
-        // 初始化圖表
         loadTradingView("BINANCE:BTCUSDT");
 
-        // 🌟 動態 Tab 切換與顏色配置
         const tabConfigs = {
             btc: { colorClass: 'text-emerald-400 bg-emerald-900/20', dotClass: 'bg-emerald-400', title: 'BTC/USDT 即時走勢' },
             eth: { colorClass: 'text-blue-400 bg-blue-900/20', dotClass: 'bg-blue-400', title: 'ETH/USDT 即時走勢' },
@@ -357,21 +352,15 @@
         };
 
         function changeChart(symbol, btnElement, coinKey) {
-            // 重置所有 Tabs 為灰色
             document.querySelectorAll('.tv-tab').forEach(btn => {
                 btn.className = "tv-tab text-slate-500 hover:text-slate-300 px-2 py-1 rounded transition";
             });
-            // 套用專屬顏色到點擊的 Tab
             btnElement.className = `tv-tab active ${tabConfigs[coinKey].colorClass} px-2 py-1 rounded transition`;
-            
-            // 更新標題與燈號顏色
             document.getElementById('chart-title').innerText = tabConfigs[coinKey].title;
             document.getElementById('chart-dot').className = `w-2 h-2 rounded-full ${tabConfigs[coinKey].dotClass}`;
-            
             loadTradingView(symbol);
         }
 
-        // 數值格式化
         const formatValue = (num, isBtcBase = false) => {
             if (isBtcBase) {
                 return "₿ " + Number(num).toFixed(5);
@@ -379,7 +368,6 @@
             return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(num);
         };
 
-        // 🌟 VSA 文字還原為純粹乾淨的樣式 (不帶笨重底框)
         function formatWyckoffHint(hintText) {
             if (!hintText) return "";
             if (hintText.includes("🔥【強力買進】")) {
@@ -387,7 +375,6 @@
             } else if (hintText.includes("🛑【逃頂賣出】")) {
                 return `<span class="text-rose-400 font-bold">${hintText}</span>`;
             }
-            // 預設為純淨白灰字
             return `<span class="text-slate-300">${hintText}</span>`;
         }
 
@@ -415,7 +402,6 @@
             else el.classList.add("bg-slate-400");
         };
 
-        // JSON 資料綁定
         const bindData = (coin, data) => {
             if (!data) return;
             const isBtcBase = coin === 'ethbtc';
@@ -455,15 +441,12 @@
                 bindData('mstr', data.mstr);
 
             } catch (error) {
-                console.error("載入資料失敗:", error);
-                document.getElementById('last-sync').innerText = "載入失敗";
-                document.getElementById('last-sync').classList.add("text-rose-500");
+                console.error("載入資料:", error);
             }
         }
 
         fetchData();
         setInterval(fetchData, 30000);
-
     </script>
 </body>
 </html>

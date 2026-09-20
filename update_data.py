@@ -282,7 +282,8 @@ def analyze_mstr(btc_price):
         "dow_status": dow_status,
         "dow_signal": dow_signal,
         "support": round(support, 2),
-        "resistance": round(resistance, resistance),
+        # 修正的這行在這裡：
+        "resistance": round(resistance, 2), 
         "buy_target": swing_plan["buy_target"],
         "sell_target": swing_plan["sell_target"],
         "wyckoff_phase": wyckoff_phase,

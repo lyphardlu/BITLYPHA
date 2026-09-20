@@ -1,490 +1,359 @@
 <!DOCTYPE html>
-<html lang="zh-TW" class="dark">
+<html lang="zh-TW">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CryptoAlpha // Multi-Asset Quantitative Terminal</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    body { font-family: 'Inter', sans-serif; }
-    .font-mono { font-family: 'JetBrains Mono', monospace; }
-    .font-display { font-family: 'Chakra Petch', sans-serif; }
-    
-    @keyframes flashGreen {
-      0% { color: #34d399; text-shadow: 0 0 10px rgba(52, 211, 153, 0.8); }
-      100% { color: inherit; text-shadow: none; }
-    }
-    @keyframes flashRed {
-      0% { color: #f43f5e; text-shadow: 0 0 10px rgba(244, 63, 94, 0.8); }
-      100% { color: inherit; text-shadow: none; }
-    }
-    .price-up { animation: flashGreen 0.6s ease-out; }
-    .price-down { animation: flashRed 0.6s ease-out; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CryptoAlpha | Macro-Swing Terminal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #0f172a; /* Tailwind slate-900 */
+            color: #f8fafc; /* Tailwind slate-50 */
+        }
+        /* 自訂捲軸隱藏 */
+        ::-webkit-scrollbar { display: none; }
+    </style>
 </head>
-<body class="bg-[#080B11] text-[#E2E8F0] min-h-screen p-4 md:p-8">
-  <div class="max-w-7xl mx-auto space-y-5">
-    
-    <!-- Header -->
-    <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-[#1E2638] pb-4 gap-4">
-      <div class="flex items-center space-x-3">
-        <div class="h-10 w-10 rounded bg-emerald-500/10 border border-emerald-500/40 flex items-center justify-center font-display font-bold text-emerald-400 text-xl">
-          α
-        </div>
+<body class="min-h-screen p-4 md:p-6">
+
+    <!-- 頂部 Header -->
+    <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 border-b border-slate-700 pb-4 gap-4">
         <div>
-          <div class="flex items-center space-x-2">
-            <h1 class="text-xl font-bold tracking-tight text-white font-display">CryptoAlpha</h1>
-            <span class="text-[10px] px-1.5 py-0.5 rounded bg-[#161F30] text-emerald-400 border border-emerald-500/20 font-mono">SWING PRO</span>
-            <span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono flex items-center space-x-1">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
-              <span id="ws-status">LIVE TICKER</span>
-            </span>
-          </div>
-          <p class="text-xs text-[#8A99AD] mt-0.5 font-mono">System Architect & Quantitative Trader: <span class="text-slate-300">Lyphard</span> · Multi-Asset Real-time Terminal</p>
+            <div class="flex items-center gap-3">
+                <div class="bg-emerald-500/20 text-emerald-400 p-2 rounded-lg font-bold text-xl leading-none">α</div>
+                <h1 class="text-2xl font-bold tracking-wider">CryptoAlpha <span class="text-xs bg-slate-700 text-slate-300 px-2 py-1 rounded ml-2 align-middle">SWING PRO</span> <span class="text-xs bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-1 rounded ml-2 align-middle animate-pulse">● LIVE TICKER</span></h1>
+            </div>
+            <p class="text-slate-400 text-sm mt-2">System Architect & Quantitative Trader: <span class="text-slate-300 font-semibold">Lyphard</span> · Multi-Asset Real-time Terminal</p>
         </div>
-      </div>
-      <div class="flex items-center space-x-3">
-        <div class="text-right font-mono text-[11px] text-[#64748B]">
-          <div>LAST SYNC (UTC)</div>
-          <div id="update-time" class="text-emerald-400 font-semibold mt-0.5">CONNECTING...</div>
+        <div class="flex items-center gap-4 text-sm">
+            <div class="text-right">
+                <div class="text-slate-500">LAST SYNC (UTC)</div>
+                <div id="last-sync" class="text-slate-300 font-mono text-base">-</div>
+            </div>
+            <button onclick="fetchData()" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-300 px-4 py-2 rounded transition-colors flex items-center gap-2">
+                <span>↻ 重新整理</span>
+            </button>
         </div>
-        <button onclick="location.reload()" class="text-xs font-mono px-3 py-1.5 rounded bg-[#131A29] hover:bg-[#1E293B] border border-[#2A364F] text-slate-300 transition">
-          ↻ 重新整理
-        </button>
-      </div>
     </header>
 
-    <!-- 頂部四大資產卡片 -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
-      
-      <!-- BTC 卡片 -->
-      <div class="bg-[#0F1420] border border-[#1C2436] p-4 rounded-lg flex flex-col justify-between">
-        <div>
-          <div class="flex justify-between items-center text-xs text-[#8A99AD] font-mono">
-            <span class="text-emerald-400 font-bold">BTC / USDT</span>
-            <span id="btc-dow-badge" class="text-[10px] px-1.5 py-0.5 rounded font-mono cursor-help">--</span>
-          </div>
-          <div id="btc-price" class="text-2xl font-bold font-mono text-emerald-400 mt-1.5 transition-all">--</div>
-        </div>
-        <div class="mt-3 pt-2.5 border-t border-[#182030] font-mono text-[11px] space-y-1">
-          <div class="flex justify-between text-slate-400">
-            <span>波段買入 (Buy):</span>
-            <span id="btc-buy" class="text-emerald-300 font-bold">--</span>
-          </div>
-          <div class="flex justify-between text-slate-400">
-            <span>目標止盈 (Sell):</span>
-            <span id="btc-sell" class="text-rose-300 font-bold">--</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- ETH 卡片 -->
-      <div class="bg-[#0F1420] border border-[#1C2436] p-4 rounded-lg flex flex-col justify-between">
-        <div>
-          <div class="flex justify-between items-center text-xs text-[#8A99AD] font-mono">
-            <span class="text-indigo-400 font-bold">ETH / USDT</span>
-            <span id="eth-dow-badge" class="text-[10px] px-1.5 py-0.5 rounded font-mono cursor-help">--</span>
-          </div>
-          <div id="eth-price" class="text-2xl font-bold font-mono text-indigo-400 mt-1.5 transition-all">--</div>
-        </div>
-        <div class="mt-3 pt-2.5 border-t border-[#182030] font-mono text-[11px] space-y-1">
-          <div class="flex justify-between text-slate-400">
-            <span>波段買入 (Buy):</span>
-            <span id="eth-buy" class="text-emerald-300 font-bold">--</span>
-          </div>
-          <div class="flex justify-between text-slate-400">
-            <span>目標止盈 (Sell):</span>
-            <span id="eth-sell" class="text-rose-300 font-bold">--</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- UNI 卡片 -->
-      <div class="bg-[#0F1420] border border-[#1C2436] p-4 rounded-lg flex flex-col justify-between">
-        <div>
-          <div class="flex justify-between items-center text-xs text-[#8A99AD] font-mono">
-            <span class="text-pink-400 font-bold">UNI / USDT</span>
-            <span id="uni-dow-badge" class="text-[10px] px-1.5 py-0.5 rounded font-mono cursor-help">--</span>
-          </div>
-          <div id="uni-price" class="text-2xl font-bold font-mono text-pink-400 mt-1.5 transition-all">--</div>
-        </div>
-        <div class="mt-3 pt-2.5 border-t border-[#182030] font-mono text-[11px] space-y-1">
-          <div class="flex justify-between text-slate-400">
-            <span>波段買入 (Buy):</span>
-            <span id="uni-buy" class="text-emerald-300 font-bold">--</span>
-          </div>
-          <div class="flex justify-between text-slate-400">
-            <span>目標止盈 (Sell):</span>
-            <span id="uni-sell" class="text-rose-300 font-bold">--</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- MSTR 卡片 -->
-      <div class="bg-[#0F1420] border border-[#1C2436] p-4 rounded-lg flex flex-col justify-between">
-        <div>
-          <div class="flex justify-between items-center text-xs text-[#8A99AD] font-mono">
-            <span class="text-cyan-400 font-bold">MSTR / USDT</span>
-            <div class="flex items-center space-x-1">
-              <span id="mstr-dow-badge" class="text-[10px] px-1.5 py-0.5 rounded font-mono cursor-help">--</span>
-              <span id="mnav-badge" class="text-[10px] px-1.5 py-0.5 rounded font-mono bg-[#162235] text-cyan-300 border border-cyan-500/30">mNAV: --</span>
+    <!-- 4 宮格頂部數據卡片 -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <!-- BTC Card -->
+        <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-5 shadow-lg">
+            <div class="flex justify-between items-start mb-2">
+                <h2 class="text-slate-400 font-semibold text-sm">BTC / USDT</h2>
+                <span id="btc-trend" class="text-xs px-2 py-1 rounded font-bold uppercase">-</span>
             </div>
-          </div>
-          <div id="mstr-price" class="text-2xl font-bold font-mono text-cyan-400 mt-1.5 transition-all">--</div>
+            <div id="btc-price" class="text-3xl font-bold text-emerald-400 mb-4 font-mono">$0.00</div>
+            <div class="grid grid-cols-2 gap-4 text-xs font-mono">
+                <div><span class="text-slate-500">波段買入 (Buy):</span><br><span id="btc-buy" class="text-slate-300 text-sm">$0.00</span></div>
+                <div><span class="text-slate-500">目標止盈 (Sell):</span><br><span id="btc-sell" class="text-slate-300 text-sm">$0.00</span></div>
+            </div>
         </div>
-        <div class="mt-3 pt-2.5 border-t border-[#182030] font-mono text-[11px] space-y-1">
-          <div class="flex justify-between text-slate-400">
-            <span>波段買入 (Buy):</span>
-            <span id="mstr-buy" class="text-emerald-300 font-bold">--</span>
-          </div>
-          <div class="flex justify-between text-slate-400">
-            <span>目標止盈 (Sell):</span>
-            <span id="mstr-sell" class="text-rose-300 font-bold">--</span>
-          </div>
+
+        <!-- ETH Card -->
+        <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-5 shadow-lg">
+            <div class="flex justify-between items-start mb-2">
+                <h2 class="text-slate-400 font-semibold text-sm">ETH / USDT</h2>
+                <span id="eth-trend" class="text-xs px-2 py-1 rounded font-bold uppercase">-</span>
+            </div>
+            <div id="eth-price" class="text-3xl font-bold text-blue-400 mb-4 font-mono">$0.00</div>
+            <div class="grid grid-cols-2 gap-4 text-xs font-mono">
+                <div><span class="text-slate-500">波段買入 (Buy):</span><br><span id="eth-buy" class="text-slate-300 text-sm">$0.00</span></div>
+                <div><span class="text-slate-500">目標止盈 (Sell):</span><br><span id="eth-sell" class="text-slate-300 text-sm">$0.00</span></div>
+            </div>
         </div>
-      </div>
+
+        <!-- UNI Card -->
+        <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-5 shadow-lg">
+            <div class="flex justify-between items-start mb-2">
+                <h2 class="text-slate-400 font-semibold text-sm">UNI / USDT</h2>
+                <span id="uni-trend" class="text-xs px-2 py-1 rounded font-bold uppercase">-</span>
+            </div>
+            <div id="uni-price" class="text-3xl font-bold text-pink-400 mb-4 font-mono">$0.00</div>
+            <div class="grid grid-cols-2 gap-4 text-xs font-mono">
+                <div><span class="text-slate-500">波段買入 (Buy):</span><br><span id="uni-buy" class="text-slate-300 text-sm">$0.00</span></div>
+                <div><span class="text-slate-500">目標止盈 (Sell):</span><br><span id="uni-sell" class="text-slate-300 text-sm">$0.00</span></div>
+            </div>
+        </div>
+
+        <!-- MSTR Card -->
+        <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-5 shadow-lg relative overflow-hidden">
+            <div class="flex justify-between items-start mb-2">
+                <h2 class="text-slate-400 font-semibold text-sm">MSTR / USDT</h2>
+                <div class="flex gap-2">
+                    <span id="mstr-trend" class="text-xs px-2 py-1 rounded font-bold uppercase">-</span>
+                </div>
+            </div>
+            <div class="absolute top-4 right-20 text-xs bg-cyan-900/50 text-cyan-300 px-2 py-1 rounded border border-cyan-700/50">mNAV: <span id="mstr-mnav">0.0</span>x</div>
+            <div id="mstr-price" class="text-3xl font-bold text-cyan-400 mb-4 font-mono">$0.00</div>
+            <div class="grid grid-cols-2 gap-4 text-xs font-mono">
+                <div><span class="text-slate-500">波段買入 (Buy):</span><br><span id="mstr-buy" class="text-slate-300 text-sm">$0.00</span></div>
+                <div><span class="text-slate-500">目標止盈 (Sell):</span><br><span id="mstr-sell" class="text-slate-300 text-sm">$0.00</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部主內容區 (左側診斷 + 右側線圖) -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- 左側：量化診斷與費氏支撐 -->
+        <div class="lg:col-span-4 flex flex-col gap-6">
+            
+            <!-- VSA 量化盤口診斷 -->
+            <div class="bg-slate-800/50 border border-slate-700 rounded-xl shadow-lg p-5">
+                <div class="flex justify-between items-center mb-4 border-b border-slate-700 pb-2">
+                    <h3 class="text-sm font-bold text-slate-300 flex items-center gap-2">
+                        <span class="w-2 h-2 bg-emerald-400 rounded-full"></span> 多標的量化盤口診斷
+                    </h3>
+                    <span class="text-xs text-slate-500">[威科夫階段] 道氏趨勢</span>
+                </div>
+                
+                <div class="space-y-5">
+                    <!-- BTC VSA -->
+                    <div>
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="font-bold text-sm text-slate-200">BTC · 比特幣</span>
+                            <div class="flex items-center gap-2">
+                                <span id="btc-wyckoff-phase" class="text-xs font-bold px-2 py-0.5 rounded">-</span>
+                                <span id="btc-dow-mini" class="text-xs text-slate-400">-</span>
+                            </div>
+                        </div>
+                        <p id="btc-wyckoff-hint" class="text-xs text-slate-400 leading-relaxed"></p>
+                    </div>
+                    
+                    <!-- ETH VSA -->
+                    <div>
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="font-bold text-sm text-slate-200">ETH · 以太坊</span>
+                            <div class="flex items-center gap-2">
+                                <span id="eth-wyckoff-phase" class="text-xs font-bold px-2 py-0.5 rounded">-</span>
+                                <span id="eth-dow-mini" class="text-xs text-slate-400">-</span>
+                            </div>
+                        </div>
+                        <p id="eth-wyckoff-hint" class="text-xs text-slate-400 leading-relaxed"></p>
+                    </div>
+
+                    <!-- UNI VSA -->
+                    <div>
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="font-bold text-sm text-slate-200">UNI · Uniswap</span>
+                            <div class="flex items-center gap-2">
+                                <span id="uni-wyckoff-phase" class="text-xs font-bold px-2 py-0.5 rounded">-</span>
+                                <span id="uni-dow-mini" class="text-xs text-slate-400">-</span>
+                            </div>
+                        </div>
+                        <p id="uni-wyckoff-hint" class="text-xs text-slate-400 leading-relaxed"></p>
+                    </div>
+
+                    <!-- MSTR VSA -->
+                    <div>
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="font-bold text-sm text-slate-200">MSTR · 微策略</span>
+                            <div class="flex items-center gap-2">
+                                <span id="mstr-wyckoff-phase" class="text-xs font-bold px-2 py-0.5 rounded">-</span>
+                                <span id="mstr-dow-mini" class="text-xs text-slate-400">-</span>
+                            </div>
+                        </div>
+                        <p id="mstr-wyckoff-hint" class="text-xs text-slate-400 leading-relaxed"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 1D FIB LEVELS -->
+            <div class="bg-slate-800/50 border border-slate-700 rounded-xl shadow-lg p-5">
+                <div class="flex justify-between items-center mb-4 border-b border-slate-700 pb-2">
+                    <h3 class="text-sm font-bold text-slate-300">日線費氏大支撐 <span class="text-xs text-slate-500 font-normal ml-1">(1D FIB LEVELS)</span></h3>
+                    <span class="text-xs bg-slate-700 text-slate-400 px-2 rounded">MACRO-SWING</span>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-6">
+                    <!-- BTC Fib -->
+                    <div>
+                        <div class="text-xs font-bold text-slate-400 mb-2">BTC 檔位</div>
+                        <ul class="text-xs font-mono space-y-1">
+                            <li class="flex justify-between"><span class="text-slate-500">382:</span> <span id="btc-fib-382" class="text-slate-300">-</span></li>
+                            <li class="flex justify-between"><span class="text-slate-500">500:</span> <span id="btc-fib-500" class="text-slate-300">-</span></li>
+                            <li class="flex justify-between"><span class="text-slate-500">618:</span> <span id="btc-fib-618" class="text-slate-300">-</span></li>
+                        </ul>
+                    </div>
+                    <!-- ETH Fib -->
+                    <div>
+                        <div class="text-xs font-bold text-slate-400 mb-2">ETH 檔位</div>
+                        <ul class="text-xs font-mono space-y-1">
+                            <li class="flex justify-between"><span class="text-slate-500">382:</span> <span id="eth-fib-382" class="text-slate-300">-</span></li>
+                            <li class="flex justify-between"><span class="text-slate-500">500:</span> <span id="eth-fib-500" class="text-slate-300">-</span></li>
+                            <li class="flex justify-between"><span class="text-slate-500">618:</span> <span id="eth-fib-618" class="text-slate-300">-</span></li>
+                        </ul>
+                    </div>
+                    <!-- UNI Fib -->
+                    <div>
+                        <div class="text-xs font-bold text-slate-400 mb-2">UNI 檔位</div>
+                        <ul class="text-xs font-mono space-y-1">
+                            <li class="flex justify-between"><span class="text-slate-500">382:</span> <span id="uni-fib-382" class="text-slate-300">-</span></li>
+                            <li class="flex justify-between"><span class="text-slate-500">500:</span> <span id="uni-fib-500" class="text-slate-300">-</span></li>
+                            <li class="flex justify-between"><span class="text-slate-500">618:</span> <span id="uni-fib-618" class="text-slate-300">-</span></li>
+                        </ul>
+                    </div>
+                    <!-- MSTR Fib -->
+                    <div>
+                        <div class="text-xs font-bold text-slate-400 mb-2">MSTR 檔位</div>
+                        <ul class="text-xs font-mono space-y-1">
+                            <li class="flex justify-between"><span class="text-slate-500">382:</span> <span id="mstr-fib-382" class="text-slate-300">-</span></li>
+                            <li class="flex justify-between"><span class="text-slate-500">500:</span> <span id="mstr-fib-500" class="text-slate-300">-</span></li>
+                            <li class="flex justify-between"><span class="text-slate-500">618:</span> <span id="mstr-fib-618" class="text-slate-300">-</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右側：TradingView 走勢圖 -->
+        <div class="lg:col-span-8">
+            <div class="bg-slate-800/50 border border-slate-700 rounded-xl shadow-lg p-5 h-full min-h-[500px] flex flex-col">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-sm font-bold text-slate-300 flex items-center gap-2">
+                        <span class="w-2 h-2 bg-blue-400 rounded-full"></span> BTC/USDT 即時走勢
+                    </h3>
+                </div>
+                <!-- TradingView Widget BEGIN -->
+                <div class="tradingview-widget-container flex-1 rounded overflow-hidden">
+                    <div id="tradingview_chart" class="h-full"></div>
+                    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+                    <script type="text/javascript">
+                    new TradingView.widget(
+                    {
+                    "autosize": true,
+                    "symbol": "BINANCE:BTCUSDT",
+                    "interval": "D",
+                    "timezone": "Etc/UTC",
+                    "theme": "dark",
+                    "style": "1",
+                    "locale": "zh_TW",
+                    "enable_publishing": false,
+                    "backgroundColor": "#0f172a",
+                    "gridColor": "#1e293b",
+                    "hide_top_toolbar": false,
+                    "hide_legend": false,
+                    "save_image": false,
+                    "container_id": "tradingview_chart"
+                    }
+                    );
+                    </script>
+                </div>
+                <!-- TradingView Widget END -->
+            </div>
+        </div>
 
     </div>
 
-    <!-- 主區塊：左側盤口診斷 (含 Wyckoff Phase & 費氏檔位) + 右側 TradingView 圖表 -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-      
-      <!-- 左側盤口診斷 -->
-      <div class="bg-[#0F1420] border border-[#1C2436] p-4 rounded-lg flex flex-col space-y-3">
-        <div class="text-xs font-bold uppercase tracking-wider text-slate-200 font-mono flex justify-between items-center border-b border-[#1A2333] pb-2">
-          <div class="flex items-center space-x-1.5">
-            <span class="w-2 h-2 bg-emerald-400 rounded-sm"></span>
-            <span>多標的量化盤口診斷</span>
-          </div>
-          <span class="text-[10px] text-slate-400 font-normal">[威科夫階段] 道氏趨勢</span>
-        </div>
+    <!-- JavaScript 資料綁定與渲染邏輯 -->
+    <script>
+        // 數字格式化工具
+        const formatCurrency = (num) => {
+            return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(num);
+        };
 
-        <div class="space-y-2.5">
-          <!-- BTC -->
-          <div class="bg-[#080B11] p-2.5 rounded border border-[#182030] font-mono text-xs">
-            <div class="flex justify-between items-center mb-1">
-              <span class="text-emerald-400 font-bold">BTC · 比特幣</span>
-              <div class="flex items-center space-x-1.5">
-                <span id="btc-phase-badge" class="text-[9px] px-1.5 py-0.5 rounded bg-sky-950 text-sky-300 border border-sky-800 font-mono">--</span>
-                <span id="btc-dow-text" class="text-slate-400">--</span>
-              </div>
-            </div>
-            <div id="btc-wyckoff" class="text-[11px] text-slate-300 leading-normal">加載中...</div>
-          </div>
-
-          <!-- ETH -->
-          <div class="bg-[#080B11] p-2.5 rounded border border-[#182030] font-mono text-xs">
-            <div class="flex justify-between items-center mb-1">
-              <span class="text-indigo-400 font-bold">ETH · 以太坊</span>
-              <div class="flex items-center space-x-1.5">
-                <span id="eth-phase-badge" class="text-[9px] px-1.5 py-0.5 rounded bg-sky-950 text-sky-300 border border-sky-800 font-mono">--</span>
-                <span id="eth-dow-text" class="text-slate-400">--</span>
-              </div>
-            </div>
-            <div id="eth-wyckoff" class="text-[11px] text-slate-300 leading-normal">加載中...</div>
-          </div>
-
-          <!-- UNI -->
-          <div class="bg-[#080B11] p-2.5 rounded border border-[#182030] font-mono text-xs">
-            <div class="flex justify-between items-center mb-1">
-              <span class="text-pink-400 font-bold">UNI · Uniswap</span>
-              <div class="flex items-center space-x-1.5">
-                <span id="uni-phase-badge" class="text-[9px] px-1.5 py-0.5 rounded bg-sky-950 text-sky-300 border border-sky-800 font-mono">--</span>
-                <span id="uni-dow-text" class="text-slate-400">--</span>
-              </div>
-            </div>
-            <div id="uni-wyckoff" class="text-[11px] text-slate-300 leading-normal">加載中...</div>
-          </div>
-
-          <!-- MSTR -->
-          <div class="bg-[#080B11] p-2.5 rounded border border-[#182030] font-mono text-xs">
-            <div class="flex justify-between items-center mb-1">
-              <span class="text-cyan-400 font-bold">MSTR · 微策略</span>
-              <div class="flex items-center space-x-1.5">
-                <span id="mstr-phase-badge" class="text-[9px] px-1.5 py-0.5 rounded bg-sky-950 text-sky-300 border border-sky-800 font-mono">--</span>
-                <span id="mstr-dow-text" class="text-slate-400">--</span>
-              </div>
-            </div>
-            <div id="mstr-wyckoff" class="text-[11px] text-slate-300 leading-normal">加載中...</div>
-          </div>
-        </div>
-
-        <!-- 全新：1D 費氏大支撐矩陣 (替換原本的波段空間速覽表) -->
-        <div class="mt-auto pt-3 border-t border-[#182030] font-mono text-xs">
-          <div class="text-[10px] text-slate-400 uppercase tracking-wider mb-2 flex justify-between items-center">
-            <span>日線費氏大支撐 (1D FIB LEVELS)</span>
-            <span class="text-slate-500 bg-[#161F30] px-1.5 py-0.5 rounded">MACRO-SWING</span>
-          </div>
-          <div class="grid grid-cols-2 gap-2 text-[11px]">
-            <!-- BTC 檔位 -->
-            <div class="bg-[#080B11] p-2 rounded border border-[#182030]">
-              <div class="text-emerald-400 font-bold mb-1 border-b border-[#1A2333] pb-1">BTC 檔位</div>
-              <div class="flex justify-between text-slate-400 mb-0.5"><span>382:</span> <span id="btc-fib-382" class="text-emerald-300 font-bold">--</span></div>
-              <div class="flex justify-between text-slate-400 mb-0.5"><span>500:</span> <span id="btc-fib-500" class="text-emerald-300 font-bold">--</span></div>
-              <div class="flex justify-between text-slate-400"><span>618:</span> <span id="btc-fib-618" class="text-emerald-300 font-bold">--</span></div>
-            </div>
-            <!-- ETH 檔位 -->
-            <div class="bg-[#080B11] p-2 rounded border border-[#182030]">
-              <div class="text-indigo-400 font-bold mb-1 border-b border-[#1A2333] pb-1">ETH 檔位</div>
-              <div class="flex justify-between text-slate-400 mb-0.5"><span>382:</span> <span id="eth-fib-382" class="text-indigo-300 font-bold">--</span></div>
-              <div class="flex justify-between text-slate-400 mb-0.5"><span>500:</span> <span id="eth-fib-500" class="text-indigo-300 font-bold">--</span></div>
-              <div class="flex justify-between text-slate-400"><span>618:</span> <span id="eth-fib-618" class="text-indigo-300 font-bold">--</span></div>
-            </div>
-            <!-- UNI 檔位 -->
-            <div class="bg-[#080B11] p-2 rounded border border-[#182030]">
-              <div class="text-pink-400 font-bold mb-1 border-b border-[#1A2333] pb-1">UNI 檔位</div>
-              <div class="flex justify-between text-slate-400 mb-0.5"><span>382:</span> <span id="uni-fib-382" class="text-pink-300 font-bold">--</span></div>
-              <div class="flex justify-between text-slate-400 mb-0.5"><span>500:</span> <span id="uni-fib-500" class="text-pink-300 font-bold">--</span></div>
-              <div class="flex justify-between text-slate-400"><span>618:</span> <span id="uni-fib-618" class="text-pink-300 font-bold">--</span></div>
-            </div>
-            <!-- MSTR 檔位 -->
-            <div class="bg-[#080B11] p-2 rounded border border-[#182030]">
-              <div class="text-cyan-400 font-bold mb-1 border-b border-[#1A2333] pb-1">MSTR 檔位</div>
-              <div class="flex justify-between text-slate-400 mb-0.5"><span>382:</span> <span id="mstr-fib-382" class="text-cyan-300 font-bold">--</span></div>
-              <div class="flex justify-between text-slate-400 mb-0.5"><span>500:</span> <span id="mstr-fib-500" class="text-cyan-300 font-bold">--</span></div>
-              <div class="flex justify-between text-slate-400"><span>618:</span> <span id="mstr-fib-618" class="text-cyan-300 font-bold">--</span></div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- 右側：TradingView 專業圖表 -->
-      <div class="lg:col-span-2 bg-[#0F1420] border border-[#1C2436] p-4 rounded-lg flex flex-col">
-        <div class="flex flex-wrap justify-between items-center mb-3 gap-2">
-          <div class="text-xs font-bold uppercase tracking-wider text-slate-200 font-mono flex items-center space-x-1.5">
-            <span class="w-2 h-2 bg-emerald-400 rounded-full"></span>
-            <span id="current-chart-title">BTC/USDT 即時走勢</span>
-          </div>
-          
-          <div class="flex space-x-1.5 font-mono text-xs">
-            <button onclick="switchChart('BINANCE:BTCUSDT', 'BTC/USDT')" class="chart-btn px-2.5 py-1 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">BTC</button>
-            <button onclick="switchChart('BINANCE:ETHUSDT', 'ETH/USDT')" class="chart-btn px-2.5 py-1 rounded bg-[#131A29] text-slate-400 hover:text-slate-200 border border-[#2A364F]">ETH</button>
-            <button onclick="switchChart('BINANCE:UNIUSDT', 'UNI/USDT')" class="chart-btn px-2.5 py-1 rounded bg-[#131A29] text-slate-400 hover:text-slate-200 border border-[#2A364F]">UNI</button>
-            <button onclick="switchChart('BINANCE:MSTRUSDT.P', 'MSTR/USDT')" class="chart-btn px-2.5 py-1 rounded bg-[#131A29] text-slate-400 hover:text-slate-200 border border-[#2A364F]">MSTR</button>
-          </div>
-        </div>
-
-        <div class="w-full flex-1 min-h-[480px] rounded overflow-hidden border border-[#1E2638]">
-          <iframe 
-            id="tv-iframe"
-            class="w-full h-full min-h-[480px]" 
-            src="https://s.tradingview.com/widgetembed/?symbol=BINANCE%3ABTCUSDT&interval=D&hidesidetoolbar=0&symboledit=1&toolbarbg=080B11&theme=dark" 
-            frameborder="0">
-          </iframe>
-        </div>
-      </div>
-
-    </div>
-
-    <footer class="text-center font-mono text-xs text-[#475569] pt-2 border-t border-[#131A29]">
-      CryptoAlpha // Designed & Architected by Lyphard · Multi-Asset Swing Execution System
-    </footer>
-  </div>
-
-  <script>
-    const lastPrices = { btc: 0, eth: 0, uni: 0, mstr: 0 };
-
-    function updateLivePriceUI(elemId, newPrice, key, decimals = 2) {
-      const el = document.getElementById(elemId);
-      if (!el || !newPrice) return;
-
-      const oldPrice = lastPrices[key];
-      if (oldPrice > 0 && Math.abs(oldPrice - newPrice) >= 0.01) {
-        el.classList.remove('price-up', 'price-down');
-        void el.offsetWidth;
-        if (newPrice > oldPrice) {
-          el.classList.add('price-up');
-        } else {
-          el.classList.add('price-down');
-        }
-      }
-      lastPrices[key] = newPrice;
-      el.innerText = '$' + Number(newPrice).toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
-    }
-
-    function renderDowBadge(elemId, status) {
-      const el = document.getElementById(elemId);
-      if (!el) return;
-      if (status === 'Bullish') {
-        el.className = 'text-[10px] px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 font-mono cursor-help';
-        el.innerText = 'UPTREND';
-      } else if (status === 'Bearish') {
-        el.className = 'text-[10px] px-1.5 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800 font-mono cursor-help';
-        el.innerText = 'DOWNTREND';
-      } else {
-        el.className = 'text-[10px] px-1.5 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800 font-mono cursor-help';
-        el.innerText = 'RANGING';
-      }
-    }
-
-    function renderPhaseBadge(elemId, phase) {
-      const el = document.getElementById(elemId);
-      if (!el) return;
-      el.innerText = phase;
-      if (phase === 'PHASE C') {
-        el.className = 'text-[9px] px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 font-mono';
-      } else if (phase === 'PHASE D') {
-        el.className = 'text-[9px] px-1.5 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800 font-mono';
-      } else {
-        el.className = 'text-[9px] px-1.5 py-0.5 rounded bg-sky-950 text-sky-300 border border-sky-800 font-mono';
-      }
-    }
-
-    function updateMnavBadge(mstrPrice, btcPrice) {
-      if (!mstrPrice || !btcPrice) return;
-      const baseStock = 153.92;
-      const baseBtc = 81240.0;
-      const baseMnav = 1.21;
-      const dynamicMnav = (baseMnav * (mstrPrice / baseStock) / (btcPrice / baseBtc)).toFixed(2);
-      
-      const badge = document.getElementById('mnav-badge');
-      if (badge) {
-        badge.innerText = 'mNAV: ' + dynamicMnav + 'x';
-      }
-    }
-
-    function switchChart(symbol, title) {
-      document.getElementById('current-chart-title').innerText = title + ' 即時走勢';
-      document.getElementById('tv-iframe').src = `https://s.tradingview.com/widgetembed/?symbol=${symbol}&interval=D&hidesidetoolbar=0&symboledit=1&toolbarbg=080B11&theme=dark`;
-      
-      const buttons = document.querySelectorAll('.chart-btn');
-      buttons.forEach(btn => {
-        const btnText = btn.innerText.trim();
-        if (title.startsWith(btnText)) {
-          btn.className = 'chart-btn px-2.5 py-1 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40';
-        } else {
-          btn.className = 'chart-btn px-2.5 py-1 rounded bg-[#131A29] text-slate-400 hover:text-slate-200 border border-[#2A364F]';
-        }
-      });
-    }
-
-    // 1. 初始化讀取後端資料
-    fetch('data.json?t=' + new Date().getTime())
-      .then(res => res.json())
-      .then(data => {
-        document.getElementById('update-time').innerText = data.updated_at;
-
-        // BTC 頂部狀態與動態網格買賣點
-        updateLivePriceUI('btc-price', data.btc.price, 'btc', 2);
-        document.getElementById('btc-buy').innerText = '$' + Number(data.btc.buy_target).toLocaleString();
-        document.getElementById('btc-sell').innerText = '$' + Number(data.btc.sell_target).toLocaleString();
-        document.getElementById('btc-dow-text').innerText = data.btc.dow_status;
-        document.getElementById('btc-wyckoff').innerText = data.btc.wyckoff_hint;
-        renderDowBadge('btc-dow-badge', data.btc.dow_status);
-        renderPhaseBadge('btc-phase-badge', data.btc.wyckoff_phase);
-        // BTC 1D 費氏檔位
-        document.getElementById('btc-fib-382').innerText = '$' + Number(data.btc.fib_382).toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0});
-        document.getElementById('btc-fib-500').innerText = '$' + Number(data.btc.fib_500).toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0});
-        document.getElementById('btc-fib-618').innerText = '$' + Number(data.btc.fib_618).toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0});
-
-        // ETH 頂部狀態與動態網格買賣點
-        updateLivePriceUI('eth-price', data.eth.price, 'eth', 2);
-        document.getElementById('eth-buy').innerText = '$' + Number(data.eth.buy_target).toLocaleString();
-        document.getElementById('eth-sell').innerText = '$' + Number(data.eth.sell_target).toLocaleString();
-        document.getElementById('eth-dow-text').innerText = data.eth.dow_status;
-        document.getElementById('eth-wyckoff').innerText = data.eth.wyckoff_hint;
-        renderDowBadge('eth-dow-badge', data.eth.dow_status);
-        renderPhaseBadge('eth-phase-badge', data.eth.wyckoff_phase);
-        // ETH 1D 費氏檔位
-        document.getElementById('eth-fib-382').innerText = '$' + Number(data.eth.fib_382).toLocaleString('en-US', {minimumFractionDigits: 1, maximumFractionDigits: 1});
-        document.getElementById('eth-fib-500').innerText = '$' + Number(data.eth.fib_500).toLocaleString('en-US', {minimumFractionDigits: 1, maximumFractionDigits: 1});
-        document.getElementById('eth-fib-618').innerText = '$' + Number(data.eth.fib_618).toLocaleString('en-US', {minimumFractionDigits: 1, maximumFractionDigits: 1});
-
-        // UNI 頂部狀態與動態網格買賣點
-        updateLivePriceUI('uni-price', data.uni.price, 'uni', 2);
-        document.getElementById('uni-buy').innerText = '$' + Number(data.uni.buy_target).toFixed(2);
-        document.getElementById('uni-sell').innerText = '$' + Number(data.uni.sell_target).toFixed(2);
-        document.getElementById('uni-dow-text').innerText = data.uni.dow_status;
-        document.getElementById('uni-wyckoff').innerText = data.uni.wyckoff_hint;
-        renderDowBadge('uni-dow-badge', data.uni.dow_status);
-        renderPhaseBadge('uni-phase-badge', data.uni.wyckoff_phase);
-        // UNI 1D 費氏檔位
-        document.getElementById('uni-fib-382').innerText = '$' + Number(data.uni.fib_382).toFixed(2);
-        document.getElementById('uni-fib-500').innerText = '$' + Number(data.uni.fib_500).toFixed(2);
-        document.getElementById('uni-fib-618').innerText = '$' + Number(data.uni.fib_618).toFixed(2);
-
-        // MSTR 頂部狀態與動態網格買賣點
-        updateLivePriceUI('mstr-price', data.mstr.price, 'mstr', 2);
-        document.getElementById('mstr-buy').innerText = '$' + Number(data.mstr.buy_target).toFixed(2);
-        document.getElementById('mstr-sell').innerText = '$' + Number(data.mstr.sell_target).toFixed(2);
-        document.getElementById('mstr-dow-text').innerText = data.mstr.dow_status;
-        document.getElementById('mstr-wyckoff').innerText = data.mstr.wyckoff_hint;
-        renderDowBadge('mstr-dow-badge', data.mstr.dow_status);
-        renderPhaseBadge('mstr-phase-badge', data.mstr.wyckoff_phase);
-        updateMnavBadge(data.mstr.price, data.btc.price);
-        // MSTR 1D 費氏檔位
-        document.getElementById('mstr-fib-382').innerText = '$' + Number(data.mstr.fib_382).toFixed(2);
-        document.getElementById('mstr-fib-500').innerText = '$' + Number(data.mstr.fib_500).toFixed(2);
-        document.getElementById('mstr-fib-618').innerText = '$' + Number(data.mstr.fib_618).toFixed(2);
-
-        startRealtimeEngines();
-      })
-      .catch(err => {
-        console.error('Data loading error:', err);
-        startRealtimeEngines();
-      });
-
-    // 2. 啟動雙通道實時引擎
-    function startRealtimeEngines() {
-      const spotStreams = 'btcusdt@miniTicker/ethusdt@miniTicker/uniusdt@miniTicker';
-      const wsSpot = new WebSocket(`wss://stream.binance.com:9443/ws/${spotStreams}`);
-      
-      wsSpot.onmessage = (event) => {
-        const msg = JSON.parse(event.data);
-        const symbol = msg.s;
-        const price = parseFloat(msg.c);
-
-        if (symbol === 'BTCUSDT') {
-          updateLivePriceUI('btc-price', price, 'btc', 2);
-          updateMnavBadge(lastPrices.mstr, price);
-        } else if (symbol === 'ETHUSDT') {
-          updateLivePriceUI('eth-price', price, 'eth', 2);
-        } else if (symbol === 'UNIUSDT') {
-          updateLivePriceUI('uni-price', price, 'uni', 2);
-        }
-      };
-
-      function connectOkxXmstrWS() {
-        try {
-          const wsOkx = new WebSocket('wss://ws.okx.com:8443/ws/v5/public');
-          wsOkx.onopen = () => {
-            wsOkx.send(JSON.stringify({
-              "op": "subscribe",
-              "args": [{"channel": "tickers", "instId": "XMSTR-USDT"}]
-            }));
-          };
-          wsOkx.onmessage = (event) => {
-            const res = JSON.parse(event.data);
-            if (res.data && res.data.length > 0 && res.data[0].last) {
-              const xmstrPrice = parseFloat(res.data[0].last);
-              if (xmstrPrice > 0) {
-                updateLivePriceUI('mstr-price', xmstrPrice, 'mstr', 2);
-                updateMnavBadge(xmstrPrice, lastPrices.btc);
-              }
+        // 🌟 終極警報 VSA 渲染工具 (包含呼吸燈效果)
+        function formatWyckoffHint(hintText) {
+            if (!hintText) return "";
+            if (hintText.includes("🔥【強力買進】")) {
+                // 左側黃金坑買點：橘金色 + 閃爍
+                return `<span class="text-orange-400 font-bold animate-pulse">${hintText}</span>`;
+            } else if (hintText.includes("🛑【逃頂賣出】")) {
+                // 高檔派發危險區：紅底白字 + 閃爍警報
+                return `<span class="bg-rose-600 text-white px-1.5 py-0.5 rounded font-bold shadow-lg animate-pulse">${hintText}</span>`;
+            } else if (hintText.includes("【恐慌拋售】")) {
+                // 初跌段接刀警告：淡紅色
+                return `<span class="text-rose-400">${hintText}</span>`;
+            } else if (hintText.includes("【無供應測試】") || hintText.includes("【彈簧洗盤】")) {
+                // 일반買進信號
+                return `<span class="text-orange-300">${hintText}</span>`;
             }
-          };
-          wsOkx.onerror = () => wsOkx.close();
-          wsOkx.onclose = () => setTimeout(connectOkxXmstrWS, 5000);
-        } catch (e) {}
-      }
-      connectOkxXmstrWS();
+            // 預設顏色 (正常換手/突破)
+            return `<span class="text-slate-300">${hintText}</span>`;
+        }
 
-      setInterval(() => {
-        fetch('data.json?nocache=' + new Date().getTime())
-          .then(res => res.json())
-          .then(data => {
-            if (data && data.mstr && data.mstr.price) {
-              updateLivePriceUI('mstr-price', data.mstr.price, 'mstr', 2);
-              updateMnavBadge(data.mstr.price, lastPrices.btc);
+        // 道氏趨勢 UI 徽章
+        const formatTrendBadge = (status, elementId) => {
+            const el = document.getElementById(elementId);
+            el.innerText = status;
+            el.className = "text-xs px-2 py-1 rounded font-bold uppercase"; // reset
+            if (status === "Bullish") {
+                el.classList.add("bg-emerald-900/50", "text-emerald-400", "border", "border-emerald-700");
+            } else if (status === "Bearish") {
+                el.classList.add("bg-rose-900/50", "text-rose-400", "border", "border-rose-700");
+            } else {
+                el.classList.add("bg-amber-900/50", "text-amber-400", "border", "border-amber-700");
             }
-          })
-          .catch(() => {});
-      }, 10000);
-    }
-  </script>
+        };
+
+        // 威科夫階段 UI 徽章
+        const formatPhaseBadge = (phase, elementId) => {
+            const el = document.getElementById(elementId);
+            el.innerText = phase;
+            el.className = "text-xs font-bold px-2 py-0.5 rounded"; // reset
+            if (phase === "PHASE A") el.classList.add("bg-rose-900", "text-rose-200");
+            else if (phase === "PHASE B") el.classList.add("bg-slate-700", "text-slate-300");
+            else if (phase === "PHASE C") el.classList.add("bg-amber-700", "text-amber-100");
+            else if (phase === "PHASE D" || phase === "PHASE E") el.classList.add("bg-emerald-800", "text-emerald-100");
+            else el.classList.add("bg-slate-700", "text-slate-300");
+        };
+
+        // 綁定單一資產資料
+        const bindData = (coin, data) => {
+            if (!data) return;
+            
+            // 卡片區
+            document.getElementById(`${coin}-price`).innerText = formatCurrency(data.price);
+            document.getElementById(`${coin}-buy`).innerText = formatCurrency(data.buy_target);
+            document.getElementById(`${coin}-sell`).innerText = formatCurrency(data.sell_target);
+            formatTrendBadge(data.dow_status, `${coin}-trend`);
+            
+            if(coin === 'mstr' && data.mnav_multiple) {
+                document.getElementById('mstr-mnav').innerText = data.mnav_multiple;
+            }
+
+            // 診斷區
+            formatPhaseBadge(data.wyckoff_phase, `${coin}-wyckoff-phase`);
+            document.getElementById(`${coin}-dow-mini`).innerText = data.dow_status;
+            // 🌟 套用 VSA 終極警報樣式
+            document.getElementById(`${coin}-wyckoff-hint`).innerHTML = formatWyckoffHint(data.wyckoff_hint);
+
+            // 費氏網格區
+            document.getElementById(`${coin}-fib-382`).innerText = formatCurrency(data.fib_382);
+            document.getElementById(`${coin}-fib-500`).innerText = formatCurrency(data.fib_500);
+            document.getElementById(`${coin}-fib-618`).innerText = formatCurrency(data.fib_618);
+        };
+
+        // 抓取 JSON
+        async function fetchData() {
+            try {
+                // 添加隨機參數防止緩存
+                const response = await fetch(`data.json?t=${new Date().getTime()}`); 
+                const data = await response.json();
+                
+                document.getElementById('last-sync').innerText = data.updated_at || "-";
+                
+                bindData('btc', data.btc);
+                bindData('eth', data.eth);
+                bindData('uni', data.uni);
+                bindData('mstr', data.mstr);
+
+            } catch (error) {
+                console.error("載入資料失敗:", error);
+                document.getElementById('last-sync').innerText = "載入失敗";
+                document.getElementById('last-sync').classList.add("text-rose-500");
+            }
+        }
+
+        // 初始化
+        fetchData();
+        // 每 30 秒自動更新一次
+        setInterval(fetchData, 30000);
+
+    </script>
 </body>
 </html>

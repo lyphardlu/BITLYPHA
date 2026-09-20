@@ -128,13 +128,11 @@
             </div>
         </div>
 
-        <!-- MSTR -->
+        <!-- MSTR 🌟 移除多餘的趨勢標籤，直接用 mNAV 取代 -->
         <div class="glass-panel rounded-xl p-5">
             <div class="flex justify-between items-start mb-2">
                 <h2 class="text-cyan-400 font-bold text-xs tracking-wide">MSTR / USDT</h2>
-                <div class="flex flex-col items-end gap-1.5">
-                    <span id="mstr-trend" class="text-[10px] px-1.5 py-0.5 rounded font-bold uppercase shrink-0">-</span>
-                    <!-- 🌟 修正為 mNAV -->
+                <div class="flex items-center">
                     <span id="mstr-mnav-badge" class="text-[10px] px-1.5 py-0.5 rounded font-bold shrink-0 bg-cyan-900/50 text-cyan-400 tracking-wider">mNAV: <span id="mstr-mnav" class="font-mono">0.00</span>x</span>
                 </div>
             </div>
@@ -219,7 +217,6 @@
 
                     <div>
                         <div class="flex justify-between items-center mb-1.5">
-                            <!-- 🌟 修正為 mNAV 模型 -->
                             <span class="font-bold text-sm text-cyan-400">MSTR · 微策略 <span class="text-[9px] text-cyan-700 font-normal ml-1 border border-cyan-800/30 px-1 rounded">mNAV 模型</span></span>
                             <div class="flex items-center gap-2">
                                 <span id="mstr-wyckoff-phase" class="text-[10px] font-bold px-1.5 py-0.5 rounded">-</span>
@@ -446,6 +443,7 @@
 
         const formatTrendBadge = (status, elementId) => {
             const el = document.getElementById(elementId);
+            if (!el) return; // MSTR 沒有這個元素了，直接 return 避免噴錯
             el.innerText = status;
             el.className = "text-[10px] px-1.5 py-0.5 rounded font-bold uppercase";
             if (status === "Bullish") el.classList.add("bg-emerald-900/50", "text-emerald-400");
@@ -481,7 +479,10 @@
 
             document.getElementById(`${coin}-buy`).innerText = formatValue(data.buy_target, isBtcBase);
             document.getElementById(`${coin}-sell`).innerText = formatValue(data.sell_target, isBtcBase);
-            formatTrendBadge(data.dow_status, `${coin}-trend`);
+            
+            if (coin !== 'mstr') {
+                formatTrendBadge(data.dow_status, `${coin}-trend`);
+            }
             
             if(coin === 'mstr' && data.mnav_multiple) {
                 document.getElementById('mstr-mnav').innerText = data.mnav_multiple;

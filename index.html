@@ -18,6 +18,18 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
         }
         ::-webkit-scrollbar { display: none; }
+
+        /* 🌟 終極價格閃爍動畫 (Ticker Flash) */
+        @keyframes priceFlashUp {
+            0% { color: #34d399 !important; text-shadow: 0 0 15px rgba(52, 211, 153, 0.8); transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+        @keyframes priceFlashDown {
+            0% { color: #fb7185 !important; text-shadow: 0 0 15px rgba(251, 113, 133, 0.8); transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+        .flash-up { animation: priceFlashUp 0.8s ease-out; transform-origin: left center; }
+        .flash-down { animation: priceFlashDown 0.8s ease-out; transform-origin: left center; }
     </style>
 </head>
 <body class="min-h-screen p-4 md:p-6 flex flex-col">
@@ -202,7 +214,7 @@
                         <p id="uni-wyckoff-hint" class="text-[11.5px] text-slate-300 leading-relaxed"></p>
                     </div>
 
-                    <!-- MSTR (標題加上 mNAV 模型提示) -->
+                    <!-- MSTR -->
                     <div>
                         <div class="flex justify-between items-center mb-1.5">
                             <span class="font-bold text-sm text-cyan-400">MSTR · 微策略 <span class="text-[10px] text-cyan-700 font-normal ml-1 border border-cyan-800/30 px-1 rounded">mNAV套利模型</span></span>
@@ -282,7 +294,7 @@
             </div>
         </div>
 
-        <!-- 🌟 右側：互動式 Tabs TradingView 走勢圖 -->
+        <!-- 右側：互動式 Tabs TradingView 走勢圖 -->
         <div class="lg:col-span-8 h-full">
             <div class="glass-panel rounded-xl p-5 h-full min-h-[500px] flex flex-col">
                 <div class="flex flex-col xl:flex-row xl:justify-between items-start xl:items-center mb-4 border-b border-[#2A2E39] pb-3 gap-3">
@@ -309,7 +321,7 @@
 
     </div>
 
-    <!-- 🌟 原汁原味的專屬 Footer 簽名 (完美高度) 🌟 -->
+    <!-- 底部落款 -->
     <footer class="mt-6 mb-4 text-center">
         <p class="text-[11.5px] text-[#4A5568] font-mono tracking-wide">
             CryptoAlpha // Designed & Architected by Lyphard · Multi-Asset Swing Execution System
@@ -319,6 +331,9 @@
     <!-- JavaScript 核心邏輯 -->
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <script>
+        // 🌟 記錄上一次的價格，用來觸發閃爍動畫
+        const prevPrices = {};
+
         let tvWidget = null;
         function loadTradingView(symbolToLoad) {
             tvWidget = new TradingView.widget({
@@ -367,7 +382,6 @@
             return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(num);
         };
 
-        // 🌟 強化字體顏色解析：支援 mNAV 專屬字眼
         function formatWyckoffHint(hintText) {
             if (!hintText) return "";
             if (hintText.includes("🔥【強力買進】") || hintText.includes("🔥【折價買進】")) {
@@ -399,33 +413,49 @@
             }
         };
 
-        // 🌟 支援 MSTR mNAV 的自定義標籤底色
         const formatPhaseBadge = (phase, elementId) => {
             const el = document.getElementById(elementId);
             el.innerText = phase;
             el.className = "text-[10px] font-bold px-1.5 py-0.5 rounded text-slate-800"; 
             
-            // VSA Phases
+            // VSA & mNAV Phases
             if (phase === "PHASE A") el.classList.add("bg-rose-400");
             else if (phase === "PHASE B") el.classList.add("bg-slate-400");
             else if (phase === "PHASE C") el.classList.add("bg-amber-500");
             else if (phase === "PHASE D" || phase === "PHASE E") el.classList.add("bg-emerald-500");
-            
-            // mNAV Phases
             else if (phase === "OVERVALUED") el.classList.add("bg-rose-600", "text-white", "animate-pulse");
             else if (phase === "PREMIUM") el.classList.add("bg-rose-400");
             else if (phase === "FAIR VALUE") el.classList.add("bg-slate-500", "text-white");
             else if (phase === "UNDERVALUED") el.classList.add("bg-emerald-500");
             else if (phase === "DISCOUNT") el.classList.add("bg-emerald-400", "animate-pulse");
-            
             else el.classList.add("bg-slate-400");
         };
 
         const bindData = (coin, data) => {
             if (!data) return;
             const isBtcBase = coin === 'ethbtc';
+            const priceEl = document.getElementById(`${coin}-price`);
+            const newPriceStr = formatValue(data.price, isBtcBase);
+
+            // 🌟 價格跳動偵測與閃爍動畫
+            if (prevPrices[coin] !== undefined && prevPrices[coin] !== data.price) {
+                // 先移除舊的動畫 class
+                priceEl.classList.remove('flash-up', 'flash-down');
+                // 觸發 reflow 讓瀏覽器重新載入動畫
+                void priceEl.offsetWidth;
+                // 判斷漲跌並加上新的動畫 class
+                if (data.price > prevPrices[coin]) {
+                    priceEl.classList.add('flash-up');
+                } else {
+                    priceEl.classList.add('flash-down');
+                }
+            }
             
-            document.getElementById(`${coin}-price`).innerText = formatValue(data.price, isBtcBase);
+            // 更新數值並記錄
+            priceEl.innerText = newPriceStr;
+            prevPrices[coin] = data.price;
+
+            // 更新其他欄位
             document.getElementById(`${coin}-buy`).innerText = formatValue(data.buy_target, isBtcBase);
             document.getElementById(`${coin}-sell`).innerText = formatValue(data.sell_target, isBtcBase);
             formatTrendBadge(data.dow_status, `${coin}-trend`);

@@ -1,49 +1,61 @@
 {
-  "updated_at": "2026-09-20 12:59 UTC",
+  "updated_at": "2026-09-20 14:55 UTC",
   "btc": {
-    "price": 80421.62,
+    "price": 80659.81,
     "dow_status": "Bearish",
     "dow_signal": "空頭受阻 (Lower High + Lower Low)",
     "support": 75364.71,
-    "resistance": 80516.6,
-    "buy_target": 77325.32,
-    "sell_target": 87101.39,
-    "wyckoff_phase": "PHASE D",
-    "wyckoff_hint": "【阻力邊界】(突破/測試階段)，挑戰上方強壓，防範 UTAD 假突破。"
+    "resistance": 82275.08,
+    "buy_target": 73290.07,
+    "sell_target": 87461.14,
+    "wyckoff_phase": "PHASE B",
+    "wyckoff_hint": "【區間運行】(橫向築底/換手階段)，處於結構通道中段，主力籌碼穩定換手中。",
+    "fib_382": 73290.07,
+    "fib_500": 70199.13,
+    "fib_618": 67108.19
   },
   "eth": {
-    "price": 2577.31,
+    "price": 2584.33,
     "dow_status": "Neutral",
     "dow_signal": "結構收斂 / 區間震盪",
     "support": 2380.96,
-    "resistance": 2577.84,
-    "buy_target": 2474.37,
-    "sell_target": 2799.38,
+    "resistance": 2588.4,
+    "buy_target": 2250.51,
+    "sell_target": 2832.7,
     "wyckoff_phase": "PHASE D",
-    "wyckoff_hint": "【阻力邊界】(突破/測試階段)，挑戰上方強壓，防範 UTAD 假突破。"
+    "wyckoff_hint": "【阻力邊界】(突破/測試階段)，挑戰上方強壓，防範 UTAD 假突破。",
+    "fib_382": 2250.51,
+    "fib_500": 2112.33,
+    "fib_618": 1974.16
   },
   "uni": {
-    "price": 8.642,
+    "price": 8.628,
     "dow_status": "Bullish",
     "dow_signal": "多頭推進 (Higher High + Higher Low)",
     "support": 5.8,
     "resistance": 9.084,
-    "buy_target": 8.208,
-    "sell_target": 8.947,
+    "buy_target": 6.544,
+    "sell_target": 9.538,
     "wyckoff_phase": "PHASE D",
-    "wyckoff_hint": "【阻力邊界】(突破/測試階段)，挑戰上方強壓，防範 UTAD 假突破。"
+    "wyckoff_hint": "【阻力邊界】(突破/測試階段)，挑戰上方強壓，防範 UTAD 假突破。",
+    "fib_382": 6.544,
+    "fib_500": 5.76,
+    "fib_618": 4.976
   },
   "mstr": {
-    "price": 151.82,
-    "mnav_multiple": 1.21,
+    "price": 151.75,
+    "mnav_multiple": 1.2,
     "btc_holdings": 845050,
     "dow_status": "Bearish",
     "dow_signal": "空頭受阻 (Lower High + Lower Low)",
     "support": 126.88,
-    "resistance": 166.26,
-    "buy_target": 145.13,
-    "sell_target": 162.98,
+    "resistance": 166.21,
+    "buy_target": 132.98,
+    "sell_target": 167.85,
     "wyckoff_phase": "PHASE B",
-    "wyckoff_hint": "【通道中段】(橫向換手階段)，隨 BTC 槓桿 Beta 同步震盪。"
+    "wyckoff_hint": "【通道中段】(橫向換手階段)，隨 BTC 槓桿 Beta 同步震盪。",
+    "fib_382": 132.98,
+    "fib_500": 124.68,
+    "fib_618": 116.38
   }
 }

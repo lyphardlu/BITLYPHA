@@ -1,32 +1,32 @@
 {
-  "updated_at": "2026-09-20 17:06 UTC",
+  "updated_at": "2026-09-20 17:10 UTC",
   "btc": {
-    "price": 81299.76,
+    "price": 81385.79,
     "dow_status": "Bearish",
     "dow_signal": "空頭受阻",
     "support": 75364.71,
     "resistance": 82275.08,
-    "buy_target": 73312.27,
-    "sell_target": 87498.86,
+    "buy_target": 73366.77,
+    "sell_target": 87591.46,
     "wyckoff_phase": "PHASE D",
     "wyckoff_hint": "【頂部突破】挑戰上方強壓區，關注多頭量能是否持續堆積。",
-    "fib_382": 73312.27,
-    "fib_500": 70217.1,
-    "fib_618": 67121.92
+    "fib_382": 73366.77,
+    "fib_500": 70261.19,
+    "fib_618": 67155.61
   },
   "eth": {
-    "price": 2640.95,
+    "price": 2641.55,
     "dow_status": "Neutral",
     "dow_signal": "結構收斂",
     "support": 2380.96,
-    "resistance": 2863.39,
-    "buy_target": 2256.17,
-    "sell_target": 2842.33,
+    "resistance": 2863.99,
+    "buy_target": 2256.55,
+    "sell_target": 2842.97,
     "wyckoff_phase": "PHASE D",
     "wyckoff_hint": "【頂部突破】挑戰上方強壓區，關注多頭量能是否持續堆積。",
-    "fib_382": 2256.17,
-    "fib_500": 2116.92,
-    "fib_618": 1977.66
+    "fib_382": 2256.55,
+    "fib_500": 2117.22,
+    "fib_618": 1977.9
   },
   "ethbtc": {
     "price": 0.03251,
@@ -43,7 +43,7 @@
     "fib_618": 0.02822
   },
   "sol": {
-    "price": 110.21,
+    "price": 110.0,
     "dow_status": "Neutral",
     "dow_signal": "結構收斂",
     "support": 97.47,
@@ -71,7 +71,7 @@
     "fib_618": 4.976
   },
   "mstr": {
-    "price": 157.17,
+    "price": 156.66,
     "mnav_multiple": 1.23,
     "dow_status": "Neutral",
     "buy_target": 129.56,

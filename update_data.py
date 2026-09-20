@@ -19,24 +19,62 @@ def find_fractal_pivots(highs, lows, closes):
     atr = sum(tr_list) / len(tr_list) if tr_list else (highs[-1] * 0.035)
     return swing_highs, swing_lows, atr
 
-def calculate_swing_trade(current_price, support, resistance, atr, decimals=2):
-    ideal_buy = max(support * 1.015, current_price - (atr * 0.75))
-    if ideal_buy >= current_price:
-        ideal_buy = current_price * 0.965
-    ideal_sell = min(resistance * 0.985, current_price + (atr * 1.25))
-    if ideal_sell <= current_price:
-        ideal_sell = current_price + (atr * 1.618)
+# 核心 1：計算 100 天宏觀日線費氏大支撐
+def calculate_fibonacci_levels(highs, lows, decimals=2):
+    if not highs or not lows:
+        return {"macro_high": 0.0, "fib_382": 0.0, "fib_500": 0.0, "fib_618": 0.0}
+    
+    macro_high = max(highs)
+    macro_low = min(lows)
+    diff = macro_high - macro_low
+    
     return {
-        "buy_target": round(ideal_buy, decimals),
-        "sell_target": round(ideal_sell, decimals)
+        "macro_high": round(macro_high, decimals),
+        "fib_382": round(macro_high - (diff * 0.382), decimals),
+        "fib_500": round(macro_high - (diff * 0.500), decimals),
+        "fib_618": round(macro_high - (diff * 0.618), decimals)
+    }
+
+# 核心 2：動態網格追蹤，根據目前價格自動切換買賣目標
+def calculate_grid_targets(current_price, fib_levels, decimals=2):
+    fib_382 = fib_levels["fib_382"]
+    fib_500 = fib_levels["fib_500"]
+    fib_618 = fib_levels["fib_618"]
+    macro_high = fib_levels["macro_high"]
+
+    # 決定買入目標：向下尋找最近的費氏支撐
+    if current_price > fib_382:
+        buy_target = fib_382
+    elif current_price > fib_500:
+        buy_target = fib_500
+    elif current_price > fib_618:
+        buy_target = fib_618
+    else:
+        # 跌破 618，向下預估更深的極限防守位 (786)
+        buy_target = macro_high - ((macro_high - fib_618) / 0.618 * 0.786)
+
+    # 決定止盈目標：向上尋找最近的費氏壓力或前高
+    if current_price < fib_618:
+        sell_target = fib_500
+    elif current_price < fib_500:
+        sell_target = fib_382
+    elif current_price < fib_382:
+        sell_target = macro_high
+    else:
+        sell_target = macro_high * 1.05 # 突破前高，往上看多 5% 延伸
+
+    return {
+        "buy_target": round(buy_target, decimals),
+        "sell_target": round(sell_target, decimals)
     }
 
 def analyze_crypto_symbol(symbol_binance, coingecko_id):
     current_price = 0.0
     highs, lows, closes = [], [], []
+    limit_days = 100 # 拉長到 100 天抓取大波段
 
     try:
-        cg_url = f"https://api.coingecko.com/api/v3/coins/{coingecko_id}/market_chart?vs_currency=usd&days=45&interval=daily"
+        cg_url = f"https://api.coingecko.com/api/v3/coins/{coingecko_id}/market_chart?vs_currency=usd&days={limit_days}&interval=daily"
         res = requests.get(cg_url, headers={"User-Agent": "Mozilla/5.0"}, timeout=8).json()
         prices = [p[1] for p in res.get('prices', [])]
         if len(prices) >= 20:
@@ -49,7 +87,7 @@ def analyze_crypto_symbol(symbol_binance, coingecko_id):
 
     if current_price == 0.0:
         try:
-            bn_url = f"https://api.binance.com/api/v3/klines?symbol={symbol_binance}&interval=1d&limit=45"
+            bn_url = f"https://api.binance.com/api/v3/klines?symbol={symbol_binance}&interval=1d&limit={limit_days}"
             res = requests.get(bn_url, headers={"User-Agent": "Mozilla/5.0"}, timeout=8).json()
             if isinstance(res, list) and len(res) >= 20:
                 closes = [float(k[4]) for k in res]
@@ -65,14 +103,25 @@ def analyze_crypto_symbol(symbol_binance, coingecko_id):
                 old = json.load(f)
                 key = symbol_binance[:3].lower()
                 current_price = float(old[key]["price"])
-                closes = [current_price] * 30
-                highs = [current_price * 1.02] * 30
-                lows = [current_price * 0.98] * 30
+                closes = [current_price] * limit_days
+                highs = [current_price * 1.02] * limit_days
+                lows = [current_price * 0.98] * limit_days
         except Exception:
             current_price = 1.0
-            closes, highs, lows = [1.0]*30, [1.02]*30, [0.98]*30
+            closes, highs, lows = [1.0]*limit_days, [1.02]*limit_days, [0.98]*limit_days
 
-    swing_highs, swing_lows, atr = find_fractal_pivots(highs, lows, closes)
+    decimals = 3 if current_price < 50 else 2
+    
+    # 進行費氏回撤與網格買賣點計算
+    fib_levels = calculate_fibonacci_levels(highs, lows, decimals)
+    swing_plan = calculate_grid_targets(current_price, fib_levels, decimals)
+
+    # 近期波段與威科夫指標保留最近 45 天來分析，不受百日干擾
+    recent_highs = highs[-45:]
+    recent_lows = lows[-45:]
+    recent_closes = closes[-45:]
+    swing_highs, swing_lows, atr = find_fractal_pivots(recent_highs, recent_lows, recent_closes)
+    
     overhead = [h for h in swing_highs if h > current_price]
     resistance = min(overhead) if overhead else (current_price + atr * 1.618)
     underlying = [l for l in swing_lows if l < current_price]
@@ -90,7 +139,7 @@ def analyze_crypto_symbol(symbol_binance, coingecko_id):
             dow_status = "Neutral"
     else:
         dow_signal = "趨勢延續中"
-        dow_status = "Bullish" if current_price >= closes[0] else "Neutral"
+        dow_status = "Bullish" if current_price >= recent_closes[0] else "Neutral"
 
     range_span = resistance - support
     pos = (current_price - support) / range_span if range_span > 0 else 0.5
@@ -105,9 +154,6 @@ def analyze_crypto_symbol(symbol_binance, coingecko_id):
         wyckoff_phase = "PHASE B"
         wyckoff_hint = "【區間運行】(橫向築底/換手階段)，處於結構通道中段，主力籌碼穩定換手中。"
 
-    decimals = 3 if current_price < 50 else 2
-    swing_plan = calculate_swing_trade(current_price, support, resistance, atr, decimals)
-
     return {
         "price": round(current_price, decimals),
         "dow_status": dow_status,
@@ -117,13 +163,17 @@ def analyze_crypto_symbol(symbol_binance, coingecko_id):
         "buy_target": swing_plan["buy_target"],
         "sell_target": swing_plan["sell_target"],
         "wyckoff_phase": wyckoff_phase,
-        "wyckoff_hint": wyckoff_hint
+        "wyckoff_hint": wyckoff_hint,
+        "fib_382": fib_levels["fib_382"],
+        "fib_500": fib_levels["fib_500"],
+        "fib_618": fib_levels["fib_618"]
     }
 
 def analyze_mstr(btc_price):
     current_price = 0.0
     highs, lows, closes = [], [], []
     headers = {"User-Agent": "Mozilla/5.0"}
+    limit_days = 100
 
     try:
         okx_url = "https://www.okx.com/api/v5/market/ticker?instId=XMSTR-USDT"
@@ -134,7 +184,7 @@ def analyze_mstr(btc_price):
         print(f"OKX XMSTR ticker error: {e}")
 
     try:
-        okx_kline = "https://www.okx.com/api/v5/market/candles?instId=XMSTR-USDT&bar=1D&limit=45"
+        okx_kline = f"https://www.okx.com/api/v5/market/candles?instId=XMSTR-USDT&bar=1D&limit={limit_days}"
         res = requests.get(okx_kline, headers=headers, timeout=6).json()
         if res.get("code") == "0" and len(res.get("data", [])) > 0:
             candles = res["data"]
@@ -149,7 +199,7 @@ def analyze_mstr(btc_price):
 
     if current_price == 0.0:
         try:
-            url = "https://query1.finance.yahoo.com/v8/finance/chart/MSTR?interval=1d&range=45d"
+            url = f"https://query1.finance.yahoo.com/v8/finance/chart/MSTR?interval=1d&range={limit_days}d"
             res = requests.get(url, headers=headers, timeout=6).json()
             quotes = res['chart']['result'][0]['indicators']['quote'][0]
             c_list = [c for c in quotes['close'] if c is not None]
@@ -174,7 +224,15 @@ def analyze_mstr(btc_price):
         highs = [c * 1.02 for c in closes]
         lows = [c * 0.98 for c in closes]
 
-    swing_highs, swing_lows, atr = find_fractal_pivots(highs, lows, closes)
+    # 進行費氏回撤與網格買賣點計算
+    fib_levels = calculate_fibonacci_levels(highs, lows, 2)
+    swing_plan = calculate_grid_targets(current_price, fib_levels, 2)
+
+    recent_highs = highs[-45:]
+    recent_lows = lows[-45:]
+    recent_closes = closes[-45:]
+    swing_highs, swing_lows, atr = find_fractal_pivots(recent_highs, recent_lows, recent_closes)
+    
     overhead = [h for h in swing_highs if h > current_price]
     resistance = min(overhead) if overhead else (current_price + atr * 1.618)
     underlying = [l for l in swing_lows if l < current_price]
@@ -192,12 +250,10 @@ def analyze_mstr(btc_price):
             dow_status = "Neutral"
     else:
         dow_signal = "趨勢延續中"
-        dow_status = "Bullish" if current_price >= closes[0] else "Neutral"
+        dow_status = "Bullish" if current_price >= recent_closes[0] else "Neutral"
 
     range_span = resistance - support
     pos = (current_price - support) / range_span if range_span > 0 else 0.5
-
-    swing_plan = calculate_swing_trade(current_price, support, resistance, atr, 2)
 
     official_base_btc = 81240.0
     official_base_stock = 153.92
@@ -226,11 +282,14 @@ def analyze_mstr(btc_price):
         "dow_status": dow_status,
         "dow_signal": dow_signal,
         "support": round(support, 2),
-        "resistance": round(resistance, 2),
+        "resistance": round(resistance, resistance),
         "buy_target": swing_plan["buy_target"],
         "sell_target": swing_plan["sell_target"],
         "wyckoff_phase": wyckoff_phase,
-        "wyckoff_hint": wyckoff_hint
+        "wyckoff_hint": wyckoff_hint,
+        "fib_382": fib_levels["fib_382"],
+        "fib_500": fib_levels["fib_500"],
+        "fib_618": fib_levels["fib_618"]
     }
 
 def main():
@@ -249,7 +308,7 @@ def main():
 
     with open("data.json", "w", encoding="utf-8") as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
-    print("Data.json updated successfully.")
+    print("Data.json updated successfully with 1D Fibonacci levels.")
 
 if __name__ == "__main__":
     main()

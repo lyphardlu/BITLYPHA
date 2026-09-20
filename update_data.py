@@ -2,7 +2,7 @@ import json
 import datetime
 import requests
 
-# 1. 道氏結構碎形 (用於判斷近期趨勢與短期支撐/壓力)
+# 1. 道氏結構碎形
 def find_fractal_pivots(highs, lows, closes):
     swing_highs = []
     swing_lows = []
@@ -20,7 +20,7 @@ def find_fractal_pivots(highs, lows, closes):
     atr = sum(tr_list) / len(tr_list) if tr_list else (highs[-1] * 0.035)
     return swing_highs, swing_lows, atr
 
-# 2. 100 天宏觀日線費氏大支撐 (定錨用)
+# 2. 100 天宏觀日線費氏大支撐
 def calculate_fibonacci_levels(highs, lows, decimals=2):
     if not highs or not lows:
         return {"macro_high": 0.0, "fib_382": 0.0, "fib_500": 0.0, "fib_618": 0.0}
@@ -58,14 +58,12 @@ def calculate_grid_targets(current_price, fib_levels, decimals=2):
         "sell_target": round(sell_target, decimals)
     }
 
-# 🌟 4. 終極 VSA 引擎：3日連續量能堆積 + 買賣警報
+# 🌟 4. 終極 VSA 引擎
 def analyze_wyckoff_vsa(highs, lows, closes, volumes, fib_levels):
     if len(closes) < 20 or len(volumes) < 20:
         return "PHASE B", "資料不足，預設為區間震盪 (Phase B)。"
 
-    # 基準：20 日宏觀均量
     vol_sma = sum(volumes[-20:]) / 20
-    # 近 3 日量能堆積與價格聚合 (3-Day Macro Candle)
     recent_3d_vol = sum(volumes[-3:]) / 3
     
     curr_close = closes[-1]
@@ -82,7 +80,6 @@ def analyze_wyckoff_vsa(highs, lows, closes, volumes, fib_levels):
     fib_382 = fib_levels["fib_382"]
     fib_618 = fib_levels["fib_618"]
     
-    # --- 底部區：深水區 618 支撐 ---
     if curr_low <= fib_618 * 1.015:
         if is_low_vol:
             return "PHASE C", "🔥【強力買進】無供應測試 (No Supply)：近三日量縮測底，賣壓枯竭，右側絕佳買點！"
@@ -93,7 +90,6 @@ def analyze_wyckoff_vsa(highs, lows, closes, volumes, fib_levels):
         else:
             return "PHASE C", "【邊界測試】位於 618 深水區防守測試中，等待量能表態。"
 
-    # --- 頂部區：強壓區 382 阻力 ---
     elif curr_high >= fib_382 * 0.985:
         if curr_close > prev_close and is_high_vol and close_pos >= 0.5:
             return "PHASE D", "【展現強勢】(SOS) 近三日放量突破 382 且收盤飽滿，需求強勁，主升段確認。"
@@ -104,7 +100,6 @@ def analyze_wyckoff_vsa(highs, lows, closes, volumes, fib_levels):
         else:
             return "PHASE D", "【頂部突破】挑戰上方強壓區，關注多頭量能是否持續堆積。"
 
-    # --- 通道中段：382 ~ 618 之間 ---
     else:
         if curr_close < prev_close and is_low_vol:
             return "PHASE C", "【二次測試】(Secondary Test) 區間內回調且連續縮量，測試下方浮動籌碼。"
@@ -114,12 +109,11 @@ def analyze_wyckoff_vsa(highs, lows, closes, volumes, fib_levels):
             return "PHASE B", "【區間震盪】(Building Cause) 於黃金區間內縮量換手，籌碼沉澱中。"
 
 # 5. 加密貨幣標的處理模組
-def analyze_crypto_symbol(symbol_binance, coingecko_id):
+def analyze_crypto_symbol(symbol_binance, coingecko_id, vs_currency="usd"):
     current_price = 0.0
     highs, lows, closes, volumes = [], [], [], []
     limit_days = 100 
 
-    # 優先從 Binance 獲取精準 OHLCV
     try:
         bn_url = f"https://api.binance.com/api/v3/klines?symbol={symbol_binance}&interval=1d&limit={limit_days}"
         res = requests.get(bn_url, headers={"User-Agent": "Mozilla/5.0"}, timeout=8).json()
@@ -132,10 +126,9 @@ def analyze_crypto_symbol(symbol_binance, coingecko_id):
     except Exception as e:
         print(f"Binance error {symbol_binance}: {e}")
 
-    # Fallback: CoinGecko
     if current_price == 0.0:
         try:
-            cg_url = f"https://api.coingecko.com/api/v3/coins/{coingecko_id}/market_chart?vs_currency=usd&days={limit_days}&interval=daily"
+            cg_url = f"https://api.coingecko.com/api/v3/coins/{coingecko_id}/market_chart?vs_currency={vs_currency}&days={limit_days}&interval=daily"
             res = requests.get(cg_url, headers={"User-Agent": "Mozilla/5.0"}, timeout=8).json()
             p_data = res.get('prices', [])
             v_data = res.get('total_volumes', [])
@@ -149,21 +142,24 @@ def analyze_crypto_symbol(symbol_binance, coingecko_id):
         except Exception as e:
             print(f"CoinGecko error {coingecko_id}: {e}")
 
-    # Fallback: 本地舊資料防護
     if current_price == 0.0:
         try:
             with open("data.json", "r", encoding="utf-8") as f:
                 old = json.load(f)
-                key = symbol_binance[:3].lower()
+                key = symbol_binance[:3].lower() if symbol_binance != "ETHBTC" else "ethbtc"
                 current_price = float(old[key]["price"])
                 closes, highs, lows, volumes = [current_price]*30, [current_price*1.02]*30, [current_price*0.98]*30, [1000]*30
         except Exception:
             current_price = 1.0
             closes, highs, lows, volumes = [1.0]*30, [1.02]*30, [0.98]*30, [1000]*30
 
-    decimals = 3 if current_price < 50 else 2
+    if current_price < 0.1:
+        decimals = 5
+    elif current_price < 50:
+        decimals = 3
+    else:
+        decimals = 2
     
-    # 執行策略引擎
     fib_levels = calculate_fibonacci_levels(highs, lows, decimals)
     swing_plan = calculate_grid_targets(current_price, fib_levels, decimals)
     wyckoff_phase, wyckoff_hint = analyze_wyckoff_vsa(highs, lows, closes, volumes, fib_levels)
@@ -207,7 +203,6 @@ def analyze_mstr(btc_price):
     headers = {"User-Agent": "Mozilla/5.0"}
     limit_days = 100
 
-    # 優先從 OKX 獲取 Tokenized MSTR 報價
     try:
         okx_url = "https://www.okx.com/api/v5/market/ticker?instId=XMSTR-USDT"
         res = requests.get(okx_url, headers=headers, timeout=6).json()
@@ -230,7 +225,6 @@ def analyze_mstr(btc_price):
     except Exception as e:
         print(f"OKX XMSTR klines error: {e}")
 
-    # Fallback: Yahoo Finance
     if current_price == 0.0 or not volumes:
         try:
             url = f"https://query1.finance.yahoo.com/v8/finance/chart/MSTR?interval=1d&range={limit_days}d"
@@ -243,7 +237,6 @@ def analyze_mstr(btc_price):
         except Exception as e:
             print(f"Yahoo fallback error: {e}")
 
-    # 本地防護
     if not closes or len(closes) < 20:
         if current_price == 0.0: current_price = 150.0
         closes = [current_price * (1 + 0.005 * (i - 15)) for i in range(30)]
@@ -270,7 +263,6 @@ def analyze_mstr(btc_price):
     else:
         dow_status, dow_signal = ("Bullish", "趨勢延續中") if current_price >= recent_closes[0] else ("Neutral", "趨勢延續中")
 
-    # MNAV 溢價計算 (靜態基準值)
     official_base_btc, official_base_stock, official_base_mnav = 81240.0, 153.92, 1.21
     stock_ratio = current_price / official_base_stock
     btc_ratio = btc_price / official_base_btc if btc_price > 0 else 1.0
@@ -297,6 +289,9 @@ def analyze_mstr(btc_price):
 def main():
     btc_data = analyze_crypto_symbol("BTCUSDT", "bitcoin")
     eth_data = analyze_crypto_symbol("ETHUSDT", "ethereum")
+    ethbtc_data = analyze_crypto_symbol("ETHBTC", "ethereum", "btc")
+    # 🌟 新增：SOL 資料處理
+    sol_data = analyze_crypto_symbol("SOLUSDT", "solana")
     uni_data = analyze_crypto_symbol("UNIUSDT", "uniswap")
     mstr_data = analyze_mstr(btc_data["price"])
 
@@ -304,13 +299,15 @@ def main():
         "updated_at": datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC"),
         "btc": btc_data,
         "eth": eth_data,
+        "ethbtc": ethbtc_data,
+        "sol": sol_data, # 🌟 寫入 SOL
         "uni": uni_data,
         "mstr": mstr_data
     }
 
     with open("data.json", "w", encoding="utf-8") as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
-    print("Data.json updated successfully with VSA Buy/Sell Triggers.")
+    print("Data.json updated successfully with 6-Grid (including SOL).")
 
 if __name__ == "__main__":
     main()

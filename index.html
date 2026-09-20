@@ -44,22 +44,24 @@
         <div>
             <div class="flex items-center gap-3">
                 <div class="bg-emerald-500/20 text-emerald-400 p-2 rounded-lg font-bold text-xl leading-none">α</div>
-                <h1 class="text-2xl font-bold tracking-wider">CryptoAlpha <span class="text-xs bg-[#2A2E39] text-slate-300 px-2 py-1 rounded ml-2 align-middle">SWING PRO</span> <span class="text-xs bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-1 rounded ml-2 align-middle animate-pulse">● LIVE TICKER WS</span></h1>
+                <h1 class="text-2xl font-bold tracking-wider">CryptoAlpha <span class="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-1 rounded ml-2 align-middle animate-pulse tracking-widest">● LIVE TICKER WS</span></h1>
             </div>
-            <p class="text-slate-400 text-sm mt-2">System Architect & Quantitative Trader: <span class="text-slate-300 font-semibold">Lyphard</span> · Multi-Asset Real-time Terminal</p>
+            <p class="text-slate-500 text-[10px] font-mono tracking-widest uppercase mt-2.5">
+                System Architect & Quant Trader: <span class="text-slate-400 font-bold">Lyphard</span> <span class="text-[#2A2E39] mx-1.5">|</span> Multi-Asset Real-time Terminal
+            </p>
         </div>
         <div class="flex items-center gap-4 text-sm">
             <div class="text-right">
-                <div class="text-slate-500">LAST SYNC (UTC)</div>
-                <div id="last-sync" class="text-emerald-400 font-mono text-base">-</div>
+                <div class="text-slate-500 text-[10px] font-bold tracking-wider uppercase mb-0.5">Last Sync (UTC)</div>
+                <div id="last-sync" class="text-emerald-400 font-mono text-sm tracking-wide">-</div>
             </div>
-            <button onclick="fetchData()" class="bg-[#1A202C] hover:bg-[#2D3748] border border-[#2A2E39] text-slate-300 px-4 py-2 rounded transition-colors flex items-center gap-2">
-                <span>↻ 重新整理結構</span>
+            <button onclick="fetchData()" class="bg-transparent hover:bg-[#2A2E39] border border-[#2A2E39] text-slate-400 hover:text-slate-200 px-3 py-1.5 rounded text-[11px] font-mono tracking-wider transition-colors flex items-center gap-1.5">
+                <span>↻ REFRESH</span>
             </button>
         </div>
     </header>
 
-    <!-- 🌟 6 宮格頂部數據卡片 (全面修正為專屬色) -->
+    <!-- 🌟 6 宮格頂部數據卡片 -->
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
         <!-- BTC -->
         <div class="glass-panel rounded-xl p-5">
@@ -130,9 +132,10 @@
         <div class="glass-panel rounded-xl p-5">
             <div class="flex justify-between items-start mb-2">
                 <h2 class="text-cyan-400 font-bold text-xs tracking-wide">MSTR / USDT</h2>
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-1.5">
                     <span id="mstr-trend" class="text-[10px] px-1.5 py-0.5 rounded font-bold uppercase shrink-0">-</span>
-                    <span class="text-[10px] text-cyan-400 font-mono">mNAV: <span id="mstr-mnav">0.0</span>x</span>
+                    <!-- 🌟 升級為獨立 Badge 格式的 mNAV 標籤 -->
+                    <span id="mstr-mnav-badge" class="text-[10px] px-1.5 py-0.5 rounded font-bold uppercase shrink-0 bg-cyan-900/50 text-cyan-400 tracking-wider">mNAV: <span id="mstr-mnav" class="font-mono">0.00</span>x</span>
                 </div>
             </div>
             <div id="mstr-price" class="text-[26px] font-bold text-cyan-400 mb-4 font-mono price-base">加載中...</div>
@@ -346,6 +349,7 @@
                 "container_id": "tradingview_chart"
             });
         }
+
         loadTradingView("BINANCE:BTCUSDT");
 
         const tabConfigs = {
@@ -373,7 +377,7 @@
         };
 
         // ============================================
-        // 2. 右腦神經網：前端 WebSocket 即時報價連線 (100% 跳動感)
+        // 2. 右腦神經網：前端 WebSocket 即時報價連線
         // ============================================
         const prevPrices = {};
         const animationTimers = {};
@@ -383,11 +387,10 @@
             const priceEl = document.getElementById(`${coin}-price`);
             const oldPrice = prevPrices[coin];
 
-            // 觸發閃爍跳動引擎
             if (oldPrice !== undefined && oldPrice !== price) {
                 const isUp = price > oldPrice;
                 priceEl.classList.remove('flash-up', 'flash-down');
-                void priceEl.offsetWidth; // 強制瀏覽器重繪
+                void priceEl.offsetWidth; 
                 priceEl.classList.add(isUp ? 'flash-up' : 'flash-down');
 
                 clearTimeout(animationTimers[coin]);
@@ -454,6 +457,7 @@
             const el = document.getElementById(elementId);
             el.innerText = phase;
             el.className = "text-[10px] font-bold px-1.5 py-0.5 rounded text-slate-800"; 
+            
             if (phase === "PHASE A") el.classList.add("bg-rose-400");
             else if (phase === "PHASE B") el.classList.add("bg-slate-400");
             else if (phase === "PHASE C") el.classList.add("bg-amber-500");
@@ -478,7 +482,24 @@
             document.getElementById(`${coin}-buy`).innerText = formatValue(data.buy_target, isBtcBase);
             document.getElementById(`${coin}-sell`).innerText = formatValue(data.sell_target, isBtcBase);
             formatTrendBadge(data.dow_status, `${coin}-trend`);
-            if(coin === 'mstr' && data.mnav_multiple) document.getElementById('mstr-mnav').innerText = data.mnav_multiple;
+            
+            // 🌟 MSTR mNAV 獨立徽章變色邏輯
+            if(coin === 'mstr' && data.mnav_multiple) {
+                document.getElementById('mstr-mnav').innerText = data.mnav_multiple;
+                const mnavBadge = document.getElementById('mstr-mnav-badge');
+                if (mnavBadge) {
+                    mnavBadge.className = "text-[10px] px-1.5 py-0.5 rounded font-bold uppercase shrink-0 tracking-wider";
+                    const phase = data.wyckoff_phase;
+                    if (phase === "OVERVALUED" || phase === "PREMIUM") {
+                        mnavBadge.classList.add("bg-rose-900/50", "text-rose-400");
+                    } else if (phase === "UNDERVALUED" || phase === "DISCOUNT") {
+                        mnavBadge.classList.add("bg-emerald-900/50", "text-emerald-400");
+                    } else {
+                        mnavBadge.classList.add("bg-cyan-900/50", "text-cyan-400");
+                    }
+                }
+            }
+
             formatPhaseBadge(data.wyckoff_phase, `${coin}-wyckoff-phase`);
             document.getElementById(`${coin}-dow-mini`).innerText = data.dow_status;
             document.getElementById(`${coin}-wyckoff-hint`).innerHTML = formatWyckoffHint(data.wyckoff_hint);

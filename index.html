@@ -79,7 +79,7 @@
             </div>
         </div>
 
-        <!-- 🌟 SOL Card (Purple Theme) -->
+        <!-- SOL Card -->
         <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-4 shadow-lg">
             <div class="flex justify-between items-start mb-2">
                 <h2 class="text-slate-400 font-semibold text-xs">SOL / USDT</h2>
@@ -105,13 +105,15 @@
             </div>
         </div>
 
-        <!-- MSTR Card -->
-        <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-4 shadow-lg relative overflow-hidden">
+        <!-- 🌟 MSTR Card (修復 mNAV 重疊問題) -->
+        <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-4 shadow-lg">
             <div class="flex justify-between items-start mb-2">
-                <h2 class="text-slate-400 font-semibold text-xs">MSTR / USDT</h2>
-                <span id="mstr-trend" class="text-[10px] px-1.5 py-0.5 rounded font-bold uppercase">-</span>
+                <div class="flex flex-col xl:flex-row xl:items-center gap-1 xl:gap-2">
+                    <h2 class="text-slate-400 font-semibold text-xs whitespace-nowrap">MSTR / USDT</h2>
+                    <span class="text-[9px] bg-cyan-900/50 text-cyan-300 px-1 py-0.5 rounded border border-cyan-700/50 w-max">mNAV: <span id="mstr-mnav">0.0</span>x</span>
+                </div>
+                <span id="mstr-trend" class="text-[10px] px-1.5 py-0.5 rounded font-bold uppercase shrink-0">-</span>
             </div>
-            <div class="absolute top-2 right-12 text-[9px] bg-cyan-900/50 text-cyan-300 px-1 py-0.5 rounded border border-cyan-700/50">mNAV: <span id="mstr-mnav">0.0</span>x</div>
             <div id="mstr-price" class="text-2xl font-bold text-cyan-400 mb-3 font-mono">$0.00</div>
             <div class="grid grid-cols-2 gap-2 text-[11px] font-mono">
                 <div><span class="text-slate-500">波段買入:</span><br><span id="mstr-buy" class="text-slate-300">$0.00</span></div>
@@ -172,7 +174,7 @@
                         <p id="ethbtc-wyckoff-hint" class="text-xs text-slate-400 leading-relaxed"></p>
                     </div>
 
-                    <!-- 🌟 SOL VSA -->
+                    <!-- SOL VSA -->
                     <div>
                         <div class="flex justify-between items-center mb-1">
                             <span class="font-bold text-sm text-slate-200">SOL · Solana</span>
@@ -210,7 +212,7 @@
                 </div>
             </div>
 
-            <!-- 🌟 1D FIB LEVELS (六宮格完美矩陣) -->
+            <!-- 1D FIB LEVELS (六宮格) -->
             <div class="bg-slate-800/50 border border-slate-700 rounded-xl shadow-lg p-5">
                 <div class="flex justify-between items-center mb-4 border-b border-slate-700 pb-2">
                     <h3 class="text-sm font-bold text-slate-300">日線費氏大支撐</h3>
@@ -245,7 +247,7 @@
                             <li class="flex justify-between"><span class="text-slate-500">618:</span> <span id="ethbtc-fib-618" class="text-amber-200/80">-</span></li>
                         </ul>
                     </div>
-                    <!-- 🌟 SOL Fib -->
+                    <!-- SOL Fib -->
                     <div>
                         <div class="text-[11px] font-bold text-slate-400 mb-1.5 border-b border-slate-700 pb-1">SOL</div>
                         <ul class="text-[11px] font-mono space-y-1">
@@ -276,47 +278,75 @@
             </div>
         </div>
 
-        <!-- 右側：TradingView 走勢圖 -->
+        <!-- 🌟 右側：互動式 Tabs TradingView 走勢圖 -->
         <div class="lg:col-span-8">
             <div class="bg-slate-800/50 border border-slate-700 rounded-xl shadow-lg p-5 h-full min-h-[500px] flex flex-col">
-                <div class="flex justify-between items-center mb-4">
+                <div class="flex flex-col md:flex-row md:justify-between items-start md:items-center mb-4 border-b border-slate-700 pb-3 gap-3">
                     <h3 class="text-sm font-bold text-slate-300 flex items-center gap-2">
-                        <span class="w-2 h-2 bg-purple-400 rounded-full"></span> 走勢儀表板 (已預設為 SOLUSDT)
+                        <span class="w-2 h-2 bg-blue-400 rounded-full"></span> 走勢儀表板
                     </h3>
+                    
+                    <!-- 圖表切換按鈕 -->
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="changeChart('BINANCE:BTCUSDT', this)" class="tv-tab active bg-emerald-600/30 text-emerald-400 border border-emerald-500/50 px-3 py-1 rounded text-xs font-bold transition">BTC</button>
+                        <button onclick="changeChart('BINANCE:ETHUSDT', this)" class="tv-tab bg-slate-800 text-slate-400 hover:bg-slate-700 border border-slate-600 px-3 py-1 rounded text-xs font-bold transition">ETH</button>
+                        <button onclick="changeChart('BINANCE:ETHBTC', this)" class="tv-tab bg-slate-800 text-slate-400 hover:bg-slate-700 border border-slate-600 px-3 py-1 rounded text-xs font-bold transition">ETH/BTC</button>
+                        <button onclick="changeChart('BINANCE:SOLUSDT', this)" class="tv-tab bg-slate-800 text-slate-400 hover:bg-slate-700 border border-slate-600 px-3 py-1 rounded text-xs font-bold transition">SOL</button>
+                        <button onclick="changeChart('BINANCE:UNIUSDT', this)" class="tv-tab bg-slate-800 text-slate-400 hover:bg-slate-700 border border-slate-600 px-3 py-1 rounded text-xs font-bold transition">UNI</button>
+                        <button onclick="changeChart('NASDAQ:MSTR', this)" class="tv-tab bg-slate-800 text-slate-400 hover:bg-slate-700 border border-slate-600 px-3 py-1 rounded text-xs font-bold transition">MSTR</button>
+                    </div>
                 </div>
-                <!-- TradingView Widget BEGIN -->
-                <div class="tradingview-widget-container flex-1 rounded overflow-hidden">
+                
+                <!-- TradingView Widget Container -->
+                <div id="tv_container" class="tradingview-widget-container flex-1 rounded overflow-hidden">
                     <div id="tradingview_chart" class="h-full"></div>
-                    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-                    <script type="text/javascript">
-                    new TradingView.widget(
-                    {
-                    "autosize": true,
-                    "symbol": "BINANCE:SOLUSDT", 
-                    "interval": "D",
-                    "timezone": "Etc/UTC",
-                    "theme": "dark",
-                    "style": "1",
-                    "locale": "zh_TW",
-                    "enable_publishing": false,
-                    "backgroundColor": "#0f172a",
-                    "gridColor": "#1e293b",
-                    "hide_top_toolbar": false,
-                    "hide_legend": false,
-                    "save_image": false,
-                    "container_id": "tradingview_chart"
-                    }
-                    );
-                    </script>
                 </div>
-                <!-- TradingView Widget END -->
             </div>
         </div>
 
     </div>
 
-    <!-- JavaScript 資料綁定與渲染邏輯 -->
+    <!-- JavaScript 核心邏輯 -->
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <script>
+        // 🌟 TradingView 動態切換功能
+        let tvWidget = null;
+        function loadTradingView(symbolToLoad) {
+            tvWidget = new TradingView.widget({
+                "autosize": true,
+                "symbol": symbolToLoad,
+                "interval": "D",
+                "timezone": "Etc/UTC",
+                "theme": "dark",
+                "style": "1",
+                "locale": "zh_TW",
+                "enable_publishing": false,
+                "backgroundColor": "#0f172a",
+                "gridColor": "#1e293b",
+                "hide_top_toolbar": false,
+                "hide_legend": false,
+                "save_image": false,
+                "container_id": "tradingview_chart"
+            });
+        }
+
+        // 初始化圖表 (預設載入 BTC)
+        loadTradingView("BINANCE:BTCUSDT");
+
+        // 點擊 Tabs 切換圖表與按鈕樣式
+        function changeChart(symbol, btnElement) {
+            // 重置所有按鈕樣式
+            document.querySelectorAll('.tv-tab').forEach(btn => {
+                btn.className = "tv-tab bg-slate-800 text-slate-400 hover:bg-slate-700 border border-slate-600 px-3 py-1 rounded text-xs font-bold transition";
+            });
+            // 點亮的按鈕給予高光樣式
+            btnElement.className = "tv-tab active bg-emerald-600/30 text-emerald-400 border border-emerald-500/50 px-3 py-1 rounded text-xs font-bold transition";
+            
+            // 重新載入圖表
+            loadTradingView(symbol);
+        }
+
+        // 數值格式化
         const formatValue = (num, isBtcBase = false) => {
             if (isBtcBase) {
                 return "₿ " + Number(num).toFixed(5);
@@ -324,6 +354,7 @@
             return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(num);
         };
 
+        // 警報格式化
         function formatWyckoffHint(hintText) {
             if (!hintText) return "";
             if (hintText.includes("🔥【強力買進】")) {
@@ -362,6 +393,7 @@
             else el.classList.add("bg-slate-700", "text-slate-300");
         };
 
+        // JSON 資料綁定
         const bindData = (coin, data) => {
             if (!data) return;
             const isBtcBase = coin === 'ethbtc';
@@ -396,7 +428,7 @@
                 bindData('btc', data.btc);
                 bindData('eth', data.eth);
                 bindData('ethbtc', data.ethbtc);
-                bindData('sol', data.sol); // 🌟 綁定 SOL
+                bindData('sol', data.sol);
                 bindData('uni', data.uni);
                 bindData('mstr', data.mstr);
 

@@ -45,15 +45,11 @@ def calculate_grid_targets(current_price, fib_levels, decimals=2):
 
 # 🌟 核心一：結合斐波那契 SOS 的動態道氏判定
 def get_dow_status(swing_highs, swing_lows, current_price, recent_closes, fib_levels):
-    # ⚡️ 1. 威科夫 SOS 強勢反轉判定 (突破 fib_382 強制翻多)
     if current_price > fib_levels["fib_382"]:
         return "Primary Bull", "SOS 強勢修復"
-        
-    # ⚡️ 2. 極度弱勢判定 (跌破 618 維持空頭)
     elif current_price < fib_levels["fib_618"]:
         return "Secondary Correction", "空頭壓制"
 
-    # ⚖️ 3. 區間內的傳統道氏高低點判定
     if len(swing_highs) >= 2 and len(swing_lows) >= 2:
         last_high, prev_high = swing_highs[-1], swing_highs[-2]
         last_low, prev_low = swing_lows[-1], swing_lows[-2]
@@ -65,7 +61,7 @@ def get_dow_status(swing_highs, swing_lows, current_price, recent_closes, fib_le
     else:
         return ("Primary Bull", "趨勢延續") if current_price >= recent_closes[0] else ("Consolidation", "趨勢延續")
 
-# 🌟 核心二：結合「確認機制 (過濾器)」的終極決策矩陣
+# 🌟 核心二：結合「確認機制」與精準提示的決策矩陣
 def analyze_wyckoff_vsa(highs, lows, closes, volumes, fib_levels, dow_status):
     if len(closes) < 20 or len(volumes) < 20: return "PHASE B", "資料不足，預設為區間震盪 (Phase B)。"
     
@@ -108,7 +104,7 @@ def analyze_wyckoff_vsa(highs, lows, closes, volumes, fib_levels, dow_status):
         elif curr_close >= fib_382 * 0.98 and curr_close < closes[-2] and is_low_vol:
             return "PHASE D", "✅【回踩確認】(BUEC) 突破後縮量回測支撐，無明顯拋售壓，確認為真實 SOS，右側買點浮現。"
 
-        # 🚀 原始 SOS 觸發 (加上警語，提醒交易員等待回踩)
+        # 🚀 原始 SOS 觸發
         elif curr_close > prev_close and is_high_vol and close_pos >= 0.5: 
             if dow_status == "Primary Bull": 
                 return "PHASE D", "🚀【強勢表態】(SOS) 爆量突破強壓！(系統提示：準備觀察後續是否出現 BUEC 縮量回踩確認)"
@@ -123,7 +119,8 @@ def analyze_wyckoff_vsa(highs, lows, closes, volumes, fib_levels, dow_status):
             if dow_status == "Primary Bull":
                 return "PHASE D", "【頂部突破】挑戰上方強壓區，關注多頭量能是否持續堆積。"
             else:
-                return "PHASE D", "【區間突圍】區間內出現明顯方向性推動，挑戰上方強壓，準備迎來表態。"
+                # 🌟 這裡已更新為更明確的觀望指令
+                return "PHASE D", "【區間突圍】多空交戰中，嚴格觀望，等待方向表態。"
             
     # === 3. 中間震盪區間 ===
     else:
@@ -336,7 +333,7 @@ def main():
 
     with open("data.json", "w", encoding="utf-8") as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
-    print("Data.json updated successfully with Ultimate Confirmed Dow-Wyckoff Engine.")
+    print("Data.json updated successfully with Refined Quant Engine.")
 
 if __name__ == "__main__":
     main()

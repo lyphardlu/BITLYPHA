@@ -83,13 +83,12 @@
         <div id="ticker-container" class="flex overflow-x-auto gap-3 scroll-smooth snap-x snap-mandatory hide-scrollbar pb-1">
             <script>
                 const createCard = (key, title, colorClass, isMnav=false) => `
-                <!-- 🌟 這裡修正為 w-[75vw]，讓手機版自然露出右邊卡片的邊緣，提示可滑動 🌟 -->
                 <div class="glass-panel rounded-xl p-4 lg:p-5 flex-none w-[75vw] md:w-[calc(50%-6px)] lg:w-[calc(25%-9px)] snap-start">
                     <div class="flex justify-between items-start mb-2">
                         <h2 class="${colorClass} font-bold text-xs tracking-wide">${title}</h2>
                         ${isMnav 
                             ? `<div class="flex items-center"><span id="${key}-mnav-badge" class="text-[10px] px-1.5 py-0.5 rounded font-bold shrink-0 bg-cyan-900/50 text-cyan-400 tracking-wider">mNAV: <span id="${key}-mnav" class="font-mono">0.00</span></span></div>` 
-                            : `<span id="${key}-trend" class="text-[10px] px-1.5 py-0.5 rounded font-bold uppercase">-</span>`
+                            : `` 
                         }
                     </div>
                     <div id="${key}-price" class="text-[26px] font-bold ${colorClass} mb-4 font-mono price-base">加載中...</div>
@@ -99,19 +98,19 @@
                     </div>
                 </div>`;
                 
-                // 只有 mstr 是 true，其餘皆為 false 回歸標準趨勢
+                // 將顯示的標題去除了 x
                 document.write(
                     createCard('btc', 'BTC / USDT', 'text-emerald-400', false) +
                     createCard('eth', 'ETH / USDT', 'text-blue-400', false) +
-                    createCard('mstr', 'xMSTR / USDT', 'text-cyan-400', true) +
+                    createCard('mstr', 'MSTR / USDT', 'text-cyan-400', true) +
                     createCard('ethbtc', 'ETH / BTC', 'text-amber-500', false) +
                     createCard('sol', 'SOL / USDT', 'text-purple-400', false) +
                     createCard('uni', 'UNI / USDT', 'text-pink-400', false) +
                     createCard('ray', 'RAY / USDT', 'text-amber-400', false) +
                     createCard('zec', 'ZEC / USDT', 'text-yellow-500', false) +
-                    createCard('xcrcl', 'xCRCL / USDT', 'text-indigo-400', false) +
-                    createCard('xcoin', 'xCOIN / USDT', 'text-blue-500', false) +
-                    createCard('xadbe', 'xADBE / USDT', 'text-red-500', false)
+                    createCard('xcrcl', 'CRCL / USDT', 'text-indigo-400', false) +
+                    createCard('xcoin', 'COIN / USDT', 'text-blue-500', false) +
+                    createCard('xadbe', 'ADBE / USDT', 'text-red-500', false)
                 );
             </script>
         </div>
@@ -133,7 +132,7 @@
                     <h3 class="text-sm font-bold text-slate-300 flex items-center gap-2">
                         <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span> 深度量化盤口診斷
                     </h3>
-                    <span class="text-[10px] text-slate-500">[威科夫階段] 道氏趨勢</span>
+                    <span class="text-[10px] text-slate-500">[主力籌碼階段] 宏觀市場結構</span>
                 </div>
                 
                 <div class="space-y-4 overflow-y-auto custom-scroll pr-2 flex-1 min-h-0">
@@ -150,19 +149,18 @@
                             <p id="${key}-wyckoff-hint" class="text-[11.5px] text-slate-300 leading-relaxed">等待 Python 運算...</p>
                         </div>`;
                         
-                        // 只有 mstr 是 true，其餘皆為 false 回歸標準威科夫
                         document.write(
                             createDiag('btc', 'BTC · 比特幣', 'text-emerald-400', false) +
                             createDiag('eth', 'ETH · 以太坊', 'text-blue-400', false) +
-                            createDiag('mstr', 'xMSTR · 微策略', 'text-cyan-400', true) +
+                            createDiag('mstr', 'MSTR · 微策略', 'text-cyan-400', true) +
                             createDiag('ethbtc', 'ETH/BTC 匯率強度', 'text-amber-500', false) +
                             createDiag('sol', 'SOL · Solana', 'text-purple-400', false) +
                             createDiag('uni', 'UNI · Uniswap', 'text-pink-400', false) +
                             createDiag('ray', 'RAY · Raydium', 'text-amber-400', false) +
                             createDiag('zec', 'ZEC · Zcash', 'text-yellow-500', false) +
-                            createDiag('xcrcl', 'xCRCL', 'text-indigo-400', false) +
-                            createDiag('xcoin', 'xCOIN · Coinbase', 'text-blue-500', false) +
-                            createDiag('xadbe', 'xADBE · Adobe', 'text-red-500', false)
+                            createDiag('xcrcl', 'CRCL', 'text-indigo-400', false) +
+                            createDiag('xcoin', 'COIN · Coinbase', 'text-blue-500', false) +
+                            createDiag('xadbe', 'ADBE · Adobe', 'text-red-500', false)
                         );
                     </script>
                 </div>
@@ -191,15 +189,15 @@
                         document.write(
                             createFib('btc', 'BTC 檔位', 'text-emerald-400') +
                             createFib('eth', 'ETH 檔位', 'text-blue-400') +
-                            createFib('mstr', 'xMSTR 檔位', 'text-cyan-400') +
+                            createFib('mstr', 'MSTR 檔位', 'text-cyan-400') +
                             createFib('ethbtc', 'ETH/BTC 檔位', 'text-amber-500') +
                             createFib('sol', 'SOL 檔位', 'text-purple-400') +
                             createFib('uni', 'UNI 檔位', 'text-pink-400') +
                             createFib('ray', 'RAY 檔位', 'text-amber-400') +
                             createFib('zec', 'ZEC 檔位', 'text-yellow-500') +
-                            createFib('xcrcl', 'xCRCL 檔位', 'text-indigo-400') +
-                            createFib('xcoin', 'xCOIN 檔位', 'text-blue-500') +
-                            createFib('xadbe', 'xADBE 檔位', 'text-red-500')
+                            createFib('xcrcl', 'CRCL 檔位', 'text-indigo-400') +
+                            createFib('xcoin', 'COIN 檔位', 'text-blue-500') +
+                            createFib('xadbe', 'ADBE 檔位', 'text-red-500')
                         );
                     </script>
                 </div>
@@ -218,15 +216,15 @@
                     <div class="flex gap-2 text-xs font-bold w-full xl:w-auto overflow-x-auto hide-scrollbar whitespace-nowrap pb-1">
                         <button onclick="changeChart('BINANCE:BTCUSDT', this, 'btc')" class="tv-tab active text-emerald-400 bg-emerald-900/20 px-2 py-1 rounded transition shrink-0">BTC</button>
                         <button onclick="changeChart('BINANCE:ETHUSDT', this, 'eth')" class="tv-tab text-slate-500 hover:text-slate-300 px-2 py-1 rounded transition shrink-0">ETH</button>
-                        <button onclick="changeChart('OKX:XMSTRUSDT', this, 'mstr')" class="tv-tab text-slate-500 hover:text-slate-300 px-2 py-1 rounded transition shrink-0">xMSTR</button>
+                        <button onclick="changeChart('OKX:XMSTRUSDT', this, 'mstr')" class="tv-tab text-slate-500 hover:text-slate-300 px-2 py-1 rounded transition shrink-0">MSTR</button>
                         <button onclick="changeChart('BINANCE:ETHBTC', this, 'ethbtc')" class="tv-tab text-slate-500 hover:text-slate-300 px-2 py-1 rounded transition shrink-0">ETH/BTC</button>
                         <button onclick="changeChart('BINANCE:SOLUSDT', this, 'sol')" class="tv-tab text-slate-500 hover:text-slate-300 px-2 py-1 rounded transition shrink-0">SOL</button>
                         <button onclick="changeChart('BINANCE:UNIUSDT', this, 'uni')" class="tv-tab text-slate-500 hover:text-slate-300 px-2 py-1 rounded transition shrink-0">UNI</button>
                         <button onclick="changeChart('BINANCE:RAYUSDT', this, 'ray')" class="tv-tab text-slate-500 hover:text-slate-300 px-2 py-1 rounded transition shrink-0">RAY</button>
                         <button onclick="changeChart('BINANCE:ZECUSDT', this, 'zec')" class="tv-tab text-slate-500 hover:text-slate-300 px-2 py-1 rounded transition shrink-0">ZEC</button>
-                        <button onclick="changeChart('OKX:XCRCLUSDT', this, 'xcrcl')" class="tv-tab text-slate-500 hover:text-slate-300 px-2 py-1 rounded transition shrink-0">xCRCL</button>
-                        <button onclick="changeChart('OKX:XCOINUSDT', this, 'xcoin')" class="tv-tab text-slate-500 hover:text-slate-300 px-2 py-1 rounded transition shrink-0">xCOIN</button>
-                        <button onclick="changeChart('OKX:XADBEUSDT', this, 'xadbe')" class="tv-tab text-slate-500 hover:text-slate-300 px-2 py-1 rounded transition shrink-0">xADBE</button>
+                        <button onclick="changeChart('OKX:XCRCLUSDT', this, 'xcrcl')" class="tv-tab text-slate-500 hover:text-slate-300 px-2 py-1 rounded transition shrink-0">CRCL</button>
+                        <button onclick="changeChart('OKX:XCOINUSDT', this, 'xcoin')" class="tv-tab text-slate-500 hover:text-slate-300 px-2 py-1 rounded transition shrink-0">COIN</button>
+                        <button onclick="changeChart('OKX:XADBEUSDT', this, 'xadbe')" class="tv-tab text-slate-500 hover:text-slate-300 px-2 py-1 rounded transition shrink-0">ADBE</button>
                     </div>
                 </div>
                 
@@ -279,10 +277,8 @@
                 "hide_top_toolbar": false,
                 "hide_legend": false,
                 "save_image": false,
-                // 🌟 關閉底部時間列，保留側邊畫線 🌟
                 "withdateranges": false,
                 "hide_side_toolbar": false,
-                // ⚠️ 已經移除了強制載入 Volume 的 studies，避免成交量重疊
                 "container_id": "tradingview_chart"
             });
         }
@@ -292,15 +288,15 @@
         const tabConfigs = {
             btc: { colorClass: 'text-emerald-400 bg-emerald-900/20', dotClass: 'bg-emerald-400', title: 'BTC/USDT 即時走勢' },
             eth: { colorClass: 'text-blue-400 bg-blue-900/20', dotClass: 'bg-blue-400', title: 'ETH/USDT 即時走勢' },
-            mstr: { colorClass: 'text-cyan-400 bg-cyan-900/20', dotClass: 'bg-cyan-400', title: 'xMSTR/USDT 即時走勢' },
+            mstr: { colorClass: 'text-cyan-400 bg-cyan-900/20', dotClass: 'bg-cyan-400', title: 'MSTR/USDT 即時走勢' },
             ethbtc: { colorClass: 'text-amber-500 bg-amber-900/20', dotClass: 'bg-amber-500', title: 'ETH/BTC 匯率走勢' },
             sol: { colorClass: 'text-purple-400 bg-purple-900/20', dotClass: 'bg-purple-400', title: 'SOL/USDT 即時走勢' },
             uni: { colorClass: 'text-pink-400 bg-pink-900/20', dotClass: 'bg-pink-400', title: 'UNI/USDT 即時走勢' },
             ray: { colorClass: 'text-amber-400 bg-amber-900/20', dotClass: 'bg-amber-400', title: 'RAY/USDT 即時走勢' },
             zec: { colorClass: 'text-yellow-500 bg-yellow-900/20', dotClass: 'bg-yellow-500', title: 'ZEC/USDT 即時走勢' },
-            xcrcl: { colorClass: 'text-indigo-400 bg-indigo-900/20', dotClass: 'bg-indigo-400', title: 'xCRCL/USDT 即時走勢' },
-            xcoin: { colorClass: 'text-blue-500 bg-blue-900/20', dotClass: 'bg-blue-500', title: 'xCOIN/USDT 即時走勢' },
-            xadbe: { colorClass: 'text-red-500 bg-red-900/20', dotClass: 'bg-red-500', title: 'xADBE/USDT 即時走勢' }
+            xcrcl: { colorClass: 'text-indigo-400 bg-indigo-900/20', dotClass: 'bg-indigo-400', title: 'CRCL/USDT 即時走勢' },
+            xcoin: { colorClass: 'text-blue-500 bg-blue-900/20', dotClass: 'bg-blue-500', title: 'COIN/USDT 即時走勢' },
+            xadbe: { colorClass: 'text-red-500 bg-red-900/20', dotClass: 'bg-red-500', title: 'ADBE/USDT 即時走勢' }
         };
 
         function changeChart(symbol, btnElement, coinKey) {
@@ -393,16 +389,6 @@
             return `<span class="text-slate-300">${hintText}</span>`;
         }
 
-        const formatTrendBadge = (status, elementId) => {
-            const el = document.getElementById(elementId);
-            if (!el) return; 
-            el.innerText = status;
-            el.className = "text-[10px] px-1.5 py-0.5 rounded font-bold uppercase";
-            if (status === "Bullish") el.classList.add("bg-emerald-900/50", "text-emerald-400");
-            else if (status === "Bearish") el.classList.add("bg-rose-900/50", "text-rose-400");
-            else el.classList.add("bg-amber-900/50", "text-amber-500");
-        };
-
         const formatPhaseBadge = (phase, elementId) => {
             const el = document.getElementById(elementId);
             if (!el) return;
@@ -442,9 +428,6 @@
                     else if (phase === "UNDERVALUED" || phase === "DISCOUNT") mnavBadge.classList.add("bg-emerald-900/50", "text-emerald-400");
                     else mnavBadge.classList.add("bg-cyan-900/50", "text-cyan-400");
                 }
-            } else {
-                // 否則顯示標準綠色/紅色的多空趨勢徽章
-                formatTrendBadge(data.dow_status, `${coin}-trend`);
             }
 
             formatPhaseBadge(data.wyckoff_phase, `${coin}-wyckoff-phase`);

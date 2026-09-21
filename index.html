@@ -233,10 +233,15 @@
 
     </div>
 
-    <!-- 底部落款 -->
-    <footer class="mt-4 mb-2 shrink-0">
+    <!-- 底部落款與流量計數器 -->
+    <footer class="mt-4 mb-2 shrink-0 flex flex-col items-center gap-2">
         <div class="flex flex-wrap justify-center items-center gap-2 text-[11.5px] text-[#4A5568] font-mono tracking-wide">
             <span>BITLYPHA // Designed & Architected by 比特利法 Lyphard · Macro-Swing Execution System</span>
+        </div>
+        <!-- 網站流量計數器 -->
+        <div class="opacity-70 hover:opacity-100 transition-opacity mt-1">
+            <img src="https://profile-counter.glitch.me/lyphardlu/count.svg" alt="BITLYPHA Visitors" />
+            <!-- 若你有自己的計數器代碼，可直接替換上面這行 <img> -->
         </div>
     </footer>
 
@@ -265,6 +270,12 @@
                 "hide_top_toolbar": false,
                 "hide_legend": false,
                 "save_image": false,
+                // 🌟 開啟完整工具列與成交量指標 🌟
+                "withdateranges": true,
+                "hide_side_toolbar": false,
+                "studies": [
+                    "Volume@tv-basicstudies"
+                ],
                 "container_id": "tradingview_chart"
             });
         }
@@ -413,7 +424,7 @@
             if (document.getElementById(`${coin}-buy`)) document.getElementById(`${coin}-buy`).innerText = formatValue(data.buy_target, isBtcBase);
             if (document.getElementById(`${coin}-sell`)) document.getElementById(`${coin}-sell`).innerText = formatValue(data.sell_target, isBtcBase);
             
-            // 邏輯分流：如果有 mnav_multiple 代表是 MSTR
+            // 邏輯分流：如果有 mnav_multiple (通常只有 MSTR 會有)，顯示溢價標籤
             if (data.mnav_multiple) {
                 if (document.getElementById(`${coin}-mnav`)) document.getElementById(`${coin}-mnav`).innerText = data.mnav_multiple;
                 const mnavBadge = document.getElementById(`${coin}-mnav-badge`);
@@ -425,7 +436,7 @@
                     else mnavBadge.classList.add("bg-cyan-900/50", "text-cyan-400");
                 }
             } else {
-                // 否則顯示標準趨勢徽章
+                // 否則顯示標準綠色/紅色的多空趨勢徽章
                 formatTrendBadge(data.dow_status, `${coin}-trend`);
             }
 

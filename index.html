@@ -163,7 +163,7 @@
         <div class="lg:col-span-4 flex flex-col gap-4 lg:h-full min-h-0">
             
             <!-- VSA 量化盤口診斷 -->
-            <div class="glass-panel rounded-xl p-5 flex flex-col lg:h-[55%] min-h-[300px] lg:min-h-0 shrink-0">
+            <div class="glass-panel rounded-xl p-5 flex flex-col lg:h-[42%] min-h-[280px] lg:min-h-0 shrink-0">
                 <div class="flex justify-between items-center mb-4 border-b border-[#2A2E39] pb-2 shrink-0">
                     <h3 class="text-sm font-bold text-slate-300 flex items-center gap-2">
                         <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span> 深度量化盤口診斷
@@ -202,8 +202,32 @@
                 </div>
             </div>
 
+            <!-- ⛏️ 比特幣礦工與鏈上成本監控區 -->
+            <div class="glass-panel rounded-xl p-4 flex flex-col shrink-0">
+                <div class="flex justify-between items-center mb-2.5 border-b border-[#2A2E39] pb-2">
+                    <h3 class="text-xs font-bold text-amber-400 flex items-center gap-2">
+                        <span>⛏️ 礦工與鏈上成本監控 (MINING FLOOR)</span>
+                    </h3>
+                    <span class="text-[9px] bg-amber-900/30 text-amber-400 px-1.5 py-0.5 rounded font-mono">ON-CHAIN</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2 text-xs font-mono">
+                    <div class="bg-[#0b0e11] p-2 rounded border border-[#2A2E39]">
+                        <span class="text-slate-500 text-[10px]">全網算力 (Hashrate):</span>
+                        <div id="mining-hashrate" class="text-cyan-400 font-bold mt-1 text-xs">加載中...</div>
+                    </div>
+                    <div class="bg-[#0b0e11] p-2 rounded border border-[#2A2E39]">
+                        <span class="text-slate-500 text-[10px]">生產成本底線 (Cost Floor):</span>
+                        <div id="mining-cost" class="text-amber-500 font-bold mt-1 text-xs">加載中...</div>
+                    </div>
+                </div>
+                <div class="mt-2 bg-[#0b0e11] p-2 rounded border border-[#2A2E39] text-[11px] font-mono flex justify-between items-center">
+                    <span class="text-slate-400">礦工狀態評估:</span>
+                    <span id="mining-status" class="text-emerald-400 font-bold">同步中...</span>
+                </div>
+            </div>
+
             <!-- 1D FIB LEVELS -->
-            <div class="glass-panel rounded-xl p-5 flex flex-col flex-1 min-h-[300px] lg:min-h-0 shrink-0">
+            <div class="glass-panel rounded-xl p-5 flex flex-col flex-1 min-h-[240px] lg:min-h-0 shrink-0">
                 <div class="flex justify-between items-center mb-4 border-b border-[#2A2E39] pb-2 shrink-0">
                     <h3 class="text-sm font-bold text-slate-300">日線費氏大支撐 (1D FIB LEVELS)</h3>
                     <span class="text-[10px] bg-[#2A2E39] text-slate-400 px-2 rounded">MACRO-SWING</span>
@@ -286,7 +310,7 @@
         </div>
     </footer>
 
-    <!-- 🌟 AI 智能操盤手懸浮按鈕與側邊欄 🌟 -->
+    <!-- AI 智能操盤手懸浮按鈕與側邊欄 -->
     <div class="ai-toggle-btn" onclick="toggleAiSidebar()">
         <span>⚡ 盤口 AI 助理</span>
     </div>
@@ -300,11 +324,11 @@
         </div>
         <div id="aiChatBody" class="flex-1 p-4 overflow-y-auto custom-scroll space-y-3 text-xs font-mono bg-[#0b0e11]">
             <div class="p-3 rounded bg-[#1a1e24] border-l-2 border-amber-400 text-slate-300">
-                您好！我是您的 AI 首席量化操盤手。我已連線當前終端數據 (`data.json`)。您可以問我任何資產的威科夫 VSA 階段、買入/止盈價，或 ATR 幾何外推邏輯！
+                您好！我是您的 AI 首席量化操盤手。我已連線當前終端數據 (`data.json`)。您可以問我任何資產的威科夫 VSA 階段、買入/止盈價，或比特幣礦工鏈上算力狀態！
             </div>
         </div>
         <div class="p-3 bg-[#1a1e24] border-t border-[#2A2E39] flex gap-2">
-            <input type="text" id="aiInput" placeholder="輸入指令（例如：分析 RAY 盤口）..." class="flex-1 bg-[#0b0e11] border border-[#2A2E39] rounded px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-amber-400" onkeypress="if(event.key==='Enter') sendAiMessage()">
+            <input type="text" id="aiInput" placeholder="輸入指令（例如：分析 BTC 礦工數據）..." class="flex-1 bg-[#0b0e11] border border-[#2A2E39] rounded px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-amber-400" onkeypress="if(event.key==='Enter') sendAiMessage()">
             <button onclick="sendAiMessage()" class="bg-amber-400 text-[#0A0E17] font-bold px-3 py-2 rounded hover:bg-amber-500 transition">發送</button>
         </div>
     </div>
@@ -508,12 +532,20 @@
             try {
                 const response = await fetch(`data.json?t=${new Date().getTime()}`); 
                 const data = await response.json();
-                latestMarketData = data; // 儲存全域脈絡供 AI 使用
+                latestMarketData = data; 
                 if (document.getElementById('last-sync')) document.getElementById('last-sync').innerText = data.updated_at || "-";
                 
                 ['btc', 'eth', 'mstr', 'ethbtc', 'sol', 'uni', 'ray', 'zec', 'xcrcl', 'xcoin', 'xadbe'].forEach(key => {
                     if(data[key]) bindDeepData(key, data[key]);
                 });
+
+                // 綁定比特幣礦工鏈上數據
+                if (data.btc && data.btc.mining_data) {
+                    const mData = data.btc.mining_data;
+                    if(document.getElementById('mining-hashrate')) document.getElementById('mining-hashrate').innerText = mData.hashrate_eh;
+                    if(document.getElementById('mining-cost')) document.getElementById('mining-cost').innerText = "$" + mData.production_cost.toLocaleString();
+                    if(document.getElementById('mining-status')) document.getElementById('mining-status').innerText = mData.mining_status;
+                }
             } catch (error) {
                 console.error("無法載入結構資料:", error);
             }
@@ -533,12 +565,10 @@
             const text = input.value.trim();
             if (!text) return;
 
-            // 顯示使用者訊息
             chatBody.innerHTML += `<div class="p-2 rounded bg-[#2962ff]/20 text-blue-300 text-right ml-4">${escapeHtml(text)}</div>`;
             input.value = '';
             chatBody.scrollTop = chatBody.scrollHeight;
 
-            // 智慧分析回應
             setTimeout(() => {
                 const reply = generateAiReply(text, latestMarketData);
                 chatBody.innerHTML += `<div class="p-3 rounded bg-[#1a1e24] border-l-2 border-amber-400 text-slate-300">${reply}</div>`;
@@ -549,7 +579,17 @@
         function generateAiReply(query, data) {
             const q = query.toUpperCase();
             
-            // 掃描指定幣種
+            if (q.includes('礦工') || q.includes('算力') || q.includes('COST') || q.includes('HASHRATE')) {
+                if (data.btc && data.btc.mining_data) {
+                    const m = data.btc.mining_data;
+                    return `⛏️ <b>比特幣礦工鏈上監控情報</b>：<br>` +
+                           `• 全網算力：<b>${m.hashrate_eh}</b><br>` +
+                           `• 生產成本底線：<b>$${m.production_cost.toLocaleString()}</b><br>` +
+                           `• 礦工狀態：<b>${m.mining_status}</b><br>` +
+                           `💡 當價格接近成本底線且算力由跌轉升時，往往是宏觀絕佳買點！`;
+                }
+            }
+
             for (let key in data) {
                 if (key === 'updated_at') continue;
                 if (q.includes(key.toUpperCase()) || q.includes(key)) {
@@ -564,10 +604,10 @@
             }
 
             if (q.includes('買') || q.includes('BUY')) {
-                return `🔥 系統會透過 <b>ATR 幾何與費氏回撤聯防</b> 自動抓取各資產的黃金買點（如 Phase C 彈簧洗盤或 0.618 支撐）。您可以直接輸入幣種名稱（例如：「RAY 買點」）來查詢！`;
+                return `🔥 系統會透過 <b>ATR 幾何與費氏回撤聯防</b> 自動抓取各資產的黃金買點。您可以輸入幣種名稱（例如：「BTC」、「RAY」）或詢問「礦工數據」來查詢！`;
             }
 
-            return `收到您的詢問：「${query}」。本終端目前已載入最新數據，採用雙軌分工架構：買入交由費氏回撤與威科夫聯防，止盈由 ATR 幾何外推守護。請問想檢視哪一檔資產？`;
+            return `收到您的詢問：「${query}」。本終端已完成雙軌威科夫與鏈上礦工監控聯網。請問想檢視哪一檔資產或鏈上指標？`;
         }
 
         function escapeHtml(text) {

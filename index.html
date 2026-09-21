@@ -234,12 +234,19 @@
     </div>
 
     <!-- 🌟 底部落款與瀏覽計數器 🌟 -->
-    <footer class="mt-4 mb-2 shrink-0 flex flex-col items-center gap-2">
-        <div class="flex flex-wrap justify-center items-center gap-2 text-[11.5px] text-[#4A5568] font-mono tracking-wide text-center">
+    <footer class="mt-4 mb-2 shrink-0">
+        <div class="flex flex-wrap justify-center items-center gap-x-1.5 gap-y-1 text-[11.5px] text-[#4A5568] font-mono tracking-wide text-center">
             <span>BITLYPHA // Designed & Architected by 比特利法 Lyphard · Macro-Swing Execution System</span>
+            
+            <!-- 流量小圖 (數據長條圖) + 純數字 (跟在同行) -->
+            <div class="flex items-center gap-1 opacity-60 hover:opacity-100 transition-opacity" title="Total Visitors">
+                <svg class="w-3 h-3 text-[#4A5568]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 20V10M12 20V4M6 20v-6"></path>
+                </svg>
+                <!-- 隱形背景的純數字 -->
+                <img src="https://visitor-badge.laobi.icu/badge?page_id=lyphardlu.BITLYPHA&left_color=0A0E17&right_color=0A0E17&left_text=%20" alt="Views" class="h-[14px]">
+            </div>
         </div>
-        <!-- 免費開源的 SVG 徽章計數器，完全不需要後端 -->
-        <img src="https://visitor-badge.laobi.icu/badge?page_id=lyphardlu.BITLYPHA&left_color=131722&right_color=34d399&left_text=VISITORS" alt="Visitors" class="opacity-80 hover:opacity-100 transition-opacity mt-1">
     </footer>
 
     <!-- JavaScript 核心邏輯 -->

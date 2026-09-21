@@ -1,49 +1,49 @@
 {
-  "updated_at": "2026-09-21 02:45 UTC",
+  "updated_at": "2026-09-21 03:02 UTC",
   "btc": {
-    "price": 81244.18,
+    "price": 81330.88,
     "dow_status": "Bearish",
     "dow_signal": "空頭受阻",
     "support": 75364.71,
     "resistance": 82275.08,
-    "buy_target": 73290.07,
-    "sell_target": 87461.14,
+    "buy_target": 73331.99,
+    "sell_target": 87532.36,
     "wyckoff_phase": "PHASE D",
     "wyckoff_hint": "【頂部突破】挑戰上方強壓區，關注多頭量能是否持續堆積。",
-    "fib_382": 73290.07,
-    "fib_500": 70199.13,
-    "fib_618": 67108.19
+    "fib_382": 73331.99,
+    "fib_500": 70233.05,
+    "fib_618": 67134.11
   },
   "eth": {
-    "price": 2658.74,
+    "price": 2662.33,
     "dow_status": "Neutral",
     "dow_signal": "結構收斂",
     "support": 2380.96,
-    "resistance": 2882.18,
-    "buy_target": 2267.44,
-    "sell_target": 2861.47,
+    "resistance": 2885.78,
+    "buy_target": 2269.71,
+    "sell_target": 2865.32,
     "wyckoff_phase": "PHASE D",
     "wyckoff_hint": "【頂部突破】挑戰上方強壓區，關注多頭量能是否持續堆積。",
-    "fib_382": 2267.44,
-    "fib_500": 2126.04,
-    "fib_618": 1984.63
+    "fib_382": 2269.71,
+    "fib_500": 2127.87,
+    "fib_618": 1986.03
   },
   "ethbtc": {
-    "price": 0.03277,
+    "price": 0.0328,
     "dow_status": "Bullish",
     "dow_signal": "多頭推進",
     "support": 0.03091,
     "resistance": 0.03331,
-    "buy_target": 0.03029,
-    "sell_target": 0.03527,
+    "buy_target": 0.03031,
+    "sell_target": 0.0353,
     "wyckoff_phase": "PHASE D",
     "wyckoff_hint": "【頂部突破】挑戰上方強壓區，關注多頭量能是否持續堆積。",
-    "fib_382": 0.03029,
-    "fib_500": 0.02927,
-    "fib_618": 0.02825
+    "fib_382": 0.03031,
+    "fib_500": 0.02929,
+    "fib_618": 0.02827
   },
   "sol": {
-    "price": 111.3,
+    "price": 111.31,
     "dow_status": "Neutral",
     "dow_signal": "結構收斂",
     "support": 97.47,
@@ -57,7 +57,7 @@
     "fib_618": 84.88
   },
   "uni": {
-    "price": 8.718,
+    "price": 8.728,
     "dow_status": "Bullish",
     "dow_signal": "多頭推進",
     "support": 5.8,
@@ -71,7 +71,7 @@
     "fib_618": 5.01
   },
   "mstr": {
-    "price": 155.64,
+    "price": 155.93,
     "mnav_multiple": 1.22,
     "dow_status": "Neutral",
     "buy_target": 129.56,

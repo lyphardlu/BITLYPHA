@@ -279,12 +279,10 @@
                 "hide_top_toolbar": false,
                 "hide_legend": false,
                 "save_image": false,
-                // 🌟 關閉底部時間列，保留側邊畫線與成交量 🌟
+                // 🌟 關閉底部時間列，保留側邊畫線 🌟
                 "withdateranges": false,
                 "hide_side_toolbar": false,
-                "studies": [
-                    "Volume@tv-basicstudies"
-                ],
+                // ⚠️ 已經移除了強制載入 Volume 的 studies，避免成交量重疊
                 "container_id": "tradingview_chart"
             });
         }

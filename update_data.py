@@ -43,7 +43,36 @@ def calculate_grid_targets(current_price, fib_levels, decimals=2):
     else: sell_target = macro_high * 1.05 
     return {"buy_target": buy_target, "sell_target": sell_target}
 
-# 🌟 升級：傳入 dow_status，根據宏觀狀態產生動態矩陣解讀
+# 🌟 核心：結合斐波那契與 Wyckoff SOS 的終極道氏判定
+def get_dow_status(swing_highs, swing_lows, current_price, recent_closes, fib_levels):
+    # ⚡️ 1. 威科夫 SOS 強勢反轉判定 (黃金法則)
+    # 價格收復宏觀跌幅的 61.8% (突破 fib_382 壓力線) 代表底部 SOS 確立，強制翻轉主升趨勢
+    if current_price > fib_levels["fib_382"]:
+        return "Primary Bull", "SOS 強勢修復"
+        
+    # ⚡️ 2. 極度弱勢判定 (跌破 618 深水區維持空頭看法)
+    elif current_price < fib_levels["fib_618"]:
+        return "Secondary Correction", "空頭壓制"
+
+    # ⚖️ 3. 區間內的傳統道氏高低點判定
+    if len(swing_highs) >= 2 and len(swing_lows) >= 2:
+        last_high, prev_high = swing_highs[-1], swing_highs[-2]
+        last_low, prev_low = swing_lows[-1], swing_lows[-2]
+
+        # 動態微觀突破 (ChoCh)
+        if current_price > last_high:
+            return "Primary Bull", "強勢突破"
+        
+        if last_high >= prev_high and last_low >= prev_low: 
+            return "Primary Bull", "多頭推進"
+        elif last_high <= prev_high and last_low <= prev_low: 
+            return "Secondary Correction", "空頭受阻"
+        else: 
+            return "Consolidation", "結構收斂"
+    else:
+        return ("Primary Bull", "趨勢延續") if current_price >= recent_closes[0] else ("Consolidation", "趨勢延續")
+
+# 🌟 核心：結合宏觀(Dow)與微觀(Wyckoff)的終極決策矩陣
 def analyze_wyckoff_vsa(highs, lows, closes, volumes, fib_levels, dow_status):
     if len(closes) < 20 or len(volumes) < 20: return "PHASE B", "資料不足，預設為區間震盪 (Phase B)。"
     
@@ -56,51 +85,43 @@ def analyze_wyckoff_vsa(highs, lows, closes, volumes, fib_levels, dow_status):
     is_high_vol, is_low_vol = recent_3d_vol > vol_sma * 1.2, recent_3d_vol < vol_sma * 0.8
     fib_382, fib_618 = fib_levels["fib_382"], fib_levels["fib_618"]
     
-    # 底部區間 (接近或跌破 618)
+    # === 1. 底部區間 (接近或跌破 618) ===
     if curr_low <= fib_618 * 1.015:
         if is_low_vol: 
             return "PHASE C", "🔥【強力買進】無供應測試 (No Supply)：賣壓枯竭，右側絕佳買點！"
         elif is_high_vol and close_pos >= 0.5: 
-            # 🌟 矩陣邏輯：Spring 彈簧洗盤
-            if dow_status == "Primary Bull":
-                return "PHASE C", "🔥【強力買進】完美共振！主升趨勢中的彈簧洗盤 (Spring)，主力強力吃貨，絕佳波段買點。"
-            elif dow_status == "Secondary Correction":
-                return "PHASE C", "🔥【強力買進】極度低估！宏觀極限回調出現恐慌拋售與彈簧洗盤，左側摸底良機。"
-            else:
-                return "PHASE C", "🔥【強力買進】區間極限測試！彈簧洗盤 (Spring) 爆量收腳，主力深水區吃貨。"
+            if dow_status == "Primary Bull": return "PHASE C", "🔥【強力買進】完美共振！主升趨勢中的彈簧洗盤 (Spring)，絕佳波段買點。"
+            elif dow_status == "Secondary Correction": return "PHASE C", "🔥【強力買進】極度低估！宏觀極限回調出現恐慌拋售與彈簧洗盤，左側摸底。"
+            else: return "PHASE C", "🔥【強力買進】區間極限測試！彈簧洗盤 (Spring) 爆量收腳，主力吃貨。"
         elif is_high_vol and close_pos < 0.5: 
-            if dow_status == "Secondary Correction":
-                return "PHASE E", "🛑【逃頂賣出】趨勢破壞！空頭結構全面崩盤，放量跌破支撐，嚴格停損。"
+            if dow_status == "Secondary Correction": return "PHASE E", "🛑【逃頂賣出】趨勢破壞！空頭結構全面崩盤，嚴格停損。"
             return "PHASE A", "【恐慌拋售】近三日放量跌破 618，賣壓沉重，觀望勿接飛刀。"
         else: 
             return "PHASE C", "【邊界測試】位於 618 深水區防守測試中，等待量能表態。"
             
-    # 頂部區間 (接近或突破 382)
+    # === 2. 頂部區間 (接近或突破 382) ===
     elif curr_high >= fib_382 * 0.985:
         if curr_close > prev_close and is_high_vol and close_pos >= 0.5: 
             return "PHASE D", "🚀【強勢表態】(SOS) 放量突破壓力區且收盤飽滿，需求強勁，準備迎來趨勢展開。"
         elif curr_close > prev_close and is_low_vol: 
-            return "PHASE B", "⚠️【高位誘多】需求不足 (No Demand)：無量過高，追買意願低迷，提防假突破！"
+            return "PHASE B", "⚠️【高位誘多】需求不足 (No Demand)：無量過高，提防假突破！"
         elif is_high_vol and close_pos <= 0.4 and curr_close < prev_close: 
-            # 🌟 矩陣邏輯：Upthrust 上衝回落
-            if dow_status == "Primary Bull":
-                return "PHASE B", "🛑【逃頂賣出】溢價過高！主升趨勢高檔出現假突破派發 (UTAD)，主力倒貨中。"
-            elif dow_status == "Secondary Correction":
-                return "PHASE B", "⚠️【死貓反彈】空頭結構中的微觀拉升 (LPSY)，遭遇解套賣壓，注意誘多風險！"
-            else:
-                return "PHASE B", "🛑【逃頂賣出】上衝回落 (Upthrust)：爆量挑戰前高卻留長上影線，高位危險！"
+            if dow_status == "Primary Bull": return "PHASE B", "🛑【逃頂賣出】溢價過高！高檔出現假突破派發 (UTAD)，主力倒貨中。"
+            elif dow_status == "Secondary Correction": return "PHASE B", "⚠️【死貓反彈】空頭結構微觀拉升 (LPSY)，遭遇解套賣壓，注意風險！"
+            else: return "PHASE B", "🛑【逃頂賣出】上衝回落 (Upthrust)：爆量挑戰前高卻留長上影線，高位危險！"
         else: 
-            return "PHASE D", "【頂部突破】挑戰上方強壓區，關注多頭量能是否持續堆積。"
+            if dow_status == "Primary Bull": return "PHASE D", "🚀【強勢表態】需求強勁湧現 (SOS)，挑戰上方強壓區，持多續抱。"
+            elif dow_status == "Secondary Correction": return "PHASE D", "⚠️【死貓反彈】高位誘多 (LPSY)！空頭結構中的微觀拉升，極可能遭遇解套賣壓。"
+            else: return "PHASE D", "【區間突圍】區間內出現明顯方向性推動，挑戰上方強壓，準備迎來表態。"
             
-    # 中間震盪區間
+    # === 3. 中間震盪區間 ===
     else:
         if curr_close < prev_close and is_low_vol: 
-            return "PHASE C", "【二次測試】(Secondary Test) 區間內回調且連續縮量，測試下方浮動籌碼。"
+            return "PHASE C", "【二次測試】(Secondary Test) 區間內回調且連續縮量，測試下方籌碼。"
         elif curr_close > prev_close and is_high_vol: 
             return "PHASE D", "【標記躍升】(Minor SOS) 區間內連續放量上攻，買盤積極換手。"
         else: 
-            if dow_status == "Consolidation":
-                return "PHASE B", "⚖️【籌碼沉澱】主力建立部位中，無明確方向，建議嚴格執行高拋低吸。"
+            if dow_status == "Consolidation": return "PHASE B", "⚖️【籌碼沉澱】主力建立部位中，無明確方向，建議嚴格執行高拋低吸。"
             return "PHASE B", "【區間震盪】於黃金區間內縮量換手，籌碼沉澱中。"
 
 def analyze_mstr_mnav(mnav):
@@ -109,20 +130,6 @@ def analyze_mstr_mnav(mnav):
     elif mnav <= 0.95: return "DISCOUNT", "🚀【極度低估】mNAV 罕見跌破 1.0x 產生折價！絕對的黃金抄底坑！"
     elif mnav <= 1.15: return "UNDERVALUED", "🔥【強力買進】折價買進！mNAV 接近基準線，溢價泡沫已洗淨，具備極高安全邊際！"
     else: return "FAIR VALUE", "⚖️【合理區間】mNAV 位於 1.15x - 1.6x 常態區間，隨 BTC 現貨連動，無極端情緒干擾。"
-
-# 獲取趨勢的共用函數
-def get_dow_status(swing_highs, swing_lows, current_price, recent_closes):
-    if len(swing_highs) >= 2 and len(swing_lows) >= 2:
-        # 🌟 正名：Bullish -> Primary Bull, Bearish -> Secondary Correction, Neutral -> Consolidation
-        if swing_highs[-1] >= swing_highs[-2] and swing_lows[-1] >= swing_lows[-2]: 
-            return "Primary Bull", "多頭推進"
-        elif swing_highs[-1] <= swing_highs[-2] and swing_lows[-1] <= swing_lows[-2]: 
-            return "Secondary Correction", "空頭受阻"
-        else: 
-            return "Consolidation", "結構收斂"
-    else:
-        return ("Primary Bull", "趨勢延續") if current_price >= recent_closes[0] else ("Consolidation", "趨勢延續")
-
 
 def analyze_crypto_symbol(symbol_binance, coingecko_id, vs_currency="usd"):
     current_price = 0.0
@@ -167,10 +174,10 @@ def analyze_crypto_symbol(symbol_binance, coingecko_id, vs_currency="usd"):
     recent_highs, recent_lows, recent_closes = highs[-45:], lows[-45:], closes[-45:]
     swing_highs, swing_lows, atr = find_fractal_pivots(recent_highs, recent_lows, recent_closes)
     
-    # 🌟 1. 取得宏觀趨勢
-    dow_status, dow_signal = get_dow_status(swing_highs, swing_lows, current_price, recent_closes)
+    # 🌟 傳入 fib_levels，判斷是否強勢翻轉
+    dow_status, dow_signal = get_dow_status(swing_highs, swing_lows, current_price, recent_closes, fib_levels)
     
-    # 🌟 2. 丟入微觀 VSA 引擎，產生終極矩陣文字
+    # 🌟 結合宏觀趨勢產出最終文字
     wyckoff_phase, wyckoff_hint = analyze_wyckoff_vsa(highs, lows, closes, volumes, fib_levels, dow_status)
 
     overhead = [h for h in swing_highs if h > current_price]
@@ -208,7 +215,6 @@ def analyze_tokenized_stock(stock_ticker, okx_prefix, is_mstr=False, btc_price=0
     headers = {"User-Agent": "Mozilla/5.0"}
     limit_days = 100
 
-    # 1. 抓取 OKX 報價
     okx_inst_ids = [f"{okx_prefix}-USDT", f"{okx_prefix}-USDT-SWAP"]
     for instId in okx_inst_ids:
         if current_price != 0.0: break
@@ -219,7 +225,6 @@ def analyze_tokenized_stock(stock_ticker, okx_prefix, is_mstr=False, btc_price=0
                 current_price = float(res["data"][0]["last"])
         except Exception: continue
 
-    # 2. 強制抓取 Yahoo Finance 原股數據
     try:
         url = f"https://query1.finance.yahoo.com/v8/finance/chart/{stock_ticker}?interval=1d&range={limit_days}d"
         res = requests.get(url, headers=headers, timeout=6).json()
@@ -230,7 +235,6 @@ def analyze_tokenized_stock(stock_ticker, okx_prefix, is_mstr=False, btc_price=0
             if current_price == 0.0: current_price = closes[-1]
     except Exception: pass
 
-    # 防呆機制
     if not closes or len(closes) < 20:
         if current_price == 0.0: current_price = official_base_stock
         closes = [current_price * (1 + 0.005 * (i - 15)) for i in range(30)]
@@ -242,8 +246,8 @@ def analyze_tokenized_stock(stock_ticker, okx_prefix, is_mstr=False, btc_price=0
     recent_highs, recent_lows, recent_closes = highs[-45:], lows[-45:], closes[-45:]
     swing_highs, swing_lows, atr = find_fractal_pivots(recent_highs, recent_lows, recent_closes)
 
-    # 🌟 1. 取得宏觀趨勢
-    dow_status, dow_signal = get_dow_status(swing_highs, swing_lows, current_price, recent_closes)
+    # 🌟 傳入 fib_levels，判斷是否強勢翻轉
+    dow_status, dow_signal = get_dow_status(swing_highs, swing_lows, current_price, recent_closes, fib_levels)
     
     final_buy_target, final_sell_target = swing_plan["buy_target"], swing_plan["sell_target"]
 
@@ -253,7 +257,6 @@ def analyze_tokenized_stock(stock_ticker, okx_prefix, is_mstr=False, btc_price=0
         btc_ratio = btc_price / official_base_btc if btc_price > 0 else 1.0
         mnav_multiple = round(official_base_mnav * (stock_ratio / btc_ratio), 2)
         
-        # MSTR 專屬 MNAV 模型
         stock_phase, stock_hint = analyze_mstr_mnav(mnav_multiple)
 
         if stock_phase in ["OVERVALUED", "PREMIUM"]:  
@@ -279,7 +282,7 @@ def analyze_tokenized_stock(stock_ticker, okx_prefix, is_mstr=False, btc_price=0
         }
     
     else:
-        # 🌟 2. 其他美股丟入微觀 VSA 引擎
+        # 🌟 結合宏觀趨勢產出最終文字
         wyckoff_phase, wyckoff_hint = analyze_wyckoff_vsa(highs, lows, closes, volumes, fib_levels, dow_status)
 
         if wyckoff_phase == "PHASE D":

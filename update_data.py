@@ -146,7 +146,7 @@ def analyze_crypto_symbol(symbol_binance, coingecko_id, vs_currency="usd"):
     highs, lows, closes, volumes = [], [], [], []
     limit_days = 100 
     
-    # 1. 嘗試 Binance
+    # 1. 嘗試 Binance K 線數據
     try:
         bn_url = f"https://api.binance.com/api/v3/klines?symbol={symbol_binance}&interval=1d&limit={limit_days}"
         res = requests.get(bn_url, headers={"User-Agent": "Mozilla/5.0"}, timeout=8).json()
@@ -155,7 +155,7 @@ def analyze_crypto_symbol(symbol_binance, coingecko_id, vs_currency="usd"):
             current_price = closes[-1]
     except: pass
 
-    # 2. 嘗試 CoinGecko
+    # 2. 嘗試 CoinGecko 備援
     if current_price == 0.0:
         try:
             cg_url = f"https://api.coingecko.com/api/v3/coins/{coingecko_id}/market_chart?vs_currency={vs_currency}&days={limit_days}&interval=daily"
@@ -169,7 +169,7 @@ def analyze_crypto_symbol(symbol_binance, coingecko_id, vs_currency="usd"):
                 current_price = closes[-1]
         except: pass
 
-    # 3. 嘗試 CoinCap 備用 API (免key、極難被擋)
+    # 3. 嘗試 CoinCap 備用
     if current_price == 0.0:
         try:
             cc_map = {"bitcoin": "bitcoin", "ethereum": "ethereum", "solana": "solana", "uniswap": "uniswap", "raydium": "raydium", "zcash": "zcash"}
@@ -182,7 +182,7 @@ def analyze_crypto_symbol(symbol_binance, coingecko_id, vs_currency="usd"):
                     closes, highs, lows, volumes = [current_price]*30, [current_price*1.05]*30, [current_price*0.95]*30, [10000]*30
         except: pass
 
-    # 4. 嘗試讀取 data.json 舊快取（嚴格過濾 > $2.0 乾淨資料）
+    # 4. 讀取 data.json 舊快取（只要 > 0 就全部放過，完全支援低價幣與高價幣）
     if current_price == 0.0:
         try:
             with open("data.json", "r", encoding="utf-8") as f:
@@ -196,16 +196,17 @@ def analyze_crypto_symbol(symbol_binance, coingecko_id, vs_currency="usd"):
                 for k in possible_keys:
                     if k in old and isinstance(old[k], dict) and "price" in old[k]:
                         val = old[k]["price"]
-                        if val != "N/A" and isinstance(val, (int, float)) and val > 2.0:
-                            cached_p = float(val)
-                            break
+                        if val != "N/A" and isinstance(val, (int, float)):
+                            if val > 0:  # 只要大於 0 就完整放行
+                                cached_p = float(val)
+                                break
                 
                 if cached_p:
                     current_price = cached_p
                     closes, highs, lows, volumes = [current_price]*30, [current_price*1.05]*30, [current_price*0.95]*30, [10000]*30
         except: pass
 
-    if current_price == 0.0 or not closes or current_price <= 2.0:
+    if current_price == 0.0 or not closes:
         return {
             "price": "N/A", "dow_status": "N/A", "dow_signal": "API 連線失敗，數據缺失 (N/A)",
             "support": "N/A", "resistance": "N/A", "buy_target": "N/A", "sell_target": "N/A",
@@ -279,7 +280,7 @@ def analyze_tokenized_stock(stock_ticker, okx_prefix, is_mstr=False, btc_price=0
             if current_price == 0.0: current_price = closes[-1]
     except Exception: pass
 
-    if current_price == 0.0 or not closes or current_price <= 2.0:
+    if current_price == 0.0 or not closes:
         return {
             "price": "N/A", "dow_status": "N/A", "dow_signal": "API 連線失敗，數據缺失 (N/A)",
             "buy_target": "N/A", "sell_target": "N/A",
@@ -350,7 +351,7 @@ def main():
 
     with open("data.json", "w", encoding="utf-8") as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
-    print("Data.json updated successfully with Multi-API Fallback Engine (Binance -> CoinGecko -> CoinCap).")
+    print("Data.json updated successfully with robust non-zero cache policy.")
 
 if __name__ == "__main__":
     main()

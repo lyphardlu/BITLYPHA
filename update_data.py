@@ -89,7 +89,7 @@ def analyze_wyckoff_vsa(highs, lows, closes, volumes, fib_levels, dow_status):
         if is_low_vol: 
             return "PHASE C", "🔥【強力買進】無供應測試 (No Supply)：賣壓枯竭，右側絕佳買點！"
         elif is_high_vol and close_pos >= 0.5: 
-            if dow_status == "Primary Bull": return "PHASE C", "🔥【強力買進】完美共振！主升趨勢中的彈簧洗盤 (Spring)，絕佳波段買點。"
+            if dow_status == "Primary Bull": return "PHASE C", "🔥【強力買進】完美共振！主升趨勢中的彈簧洗盤 (Spring), 絕佳波段買點。"
             elif dow_status == "Secondary Correction": return "PHASE C", "🔥【強力買進】極度低估！宏觀極限回調出現恐慌拋售與彈簧洗盤，左側摸底。"
             else: return "PHASE C", "🔥【強力買進】區間極限測試！彈簧洗盤 (Spring) 爆量收腳，主力吃貨。"
         elif is_high_vol and close_pos < 0.5: 
@@ -134,12 +134,19 @@ def analyze_wyckoff_vsa(highs, lows, closes, volumes, fib_levels, dow_status):
             if dow_status == "Consolidation": return "PHASE B", "⚖️【籌碼沉澱】主力建立部位中，無明確方向，建議嚴格執行高拋低吸。"
             return "PHASE B", "【區間震盪】於黃金區間內縮量換手，籌碼沉澱中。"
 
+# 🌟 補回 MSTR mNAV 溢價分析函數
+def analyze_mstr_mnav(mnav):
+    if mnav >= 2.0: return "OVERVALUED", "🛑【逃頂賣出】溢價過高！mNAV 超過 2.0x 極端溢價，脫離 BTC 基本面，強烈建議獲利了結！"
+    elif mnav >= 1.6: return "PREMIUM", "⚠️【高位溢價】mNAV 達 1.6x 以上，處於歷史相對高位，建議停止追高。"
+    elif mnav <= 0.95: return "DISCOUNT", "🚀【極度低估】mNAV 罕見跌破 1.0x 產生折價！絕對的黃金抄底坑！"
+    elif mnav <= 1.15: return "UNDERVALUED", "🔥【強力買進】折價買進！mNAV 接近基準線，溢價泡沫已洗淨，具備極高安全邊際！"
+    else: return "FAIR VALUE", "⚖️【合理區間】mNAV 位於 1.15x - 1.6x 常態區間，隨 BTC 現貨連動，無極端情緒干擾。"
+
 def analyze_crypto_symbol(symbol_binance, coingecko_id, vs_currency="usd"):
     current_price = 0.0
     highs, lows, closes, volumes = [], [], [], []
     limit_days = 100 
     
-    # 1. 嘗試 Binance
     try:
         bn_url = f"https://api.binance.com/api/v3/klines?symbol={symbol_binance}&interval=1d&limit={limit_days}"
         res = requests.get(bn_url, headers={"User-Agent": "Mozilla/5.0"}, timeout=8).json()
@@ -148,7 +155,6 @@ def analyze_crypto_symbol(symbol_binance, coingecko_id, vs_currency="usd"):
             current_price = closes[-1]
     except: pass
 
-    # 2. 嘗試 CoinGecko
     if current_price == 0.0:
         try:
             cg_url = f"https://api.coingecko.com/api/v3/coins/{coingecko_id}/market_chart?vs_currency={vs_currency}&days={limit_days}&interval=daily"
@@ -162,7 +168,6 @@ def analyze_crypto_symbol(symbol_binance, coingecko_id, vs_currency="usd"):
                 current_price = closes[-1]
         except: pass
 
-    # 3. 嘗試讀取舊快取 data.json
     if current_price == 0.0:
         try:
             with open("data.json", "r", encoding="utf-8") as f:
@@ -170,12 +175,10 @@ def analyze_crypto_symbol(symbol_binance, coingecko_id, vs_currency="usd"):
                 key = symbol_binance[:3].lower() if symbol_binance != "ETHBTC" else "ethbtc"
                 if key in old and isinstance(old[key], dict) and "price" in old[key] and old[key]["price"] != "N/A":
                     cached_p = float(old[key]["price"])
-                    # 如果舊快取有效，使用它並賦予基本的模擬歷史數據以防崩潰
                     current_price = cached_p
                     closes, highs, lows, volumes = [current_price]*30, [current_price*1.05]*30, [current_price*0.95]*30, [10000]*30
         except: pass
 
-    # 4. 如果完全找不到數據：嚴格返回 N/A，絕不偽造假價格！
     if current_price == 0.0 or not closes:
         return {
             "price": "N/A", "dow_status": "N/A", "dow_signal": "API 連線失敗，數據缺失 (N/A)",
@@ -321,7 +324,7 @@ def main():
 
     with open("data.json", "w", encoding="utf-8") as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
-    print("Data.json updated successfully with Strict N/A Error Capture Engine.")
+    print("Data.json updated successfully with analyze_mstr_mnav fixed.")
 
 if __name__ == "__main__":
     main()

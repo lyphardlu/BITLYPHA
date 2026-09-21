@@ -141,41 +141,55 @@ def analyze_mstr_mnav(mnav):
     elif mnav <= 1.15: return "UNDERVALUED", "🔥【強力買進】折價買進！mNAV 接近基準線，溢價泡沫已洗淨，具備極高安全邊際！"
     else: return "FAIR VALUE", "⚖️【合理區間】mNAV 位於 1.15x - 1.6x 常態區間，隨 BTC 現貨連動，無極端情緒干擾。"
 
-def analyze_crypto_symbol(symbol_binance, coingecko_id, vs_currency="usd"):
+def analyze_crypto_symbol(symbol_binance, coingecko_id, vs_currency="usd", okx_inst_id=None):
     current_price = 0.0
     highs, lows, closes, volumes = [], [], [], []
     limit_days = 100 
     headers = {"User-Agent": "Mozilla/5.0"}
     
-    # 1. 優先嘗試 Binance 真實歷史 K 線數據（確保費氏與高低點 100% 真實）
-    try:
-        bn_url = f"https://api.binance.com/api/v3/klines?symbol={symbol_binance}&interval=1d&limit={limit_days}"
-        res = requests.get(bn_url, headers=headers, timeout=8).json()
-        if isinstance(res, list) and len(res) >= 20:
-            closes = [float(k[4]) for k in res]
-            highs = [float(k[2]) for k in res]
-            lows = [float(k[3]) for k in res]
-            volumes = [float(k[5]) for k in res]
-            current_price = closes[-1]
-    except: pass
+    # 1. 優先嘗試 OKX 歷史蠟燭圖 API（穩定且不會鎖 IP）
+    if okx_inst_id:
+        try:
+            okx_kline_url = f"https://www.okx.com/api/v5/market/candles?instId={okx_inst_id}&bar=1D&limit={limit_days}"
+            res = requests.get(okx_kline_url, headers=headers, timeout=6).json()
+            if res.get("code") == "0" and len(res.get("data", [])) >= 20:
+                # OKX candles 回傳格式：[ts, o, h, l, c, vol, ccyVol, ...] (時間倒序)
+                raw_candles = res["data"][::-1] # 轉為正序
+                closes = [float(k[4]) for k in raw_candles]
+                highs = [float(k[2]) for k in raw_candles]
+                lows = [float(k[3]) for k in raw_candles]
+                volumes = [float(k[5]) for k in raw_candles]
+                current_price = closes[-1]
+        except: pass
 
-    # 2. 嘗試 CoinGecko 歷史市場圖表（取得真實歷史高低點）
-    if current_price == 0.0 or len(highs) < 20:
+    # 2. 如果 OKX K線失敗，嘗試 Binance K 線備援
+    if current_price == 0.0 or len(closes) < 20:
+        try:
+            bn_url = f"https://api.binance.com/api/v3/klines?symbol={symbol_binance}&interval=1d&limit={limit_days}"
+            res = requests.get(bn_url, headers=headers, timeout=6).json()
+            if isinstance(res, list) and len(res) >= 20:
+                closes = [float(k[4]) for k in res]
+                highs = [float(k[2]) for k in res]
+                lows = [float(k[3]) for k in res]
+                volumes = [float(k[5]) for k in res]
+                current_price = closes[-1]
+        except: pass
+
+    # 3. 嘗試 CoinGecko 備援
+    if current_price == 0.0 or len(closes) < 20:
         try:
             cg_url = f"https://api.coingecko.com/api/v3/coins/{coingecko_id}/market_chart?vs_currency={vs_currency}&days={limit_days}&interval=daily"
-            res = requests.get(cg_url, headers=headers, timeout=8).json()
+            res = requests.get(cg_url, headers=headers, timeout=6).json()
             p_data, v_data = res.get('prices', []), res.get('total_volumes', [])
             if len(p_data) >= 20:
                 min_len = min(len(p_data), len(v_data))
                 closes = [p[1] for p in p_data[-min_len:]]
                 volumes = [v[1] for v in v_data[-min_len:]]
-                # 從 CoinGecko 取得真實的高低點數據
                 highs = [p[1] * 1.02 for p in p_data[-min_len:]]
                 lows = [p[1] * 0.98 for p in p_data[-min_len:]]
                 current_price = closes[-1]
         except: pass
 
-    # 3. 如果 API 全部斷線，才允許從舊 data.json 讀取「完整的歷史數據結構」或舊價格
     if current_price == 0.0 or not closes:
         return {
             "price": "N/A", "dow_status": "N/A", "dow_signal": "API 連線失敗，數據缺失 (N/A)",
@@ -297,13 +311,13 @@ def analyze_tokenized_stock(stock_ticker, okx_prefix, is_mstr=False, btc_price=0
         }
 
 def main():
-    btc_data = analyze_crypto_symbol("BTCUSDT", "bitcoin")
-    eth_data = analyze_crypto_symbol("ETHUSDT", "ethereum")
+    btc_data = analyze_crypto_symbol("BTCUSDT", "bitcoin", okx_inst_id="BTC-USDT")
+    eth_data = analyze_crypto_symbol("ETHUSDT", "ethereum", okx_inst_id="ETH-USDT")
     ethbtc_data = analyze_crypto_symbol("ETHBTC", "ethereum", "btc")
-    sol_data = analyze_crypto_symbol("SOLUSDT", "solana")
-    uni_data = analyze_crypto_symbol("UNIUSDT", "uniswap")
-    ray_data = analyze_crypto_symbol("RAYUSDT", "raydium")
-    zec_data = analyze_crypto_symbol("ZECUSDT", "zcash")
+    sol_data = analyze_crypto_symbol("SOLUSDT", "solana", okx_inst_id="SOL-USDT")
+    uni_data = analyze_crypto_symbol("UNIUSDT", "uniswap", okx_inst_id="UNI-USDT")
+    ray_data = analyze_crypto_symbol("RAYUSDT", "raydium", okx_inst_id="RAY-USDT")
+    zec_data = analyze_crypto_symbol("ZECUSDT", "zcash", okx_inst_id="ZEC-USDT")
 
     mstr_btc_price = btc_data["price"] if btc_data["price"] != "N/A" else 80000.0
     mstr_data = analyze_tokenized_stock("MSTR", "XMSTR", is_mstr=True, btc_price=mstr_btc_price, official_base_stock=153.92, official_base_mnav=1.21)
@@ -321,7 +335,7 @@ def main():
 
     with open("data.json", "w", encoding="utf-8") as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
-    print("Data.json updated successfully with pure historical Fibonacci calculation restored.")
+    print("Data.json updated successfully with OKX Primary Candles + Pure Historical Fibonacci.")
 
 if __name__ == "__main__":
     main()

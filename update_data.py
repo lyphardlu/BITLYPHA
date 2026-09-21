@@ -18,17 +18,21 @@ def find_fractal_pivots(highs, lows, closes):
     return swing_highs, swing_lows, atr
 
 def calculate_fibonacci_levels(highs, lows, decimals=2):
-    if not highs or not lows: return {"macro_high": 0.0, "fib_382": 0.0, "fib_500": 0.0, "fib_618": 0.0}
+    # 🌟 新增了 fib_786 用於 PHASE A 的極端恐慌防守
+    if not highs or not lows: return {"macro_high": 0.0, "fib_236": 0.0, "fib_382": 0.0, "fib_500": 0.0, "fib_618": 0.0, "fib_786": 0.0}
     macro_high, macro_low = max(highs), min(lows)
     diff = macro_high - macro_low
     return {
         "macro_high": round(macro_high, decimals),
+        "fib_236": round(macro_high - (diff * 0.236), decimals),
         "fib_382": round(macro_high - (diff * 0.382), decimals),
         "fib_500": round(macro_high - (diff * 0.500), decimals),
-        "fib_618": round(macro_high - (diff * 0.618), decimals)
+        "fib_618": round(macro_high - (diff * 0.618), decimals),
+        "fib_786": round(macro_high - (diff * 0.786), decimals)
     }
 
 def calculate_grid_targets(current_price, fib_levels, decimals=2):
+    # 這是一般的基礎網格，後續會被威科夫狀態全面覆寫微調
     fib_382, fib_500, fib_618, macro_high = fib_levels["fib_382"], fib_levels["fib_500"], fib_levels["fib_618"], fib_levels["macro_high"]
     if current_price > fib_382: buy_target = fib_382
     elif current_price > fib_500: buy_target = fib_500
@@ -39,7 +43,7 @@ def calculate_grid_targets(current_price, fib_levels, decimals=2):
     elif current_price < fib_500: sell_target = fib_382
     elif current_price < fib_382: sell_target = macro_high
     else: sell_target = macro_high * 1.05 
-    return {"buy_target": round(buy_target, decimals), "sell_target": round(sell_target, decimals)}
+    return {"buy_target": buy_target, "sell_target": sell_target}
 
 def analyze_wyckoff_vsa(highs, lows, closes, volumes, fib_levels):
     if len(closes) < 20 or len(volumes) < 20: return "PHASE B", "資料不足，預設為區間震盪 (Phase B)。"
@@ -67,18 +71,12 @@ def analyze_wyckoff_vsa(highs, lows, closes, volumes, fib_levels):
         elif curr_close > prev_close and is_high_vol: return "PHASE D", "【標記躍升】(Minor SOS) 區間內連續放量上攻，買盤積極換手。"
         else: return "PHASE B", "【區間震盪】(Building Cause) 於黃金區間內縮量換手，籌碼沉澱中。"
 
-# 🌟 新增：MSTR 專屬的 mNAV 溢價套利模型
 def analyze_mstr_mnav(mnav):
-    if mnav >= 2.0:
-        return "OVERVALUED", "🛑【溢價過高】mNAV 超過 2.0x！回顧 2025 牛市見頂特徵，散戶極度 FOMO 產生巨大泡沫，強烈建議獲利了結換倉 BTC！"
-    elif mnav >= 1.6:
-        return "PREMIUM", "⚠️【高位溢價】mNAV 達 1.6x 以上，處於歷史相對高位，建議停止追高，開始分批派發。"
-    elif mnav <= 0.95:
-        return "DISCOUNT", "🚀【極度低估】mNAV 罕見跌破 1.0x 產生折價！猶如 2026 熊市底部的恐慌錯殺，絕對的黃金抄底坑！"
-    elif mnav <= 1.15:
-        return "UNDERVALUED", "🔥【折價買進】mNAV 接近基準線 (< 1.15x)，溢價泡沫已洗淨，此時買入 MSTR 具備極高安全邊際！"
-    else:
-        return "FAIR VALUE", "⚖️【合理區間】mNAV 位於 1.15x - 1.6x 常態區間，隨 BTC 現貨連動，無極端情緒干擾。"
+    if mnav >= 2.0: return "OVERVALUED", "🛑【溢價過高】mNAV 超過 2.0x！回顧 2025 牛市見頂特徵，散戶極度 FOMO 產生巨大泡沫，強烈建議獲利了結換倉 BTC！"
+    elif mnav >= 1.6: return "PREMIUM", "⚠️【高位溢價】mNAV 達 1.6x 以上，處於歷史相對高位，建議停止追高，開始分批派發。"
+    elif mnav <= 0.95: return "DISCOUNT", "🚀【極度低估】mNAV 罕見跌破 1.0x 產生折價！猶如 2026 熊市底部的恐慌錯殺，絕對的黃金抄底坑！"
+    elif mnav <= 1.15: return "UNDERVALUED", "🔥【折價買進】mNAV 接近基準線 (< 1.15x)，溢價泡沫已洗淨，此時買入 MSTR 具備極高安全邊際！"
+    else: return "FAIR VALUE", "⚖️【合理區間】mNAV 位於 1.15x - 1.6x 常態區間，隨 BTC 現貨連動，無極端情緒干擾。"
 
 def analyze_crypto_symbol(symbol_binance, coingecko_id, vs_currency="usd"):
     current_price = 0.0
@@ -135,11 +133,29 @@ def analyze_crypto_symbol(symbol_binance, coingecko_id, vs_currency="usd"):
     else:
         dow_status, dow_signal = ("Bullish", "趨勢延續") if current_price >= recent_closes[0] else ("Neutral", "趨勢延續")
 
+    # 🌟 全面性：加密貨幣威科夫狀態全面微調買賣點
+    final_buy_target, final_sell_target = swing_plan["buy_target"], swing_plan["sell_target"]
+    
+    if wyckoff_phase == "PHASE D":     # 強勢主升：買點 0.236，停利看前高甚至突破
+        final_buy_target = fib_levels["fib_236"]
+        final_sell_target = fib_levels["macro_high"] * 1.05
+    elif wyckoff_phase == "PHASE C":   # 彈簧洗盤底：買點深掛 0.618，停利看前高
+        final_buy_target = fib_levels["fib_618"]
+        final_sell_target = fib_levels["macro_high"]
+    elif wyckoff_phase == "PHASE B":   # 區間震盪：買點掛 0.5 中軸，停利掛 0.236 高拋
+        final_buy_target = fib_levels["fib_500"]
+        final_sell_target = fib_levels["fib_236"]
+    elif wyckoff_phase == "PHASE A":   # 恐慌拋售：買點退守 0.786 極端防線，停利看 0.5 反彈
+        final_buy_target = fib_levels["fib_786"]
+        final_sell_target = fib_levels["fib_500"]
+
     return {
         "price": round(current_price, decimals), "dow_status": dow_status, "dow_signal": dow_signal,
         "support": round(support, decimals), "resistance": round(resistance, decimals),
-        "buy_target": swing_plan["buy_target"], "sell_target": swing_plan["sell_target"],
+        "buy_target": round(final_buy_target, decimals), 
+        "sell_target": round(final_sell_target, decimals),
         "wyckoff_phase": wyckoff_phase, "wyckoff_hint": wyckoff_hint,
+        "fib_236": fib_levels["fib_236"],
         "fib_382": fib_levels["fib_382"], "fib_500": fib_levels["fib_500"], "fib_618": fib_levels["fib_618"]
     }
 
@@ -198,19 +214,35 @@ def analyze_mstr(btc_price):
     else:
         dow_status, dow_signal = ("Bullish", "趨勢延續") if current_price >= recent_closes[0] else ("Neutral", "趨勢延續")
 
-    # 計算 mNAV 倍數
     official_base_btc, official_base_stock, official_base_mnav = 81240.0, 153.92, 1.21
     stock_ratio = current_price / official_base_stock
     btc_ratio = btc_price / official_base_btc if btc_price > 0 else 1.0
     mnav_multiple = round(official_base_mnav * (stock_ratio / btc_ratio), 2)
-
-    # 🌟 捨棄 VSA，改用 mNAV 模型判定 MSTR 買賣點
     mstr_phase, mstr_hint = analyze_mstr_mnav(mnav_multiple)
+
+    # 🌟 全面性：MSTR 美股狀態全面微調買賣點
+    final_buy_target, final_sell_target = swing_plan["buy_target"], swing_plan["sell_target"]
+    
+    if mstr_phase in ["OVERVALUED", "PREMIUM"]:  # 狂熱溢價：買點 0.236，停利看突破
+        final_buy_target = fib_levels["fib_236"]
+        final_sell_target = fib_levels["macro_high"] * 1.05
+    elif mstr_phase == "FAIR VALUE":             # 合理區間：買點 0.382，停利看前高
+        final_buy_target = fib_levels["fib_382"]
+        final_sell_target = fib_levels["macro_high"]
+    elif mstr_phase == "UNDERVALUED":            # 折價區：買點 0.5，停利看 0.236
+        final_buy_target = fib_levels["fib_500"]
+        final_sell_target = fib_levels["fib_236"]
+    elif mstr_phase == "DISCOUNT":               # 極度低估 (錯殺)：買點退守 0.618，停利看 0.382
+        final_buy_target = fib_levels["fib_618"]
+        final_sell_target = fib_levels["fib_382"]
 
     return {
         "price": round(current_price, 2), "mnav_multiple": mnav_multiple,
-        "dow_status": dow_status, "buy_target": swing_plan["buy_target"], "sell_target": swing_plan["sell_target"],
-        "wyckoff_phase": mstr_phase, "wyckoff_hint": mstr_hint, # 傳入 mNAV 結果
+        "dow_status": dow_status, 
+        "buy_target": round(final_buy_target, 2), 
+        "sell_target": round(final_sell_target, 2),
+        "wyckoff_phase": mstr_phase, "wyckoff_hint": mstr_hint, 
+        "fib_236": fib_levels["fib_236"],
         "fib_382": fib_levels["fib_382"], "fib_500": fib_levels["fib_500"], "fib_618": fib_levels["fib_618"]
     }
 
@@ -230,7 +262,7 @@ def main():
 
     with open("data.json", "w", encoding="utf-8") as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
-    print("Data.json updated successfully with MSTR mNAV Logic.")
+    print("Data.json updated successfully with Comprehensive Dynamic Grid Targets.")
 
 if __name__ == "__main__":
     main()

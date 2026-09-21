@@ -141,25 +141,37 @@ def analyze_mstr_mnav(mnav):
     elif mnav <= 1.15: return "UNDERVALUED", "🔥【強力買進】折價買進！mNAV 接近基準線，溢價泡沫已洗淨，具備極高安全邊際！"
     else: return "FAIR VALUE", "⚖️【合理區間】mNAV 位於 1.15x - 1.6x 常態區間，隨 BTC 現貨連動，無極端情緒干擾。"
 
-def analyze_crypto_symbol(symbol_binance, coingecko_id, vs_currency="usd"):
+def analyze_crypto_symbol(symbol_binance, coingecko_id, vs_currency="usd", okx_inst_id=None):
     current_price = 0.0
     highs, lows, closes, volumes = [], [], [], []
     limit_days = 100 
+    headers = {"User-Agent": "Mozilla/5.0"}
     
     # 1. 嘗試 Binance K 線數據
     try:
         bn_url = f"https://api.binance.com/api/v3/klines?symbol={symbol_binance}&interval=1d&limit={limit_days}"
-        res = requests.get(bn_url, headers={"User-Agent": "Mozilla/5.0"}, timeout=8).json()
+        res = requests.get(bn_url, headers=headers, timeout=8).json()
         if isinstance(res, list) and len(res) >= 20:
             closes, highs, lows, volumes = [float(k[4]) for k in res], [float(k[2]) for k in res], [float(k[3]) for k in res], [float(k[5]) for k in res]
             current_price = closes[-1]
     except: pass
 
-    # 2. 嘗試 CoinGecko 備援
+    # 2. 如果 Binance 失敗，嘗試 OKX API 備援（支援 RAY-USDT、ZEC-USDT 等合約/現貨）
+    if current_price == 0.0 and okx_inst_id:
+        try:
+            okx_url = f"https://www.okx.com/api/v5/market/ticker?instId={okx_inst_id}"
+            res = requests.get(okx_url, headers=headers, timeout=5).json()
+            if res.get("code") == "0" and len(res.get("data", [])) > 0:
+                current_price = float(res["data"][0]["last"])
+                # 以當前現價建立合理的模擬趨勢陣列以防萬一
+                closes, highs, lows, volumes = [current_price]*30, [current_price*1.05]*30, [current_price*0.95]*30, [10000]*30
+        except: pass
+
+    # 3. 嘗試 CoinGecko 備援
     if current_price == 0.0:
         try:
             cg_url = f"https://api.coingecko.com/api/v3/coins/{coingecko_id}/market_chart?vs_currency={vs_currency}&days={limit_days}&interval=daily"
-            res = requests.get(cg_url, headers={"User-Agent": "Mozilla/5.0"}, timeout=8).json()
+            res = requests.get(cg_url, headers=headers, timeout=8).json()
             p_data, v_data = res.get('prices', []), res.get('total_volumes', [])
             if len(p_data) >= 20:
                 min_len = min(len(p_data), len(v_data))
@@ -169,20 +181,20 @@ def analyze_crypto_symbol(symbol_binance, coingecko_id, vs_currency="usd"):
                 current_price = closes[-1]
         except: pass
 
-    # 3. 嘗試 CoinCap 備用
+    # 4. 嘗試 CoinCap 備用
     if current_price == 0.0:
         try:
             cc_map = {"bitcoin": "bitcoin", "ethereum": "ethereum", "solana": "solana", "uniswap": "uniswap", "raydium": "raydium", "zcash": "zcash"}
             if coingecko_id in cc_map:
                 cc_url = f"https://api.coincap.io/v2/assets/{cc_map[coingecko_id]}"
-                res = requests.get(cc_url, headers={"User-Agent": "Mozilla/5.0"}, timeout=5).json()
+                res = requests.get(cc_url, headers=headers, timeout=5).json()
                 price_str = res.get("data", {}).get("priceUsd")
                 if price_str:
                     current_price = float(price_str)
                     closes, highs, lows, volumes = [current_price]*30, [current_price*1.05]*30, [current_price*0.95]*30, [10000]*30
         except: pass
 
-    # 4. 讀取 data.json 舊快取（只要 > 0 就全部放過，完全支援低價幣與高價幣）
+    # 5. 讀取 data.json 舊快取（只要 > 0 就全部放過）
     if current_price == 0.0:
         try:
             with open("data.json", "r", encoding="utf-8") as f:
@@ -197,7 +209,7 @@ def analyze_crypto_symbol(symbol_binance, coingecko_id, vs_currency="usd"):
                     if k in old and isinstance(old[k], dict) and "price" in old[k]:
                         val = old[k]["price"]
                         if val != "N/A" and isinstance(val, (int, float)):
-                            if val > 0:  # 只要大於 0 就完整放行
+                            if val > 0:
                                 cached_p = float(val)
                                 break
                 
@@ -327,13 +339,13 @@ def analyze_tokenized_stock(stock_ticker, okx_prefix, is_mstr=False, btc_price=0
         }
 
 def main():
-    btc_data = analyze_crypto_symbol("BTCUSDT", "bitcoin")
-    eth_data = analyze_crypto_symbol("ETHUSDT", "ethereum")
+    btc_data = analyze_crypto_symbol("BTCUSDT", "bitcoin", okx_inst_id="BTC-USDT")
+    eth_data = analyze_crypto_symbol("ETHUSDT", "ethereum", okx_inst_id="ETH-USDT")
     ethbtc_data = analyze_crypto_symbol("ETHBTC", "ethereum", "btc")
-    sol_data = analyze_crypto_symbol("SOLUSDT", "solana")
-    uni_data = analyze_crypto_symbol("UNIUSDT", "uniswap")
-    ray_data = analyze_crypto_symbol("RAYUSDT", "raydium")
-    zec_data = analyze_crypto_symbol("ZECUSDT", "zcash")
+    sol_data = analyze_crypto_symbol("SOLUSDT", "solana", okx_inst_id="SOL-USDT")
+    uni_data = analyze_crypto_symbol("UNIUSDT", "uniswap", okx_inst_id="UNI-USDT")
+    ray_data = analyze_crypto_symbol("RAYUSDT", "raydium", okx_inst_id="RAY-USDT")
+    zec_data = analyze_crypto_symbol("ZECUSDT", "zcash", okx_inst_id="ZEC-USDT")
 
     mstr_btc_price = btc_data["price"] if btc_data["price"] != "N/A" else 80000.0
     mstr_data = analyze_tokenized_stock("MSTR", "XMSTR", is_mstr=True, btc_price=mstr_btc_price, official_base_stock=153.92, official_base_mnav=1.21)
@@ -351,7 +363,7 @@ def main():
 
     with open("data.json", "w", encoding="utf-8") as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
-    print("Data.json updated successfully with robust non-zero cache policy.")
+    print("Data.json updated successfully with Binance -> OKX Dual Fallback Engine.")
 
 if __name__ == "__main__":
     main()

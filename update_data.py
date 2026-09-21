@@ -30,20 +30,52 @@ def calculate_fibonacci_levels(highs, lows, decimals=2):
         "fib_786": round(macro_high - (diff * 0.786), decimals)
     }
 
-def calculate_grid_targets(current_price, fib_levels, decimals=2):
+def calculate_grid_targets(current_price, fib_levels, highs, lows, closes, decimals=2):
     if current_price == "N/A" or fib_levels["fib_382"] == "N/A":
         return {"buy_target": "N/A", "sell_target": "N/A"}
     
-    fib_382, fib_500, fib_618, macro_high = fib_levels["fib_382"], fib_levels["fib_500"], fib_levels["fib_618"], fib_levels["macro_high"]
-    if current_price > fib_382: buy_target = fib_382
-    elif current_price > fib_500: buy_target = fib_500
-    elif current_price > fib_618: buy_target = fib_618
-    else: buy_target = macro_high - ((macro_high - fib_618) / 0.618 * 0.786)
+    fib_382 = fib_levels["fib_382"]
+    fib_500 = fib_levels["fib_500"]
+    fib_618 = fib_levels["fib_618"]
+    macro_high = fib_levels["macro_high"]
+    macro_low = min(lows) if lows else current_price * 0.8
+    macro_range = macro_high - macro_low
 
-    if current_price < fib_618: sell_target = fib_500
-    elif current_price < fib_500: sell_target = fib_382
-    elif current_price < fib_382: sell_target = macro_high
-    else: sell_target = macro_high * 1.05 
+    # 計算真實 ATR（取最近 14 天平均真實波幅）
+    tr_list = []
+    n = len(closes)
+    for i in range(1, min(15, n)):
+        tr = max(highs[-i] - lows[-i], abs(highs[-i] - closes[-i-1]), abs(lows[-i] - closes[-i-1]))
+        tr_list.append(tr)
+    atr = sum(tr_list) / len(tr_list) if tr_list else current_price * 0.04
+
+    # 1. 買入目標計算（基於費氏回撤與 ATR 波動緩衝）
+    if current_price > fib_382: 
+        buy_target = fib_382
+    elif current_price > fib_500: 
+        buy_target = fib_500
+    elif current_price > fib_618: 
+        buy_target = fib_618
+    else: 
+        buy_target = current_price - (atr * 1.5)
+
+    # 2. 賣出目標計算（未破新高依據費氏壓力，若已突破則採用華爾街費氏延伸 1.272 幾何目標）
+    if current_price < fib_618: 
+        sell_target = fib_500
+    elif current_price < fib_500: 
+        sell_target = fib_382
+    elif current_price < macro_high: 
+        sell_target = macro_high
+    else: 
+        sell_target = macro_high + (macro_range * 0.272)
+
+    # 3. 嚴格機構防護：以 ATR 動態校正，確保買低賣高
+    if sell_target <= current_price:
+        sell_target = current_price + (atr * 2.0)
+
+    if buy_target >= current_price:
+        buy_target = current_price - (atr * 1.2)
+
     return {"buy_target": round(buy_target, decimals), "sell_target": round(sell_target, decimals)}
 
 def get_dow_status(swing_highs, swing_lows, current_price, recent_closes, fib_levels):
@@ -147,14 +179,13 @@ def analyze_crypto_symbol(symbol_binance, coingecko_id, vs_currency="usd", okx_i
     limit_days = 100 
     headers = {"User-Agent": "Mozilla/5.0"}
     
-    # 1. 優先嘗試 OKX 歷史蠟燭圖 API（穩定且不會鎖 IP）
+    # 1. 優先嘗試 OKX 歷史蠟燭圖 API
     if okx_inst_id:
         try:
             okx_kline_url = f"https://www.okx.com/api/v5/market/candles?instId={okx_inst_id}&bar=1D&limit={limit_days}"
             res = requests.get(okx_kline_url, headers=headers, timeout=6).json()
             if res.get("code") == "0" and len(res.get("data", [])) >= 20:
-                # OKX candles 回傳格式：[ts, o, h, l, c, vol, ccyVol, ...] (時間倒序)
-                raw_candles = res["data"][::-1] # 轉為正序
+                raw_candles = res["data"][::-1]
                 closes = [float(k[4]) for k in raw_candles]
                 highs = [float(k[2]) for k in raw_candles]
                 lows = [float(k[3]) for k in raw_candles]
@@ -162,7 +193,7 @@ def analyze_crypto_symbol(symbol_binance, coingecko_id, vs_currency="usd", okx_i
                 current_price = closes[-1]
         except: pass
 
-    # 2. 如果 OKX K線失敗，嘗試 Binance K 線備援
+    # 2. 如果 OKX 失敗，嘗試 Binance K 線備援
     if current_price == 0.0 or len(closes) < 20:
         try:
             bn_url = f"https://api.binance.com/api/v3/klines?symbol={symbol_binance}&interval=1d&limit={limit_days}"
@@ -200,7 +231,7 @@ def analyze_crypto_symbol(symbol_binance, coingecko_id, vs_currency="usd", okx_i
 
     decimals = 5 if current_price < 0.1 else (3 if current_price < 50 else 2)
     fib_levels = calculate_fibonacci_levels(highs, lows, decimals)
-    swing_plan = calculate_grid_targets(current_price, fib_levels, decimals)
+    swing_plan = calculate_grid_targets(current_price, fib_levels, highs, lows, closes, decimals)
 
     recent_highs, recent_lows, recent_closes = highs[-45:], lows[-45:], closes[-45:]
     swing_highs, swing_lows, atr = find_fractal_pivots(recent_highs, recent_lows, recent_closes)
@@ -216,10 +247,10 @@ def analyze_crypto_symbol(symbol_binance, coingecko_id, vs_currency="usd", okx_i
     final_buy_target, final_sell_target = swing_plan["buy_target"], swing_plan["sell_target"]
     if wyckoff_phase == "PHASE D":
         final_buy_target = fib_levels["fib_236"]
-        final_sell_target = fib_levels["macro_high"] * 1.05
+        final_sell_target = max(fib_levels["macro_high"] * 1.05, current_price * 1.08)
     elif wyckoff_phase == "PHASE C":
         final_buy_target = fib_levels["fib_618"]
-        final_sell_target = fib_levels["macro_high"]
+        final_sell_target = max(fib_levels["macro_high"], current_price * 1.08)
     elif wyckoff_phase == "PHASE B":
         final_buy_target = fib_levels["fib_500"]
         final_sell_target = fib_levels["fib_236"]
@@ -273,7 +304,7 @@ def analyze_tokenized_stock(stock_ticker, okx_prefix, is_mstr=False, btc_price=0
         }
 
     fib_levels = calculate_fibonacci_levels(highs, lows, 2)
-    swing_plan = calculate_grid_targets(current_price, fib_levels, 2)
+    swing_plan = calculate_grid_targets(current_price, fib_levels, highs, lows, closes, 2)
     
     recent_highs, recent_lows, recent_closes = highs[-45:], lows[-45:], closes[-45:]
     swing_highs, swing_lows, atr = find_fractal_pivots(recent_highs, recent_lows, recent_closes)
@@ -335,7 +366,7 @@ def main():
 
     with open("data.json", "w", encoding="utf-8") as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
-    print("Data.json updated successfully with OKX Primary Candles + Pure Historical Fibonacci.")
+    print("Data.json updated successfully with ATR & Fibonacci Extension targets.")
 
 if __name__ == "__main__":
     main()

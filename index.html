@@ -83,7 +83,8 @@
         <div id="ticker-container" class="flex overflow-x-auto gap-3 scroll-smooth snap-x snap-mandatory hide-scrollbar pb-1">
             <script>
                 const createCard = (key, title, colorClass, isMnav=false) => `
-                <div class="glass-panel rounded-xl p-5 flex-none w-full md:w-[calc(50%-6px)] lg:w-[calc(25%-9px)] snap-start">
+                <!-- 🌟 這裡修正為 w-[75vw]，讓手機版自然露出右邊卡片的邊緣，提示可滑動 🌟 -->
+                <div class="glass-panel rounded-xl p-4 lg:p-5 flex-none w-[75vw] md:w-[calc(50%-6px)] lg:w-[calc(25%-9px)] snap-start">
                     <div class="flex justify-between items-start mb-2">
                         <h2 class="${colorClass} font-bold text-xs tracking-wide">${title}</h2>
                         ${isMnav 

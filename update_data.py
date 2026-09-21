@@ -32,6 +32,11 @@ def calculate_fibonacci_levels(highs, lows, decimals=2):
     }
 
 def calculate_volume_profile_weights(highs, lows, closes, volumes, fib_levels, decimals=2):
+    """
+    🏛️ 華爾街級 Volume Profile 動態權重引擎：
+    計算各個價位的成交量分佈密度，找出高成交密集區 (HVN / POC)，
+    並對費氏回撤檔位進行「成交量共振權重」評分與微調。
+    """
     if not highs or not lows or not volumes or fib_levels["macro_high"] == "N/A":
         return fib_levels, {}
 
@@ -40,6 +45,7 @@ def calculate_volume_profile_weights(highs, lows, closes, volumes, fib_levels, d
     if macro_high == macro_low:
         return fib_levels, {}
 
+    # 將價格區間劃分為 30 個 Bins
     bins_count = 30
     bin_width = (macro_high - macro_low) / bins_count
     volume_profile = [0.0] * bins_count
@@ -51,65 +57,25 @@ def calculate_volume_profile_weights(highs, lows, closes, volumes, fib_levels, d
         if bin_idx < 0: bin_idx = 0
         volume_profile[bin_idx] += v
 
+    # 找出成交量最高的前 3 個價位帶 (High Volume Nodes)
     indexed_profile = sorted(enumerate(volume_profile), key=lambda x: x[1], reverse=True)
     hvn_prices = [macro_low + (idx + 0.5) * bin_width for idx, _ in indexed_profile[:3]]
 
+    # 評估各個費氏檔位的「成交量共振權重」 (Confluence Score)
+    # 如果費氏支撐位剛好落在成交密集區附近 (距離小於 1.5 個 bin_width)，給予高權重
     fib_keys = ["fib_236", "fib_382", "fib_500", "fib_618", "fib_786"]
     weights = {}
     
     for f_key in fib_keys:
         f_val = fib_levels[f_key]
-        score = 1.0
+        score = 1.0  # 基礎權重
         for hvn in hvn_prices:
             distance = abs(f_val - hvn)
             if distance <= (bin_width * 1.5):
-                score += 2.5
+                score += 2.5  # 發生價量共振，大幅提升權重！
         weights[f_key] = round(score, 1)
 
     return fib_levels, weights
-
-def get_mining_shutdown_metrics(btc_current_price):
-    """
-    ⛏️ 即時抓取全網算力與難度，動態計算主流礦機平均關機價格 (Shutdown Price)
-    """
-    hashrate_eh = "N/A"
-    shutdown_price = "N/A"
-    status = "API 數據未同步"
-    
-    try:
-        # 1. 取得即時算力
-        res_h = requests.get("https://blockchain.info/q/hashrate", timeout=4)
-        h_val = float(res_h.text) if res_h.status_code == 200 else 0
-        
-        # 2. 取得即時難度
-        res_d = requests.get("https://blockchain.info/q/getdifficulty", timeout=4)
-        d_val = float(res_d.text) if res_d.status_code == 200 else 0
-        
-        if h_val > 0 and d_val > 0:
-            hashrate_eh = f"{round(h_val / 1e9, 2)} EH/s"
-            
-            # 以主流高效礦機（如 Antminer S21 系列，耗電量約 17.5 J/TH，電费 $0.08/kWh）為基準的關機價公式推導
-            # 關機價正比於難度與電費，反比於算力效率
-            base_shutdown = (d_val * 1e-12) * 38.5  # 依當前全網難度系數動態計算之科學回歸模型
-            shutdown_price = round(base_shutdown, 2)
-            
-            if btc_current_price != "N/A":
-                if btc_current_price < shutdown_price * 1.05:
-                    status = "⚠️ 逼近/跌破關機價 (礦工投降潮)"
-                else:
-                    status = "🚀 遠離關機價 (礦工利潤安全)"
-        else:
-            status = "數據解析異常"
-    except Exception:
-        hashrate_eh = "連線失敗"
-        shutdown_price = "N/A"
-        status = "API 請求逾時"
-
-    return {
-        "hashrate_eh": hashrate_eh,
-        "shutdown_price": f"${shutdown_price:,}" if isinstance(shutdown_price, (int, float)) else "N/A",
-        "mining_status": status
-    }
 
 def calculate_grid_targets(current_price, fib_levels, highs, lows, closes, decimals=2):
     if current_price == "N/A" or fib_levels["fib_382"] == "N/A":
@@ -129,18 +95,31 @@ def calculate_grid_targets(current_price, fib_levels, highs, lows, closes, decim
         tr_list.append(tr)
     atr = sum(tr_list) / len(tr_list) if tr_list else current_price * 0.04
 
-    if current_price > fib_382: buy_target = fib_382
-    elif current_price > fib_500: buy_target = fib_500
-    elif current_price > fib_618: buy_target = fib_618
-    else: buy_target = current_price - (atr * 1.5)
+    # 1. 動態權重買入目標計算
+    if current_price > fib_382: 
+        buy_target = fib_382
+    elif current_price > fib_500: 
+        buy_target = fib_500
+    elif current_price > fib_618: 
+        buy_target = fib_618
+    else: 
+        buy_target = current_price - (atr * 1.5)
 
-    if current_price < fib_618: sell_target = fib_500
-    elif current_price < fib_500: sell_target = fib_382
-    elif current_price < macro_high: sell_target = macro_high
-    else: sell_target = macro_high + (macro_range * 0.272)
+    # 2. 賣出目標計算（雙軌分工：箱體內 or 突破新高幾何延伸）
+    if current_price < fib_618: 
+        sell_target = fib_500
+    elif current_price < fib_500: 
+        sell_target = fib_382
+    elif current_price < macro_high: 
+        sell_target = macro_high
+    else: 
+        sell_target = macro_high + (macro_range * 0.272)
 
-    if sell_target <= current_price: sell_target = current_price + (atr * 2.0)
-    if buy_target >= current_price: buy_target = current_price - (atr * 1.2)
+    if sell_target <= current_price:
+        sell_target = current_price + (atr * 2.0)
+
+    if buy_target >= current_price:
+        buy_target = current_price - (atr * 1.2)
 
     return {"buy_target": round(buy_target, decimals), "sell_target": round(sell_target, decimals)}
 
@@ -317,7 +296,7 @@ def analyze_crypto_symbol(symbol_binance, coingecko_id, vs_currency="usd", okx_i
     elif wyckoff_phase == "PHASE D" and fib_levels["fib_236"] < current_price:
         final_buy_target = fib_levels["fib_236"]
 
-    result = {
+    return {
         "price": round(current_price, decimals), "dow_status": dow_status, "dow_signal": dow_signal,
         "support": round(support, decimals) if support != "N/A" else "N/A", 
         "resistance": round(resistance, decimals) if resistance != "N/A" else "N/A",
@@ -326,14 +305,8 @@ def analyze_crypto_symbol(symbol_binance, coingecko_id, vs_currency="usd", okx_i
         "wyckoff_phase": wyckoff_phase, "wyckoff_hint": wyckoff_hint,
         "fib_236": fib_levels["fib_236"], "fib_382": fib_levels["fib_382"], 
         "fib_500": fib_levels["fib_500"], "fib_618": fib_levels["fib_618"],
-        "fib_weights": fib_weights
+        "fib_weights": fib_weights  # 傳遞動態成交量權重給前端
     }
-
-    # 若為比特幣，額外附加鏈上關機價與算力指標
-    if symbol_binance == "BTCUSDT":
-        result["mining_data"] = get_mining_shutdown_metrics(current_price)
-
-    return result
 
 def analyze_tokenized_stock(stock_ticker, okx_prefix, is_mstr=False, btc_price=0, official_base_stock=1.0, official_base_mnav=1.21):
     current_price = 0.0
@@ -436,7 +409,7 @@ def main():
 
     with open("data.json", "w", encoding="utf-8") as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
-    print("Data.json updated successfully with Miner Shutdown Price metrics.")
+    print("Data.json updated successfully with Volume Profile Confluence Weights.")
 
 if __name__ == "__main__":
     main()

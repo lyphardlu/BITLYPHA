@@ -1,7 +1,7 @@
 {
-  "updated_at": "2026-09-21 13:58 UTC",
+  "updated_at": "2026-09-21 14:05 UTC",
   "btc": {
-    "price": 85480.0,
+    "price": 85314.8,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "buy_target": 75133.24,
@@ -21,12 +21,12 @@
     },
     "mining_data": {
       "hashrate_eh": "1022.91 EH/s",
-      "production_cost": 52500.0,
-      "mining_status": "🚀 算力強勁擴張 (Strong Expansion)"
+      "production_cost": "N/A",
+      "mining_status": "⚠️ 鏈上數據未同步"
     }
   },
   "eth": {
-    "price": 2732.84,
+    "price": 2726.43,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "buy_target": 2276.48,
@@ -52,17 +52,17 @@
     "wyckoff_hint": "資料讀取失敗"
   },
   "sol": {
-    "price": 118.18,
+    "price": 118.1,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
-    "buy_target": 97.64,
-    "sell_target": 118.4,
+    "buy_target": 97.89,
+    "sell_target": 118.8,
     "wyckoff_phase": "PHASE D",
     "wyckoff_hint": "【區間突圍】多空交戰中，等待方向表態。",
-    "fib_236": 105.57,
-    "fib_382": 97.64,
-    "fib_500": 91.22,
-    "fib_618": 84.81,
+    "fib_236": 105.88,
+    "fib_382": 97.89,
+    "fib_500": 91.42,
+    "fib_618": 84.96,
     "fib_weights": {
       "fib_236": 3.5,
       "fib_382": 1.0,
@@ -72,7 +72,7 @@
     }
   },
   "uni": {
-    "price": 8.905,
+    "price": 8.86,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "buy_target": 6.801,
@@ -92,7 +92,7 @@
     }
   },
   "ray": {
-    "price": 1.759,
+    "price": 1.77,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "buy_target": 1.402,
@@ -112,7 +112,7 @@
     }
   },
   "zec": {
-    "price": 1535.29,
+    "price": 1525.5,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "buy_target": 1126.36,
@@ -132,8 +132,8 @@
     }
   },
   "mstr": {
-    "price": 167.78,
-    "mnav_multiple": "1.25x",
+    "price": 166.01,
+    "mnav_multiple": "1.24x",
     "dow_status": "Primary Bull",
     "buy_target": 153.0,
     "sell_target": 197.0,
@@ -152,7 +152,7 @@
     }
   },
   "xcoin": {
-    "price": 204.5,
+    "price": 203.91,
     "dow_status": "Primary Bull",
     "buy_target": 190.55,
     "sell_target": 222.35,
@@ -171,7 +171,7 @@
     }
   },
   "xadbe": {
-    "price": 247.47,
+    "price": 247.82,
     "dow_status": "Consolidation",
     "buy_target": 242.32,
     "sell_target": 294.53,
@@ -190,7 +190,7 @@
     }
   },
   "xcrcl": {
-    "price": 95.34,
+    "price": 95.17,
     "dow_status": "Consolidation",
     "buy_target": 89.23,
     "sell_target": 108.61,

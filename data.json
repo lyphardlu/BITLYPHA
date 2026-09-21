@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-09-21 04:30 UTC",
+  "updated_at": "2026-09-21 04:33 UTC",
   "btc": {
-    "price": 81246.74,
-    "dow_status": "Bearish",
-    "dow_signal": "空頭受阻",
+    "price": 81222.9,
+    "dow_status": "Neutral",
+    "dow_signal": "結構收斂",
     "support": 75364.71,
     "resistance": 82275.08,
     "buy_target": 77114.45,
@@ -16,37 +16,37 @@
     "fib_618": 67108.19
   },
   "eth": {
-    "price": 2655.54,
+    "price": 2653.8,
     "dow_status": "Neutral",
     "dow_signal": "結構收斂",
     "support": 2380.96,
-    "resistance": 2878.96,
-    "buy_target": 2439.89,
-    "sell_target": 2858.03,
+    "resistance": 2877.21,
+    "buy_target": 2438.53,
+    "sell_target": 2856.15,
     "wyckoff_phase": "PHASE D",
     "wyckoff_hint": "【頂部突破】挑戰上方強壓區，關注多頭量能是否持續堆積。",
-    "fib_236": 2439.89,
-    "fib_382": 2265.41,
-    "fib_500": 2124.39,
-    "fib_618": 1983.38
+    "fib_236": 2438.53,
+    "fib_382": 2264.31,
+    "fib_500": 2123.5,
+    "fib_618": 1982.69
   },
   "ethbtc": {
-    "price": 0.03273,
+    "price": 0.0327,
     "dow_status": "Bullish",
     "dow_signal": "多頭推進",
     "support": 0.03091,
     "resistance": 0.03331,
-    "buy_target": 0.03152,
-    "sell_target": 0.03523,
+    "buy_target": 0.0315,
+    "sell_target": 0.0352,
     "wyckoff_phase": "PHASE D",
     "wyckoff_hint": "【頂部突破】挑戰上方強壓區，關注多頭量能是否持續堆積。",
-    "fib_236": 0.03152,
-    "fib_382": 0.03026,
-    "fib_500": 0.02925,
-    "fib_618": 0.02824
+    "fib_236": 0.0315,
+    "fib_382": 0.03025,
+    "fib_500": 0.02924,
+    "fib_618": 0.02823
   },
   "sol": {
-    "price": 111.14,
+    "price": 111.09,
     "dow_status": "Neutral",
     "dow_signal": "結構收斂",
     "support": 97.47,
@@ -61,7 +61,7 @@
     "fib_618": 84.88
   },
   "uni": {
-    "price": 8.694,
+    "price": 8.707,
     "dow_status": "Bullish",
     "dow_signal": "多頭推進",
     "support": 5.8,
@@ -76,7 +76,7 @@
     "fib_618": 5.01
   },
   "mstr": {
-    "price": 155.54,
+    "price": 155.63,
     "mnav_multiple": 1.22,
     "dow_status": "Neutral",
     "buy_target": 129.56,

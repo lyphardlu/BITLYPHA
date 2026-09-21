@@ -41,7 +41,6 @@ def calculate_grid_targets(current_price, fib_levels, highs, lows, closes, decim
     macro_low = min(lows) if lows else current_price * 0.8
     macro_range = macro_high - macro_low
 
-    # 計算真實 ATR（平均真實波幅，取最近 14 天）
     tr_list = []
     n = len(closes)
     for i in range(1, min(15, n)):
@@ -49,7 +48,6 @@ def calculate_grid_targets(current_price, fib_levels, highs, lows, closes, decim
         tr_list.append(tr)
     atr = sum(tr_list) / len(tr_list) if tr_list else current_price * 0.04
 
-    # 1. 買入目標計算（基於費氏回撤與 ATR 波動緩衝）
     if current_price > fib_382: 
         buy_target = fib_382
     elif current_price > fib_500: 
@@ -59,7 +57,6 @@ def calculate_grid_targets(current_price, fib_levels, highs, lows, closes, decim
     else: 
         buy_target = current_price - (atr * 1.5)
 
-    # 2. 賣出目標計算：雙軌分工核心
     if current_price < fib_618: 
         sell_target = fib_500
     elif current_price < fib_500: 
@@ -67,10 +64,8 @@ def calculate_grid_targets(current_price, fib_levels, highs, lows, closes, decim
     elif current_price < macro_high: 
         sell_target = macro_high
     else: 
-        # 🚀 突破新高真空期：採用華爾街費氏黃金延伸 1.272 (macro_range * 0.272) 或 ATR 完美外推
         sell_target = macro_high + (macro_range * 0.272)
 
-    # 3. 機構級防護：確保買低賣高，絕對不發生倒掛
     if sell_target <= current_price:
         sell_target = current_price + (atr * 2.0)
 
@@ -129,7 +124,7 @@ def analyze_wyckoff_vsa(highs, lows, closes, volumes, fib_levels, dow_status):
             if dow_status == "Secondary Correction": return "PHASE E", "🛑【逃頂賣出】趨勢破壞！空頭結構全面崩盤，嚴格停損。"
             return "PHASE A", "【恐慌拋售】近三日放量跌破 618，賣壓沉重，觀望勿接飛刀。"
         else: 
-            return "PHASE C", "【邊界測試】位於 618 深水區防守測試中，等待量能表態。"
+            return "PHASE C", "【邊界測試】位於 618 深水區防守測試中，等待量能表態."
             
     elif curr_high >= fib_382 * 0.985:
         if is_high_vol and close_pos <= 0.3 and curr_close < prev_close: 
@@ -180,7 +175,6 @@ def analyze_crypto_symbol(symbol_binance, coingecko_id, vs_currency="usd", okx_i
     limit_days = 100 
     headers = {"User-Agent": "Mozilla/5.0"}
     
-    # 1. 優先嘗試 OKX 歷史蠟燭圖 API
     if okx_inst_id:
         try:
             okx_kline_url = f"https://www.okx.com/api/v5/market/candles?instId={okx_inst_id}&bar=1D&limit={limit_days}"
@@ -194,7 +188,6 @@ def analyze_crypto_symbol(symbol_binance, coingecko_id, vs_currency="usd", okx_i
                 current_price = closes[-1]
         except: pass
 
-    # 2. 如果 OKX 失敗，嘗試 Binance K 線備援
     if current_price == 0.0 or len(closes) < 20:
         try:
             bn_url = f"https://api.binance.com/api/v3/klines?symbol={symbol_binance}&interval=1d&limit={limit_days}"
@@ -207,7 +200,6 @@ def analyze_crypto_symbol(symbol_binance, coingecko_id, vs_currency="usd", okx_i
                 current_price = closes[-1]
         except: pass
 
-    # 3. 嘗試 CoinGecko 備援
     if current_price == 0.0 or len(closes) < 20:
         try:
             cg_url = f"https://api.coingecko.com/api/v3/coins/{coingecko_id}/market_chart?vs_currency={vs_currency}&days={limit_days}&interval=daily"
@@ -245,11 +237,9 @@ def analyze_crypto_symbol(symbol_binance, coingecko_id, vs_currency="usd", okx_i
     underlying = [l for l in swing_lows if l < current_price]
     support = max(underlying) if underlying else (current_price - atr * 1.618)
 
-    # 🚀 雙軌分工：交易目標全面由幾何外推與 ATR 幾何網格主導，威科夫專責結構診斷
     final_buy_target = swing_plan["buy_target"]
     final_sell_target = swing_plan["sell_target"]
 
-    # 威科夫階段僅微調防守支撐，絕不破壞止盈倒掛
     if wyckoff_phase == "PHASE C" and fib_levels["fib_618"] < current_price:
         final_buy_target = fib_levels["fib_618"]
     elif wyckoff_phase == "PHASE D" and fib_levels["fib_236"] < current_price:

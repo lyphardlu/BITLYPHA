@@ -1,26 +1,26 @@
 {
-  "updated_at": "2026-09-21 10:46 UTC",
+  "updated_at": "2026-09-21 13:12 UTC",
   "btc": {
-    "price": 84230.0,
+    "price": 85230.4,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 76888.0,
-    "resistance": 88325.37,
-    "buy_target": 78831.47,
-    "sell_target": 85325.2,
+    "resistance": 89343.68,
+    "buy_target": 78949.89,
+    "sell_target": 85480.2,
     "wyckoff_phase": "PHASE D",
     "wyckoff_hint": "【頂部突破】挑戰上方強壓區，關注多頭量能是否持續堆積。",
-    "fib_236": 78831.47,
-    "fib_382": 74814.16,
-    "fib_500": 71567.3,
-    "fib_618": 68320.44
+    "fib_236": 78949.89,
+    "fib_382": 74909.95,
+    "fib_500": 71644.8,
+    "fib_618": 68379.65
   },
   "eth": {
-    "price": 2714.8,
+    "price": 2735.3,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 2414.92,
-    "resistance": 2898.93,
+    "resistance": 2919.43,
     "buy_target": 2457.08,
     "sell_target": 2749.0,
     "wyckoff_phase": "PHASE D",
@@ -31,37 +31,37 @@
     "fib_618": 1984.56
   },
   "ethbtc": {
-    "price": 0.03345,
+    "price": 0.03375,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 0.03107,
-    "resistance": 0.03557,
-    "buy_target": 0.03199,
-    "sell_target": 0.03412,
+    "resistance": 0.0359,
+    "buy_target": 0.03222,
+    "sell_target": 0.03443,
     "wyckoff_phase": "PHASE D",
     "wyckoff_hint": "【頂部突破】挑戰上方強壓區，關注多頭量能是否持續堆積。",
-    "fib_236": 0.03199,
-    "fib_382": 0.03067,
-    "fib_500": 0.0296,
-    "fib_618": 0.02853
+    "fib_236": 0.03222,
+    "fib_382": 0.03086,
+    "fib_500": 0.02975,
+    "fib_618": 0.02865
   },
   "sol": {
-    "price": 115.85,
+    "price": 117.31,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 97.9,
-    "resistance": 124.33,
-    "buy_target": 104.4,
-    "sell_target": 116.86,
+    "resistance": 125.86,
+    "buy_target": 104.83,
+    "sell_target": 117.43,
     "wyckoff_phase": "PHASE D",
     "wyckoff_hint": "【頂部突破】挑戰上方強壓區，關注多頭量能是否持續堆積。",
-    "fib_236": 104.4,
-    "fib_382": 96.69,
-    "fib_500": 90.45,
-    "fib_618": 84.22
+    "fib_236": 104.83,
+    "fib_382": 97.04,
+    "fib_500": 90.74,
+    "fib_618": 84.44
   },
   "uni": {
-    "price": 8.945,
+    "price": 9.026,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 6.001,
@@ -76,11 +76,11 @@
     "fib_618": 5.146
   },
   "ray": {
-    "price": 1.732,
+    "price": 1.784,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 1.193,
-    "resistance": 1.755,
+    "resistance": 1.927,
     "buy_target": 1.402,
     "sell_target": 1.927,
     "wyckoff_phase": "PHASE B",
@@ -91,7 +91,7 @@
     "fib_618": 1.079
   },
   "zec": {
-    "price": 1534.89,
+    "price": 1540.79,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 1054.04,
@@ -106,8 +106,8 @@
     "fib_618": 836.84
   },
   "mstr": {
-    "price": 162.91,
-    "mnav_multiple": "1.24x",
+    "price": 166.31,
+    "mnav_multiple": "1.25x",
     "dow_status": "Primary Bull",
     "buy_target": 153.0,
     "sell_target": 197.0,
@@ -119,7 +119,7 @@
     "fib_618": 125.81
   },
   "xcoin": {
-    "price": 202.8,
+    "price": 205.15,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "buy_target": 190.55,
@@ -132,7 +132,7 @@
     "fib_618": 170.91
   },
   "xadbe": {
-    "price": 248.96,
+    "price": 249.24,
     "dow_status": "Secondary Correction",
     "dow_signal": "空頭受阻",
     "buy_target": 242.32,
@@ -145,7 +145,7 @@
     "fib_618": 230.0
   },
   "xcrcl": {
-    "price": 95.96,
+    "price": 97.47,
     "dow_status": "Secondary Correction",
     "dow_signal": "空頭受阻",
     "buy_target": 89.23,

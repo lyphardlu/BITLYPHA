@@ -17,7 +17,12 @@
             border: 1px solid #2A2E39;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
         }
+        /* 隱藏預設捲軸，保持介面乾淨 */
         ::-webkit-scrollbar { display: none; }
+        .hide-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
 
         /* 極致平滑的價格跳動動畫 */
         .price-base {
@@ -37,7 +42,7 @@
         }
     </style>
 </head>
-<body class="min-h-screen p-4 md:p-6 flex flex-col">
+<body class="min-h-screen p-4 md:p-6 flex flex-col overflow-x-hidden">
 
     <!-- 頂部 Header -->
     <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 border-b border-[#2A2E39] pb-4 gap-4">
@@ -71,87 +76,105 @@
         </div>
     </header>
 
-    <!-- 6 宮格頂部數據卡片 -->
-    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
-        <!-- BTC -->
-        <div class="glass-panel rounded-xl p-5">
-            <div class="flex justify-between items-start mb-2">
-                <h2 class="text-emerald-400 font-bold text-xs tracking-wide">BTC / USDT</h2>
-                <span id="btc-trend" class="text-[10px] px-1.5 py-0.5 rounded font-bold uppercase">-</span>
-            </div>
-            <div id="btc-price" class="text-[26px] font-bold text-emerald-400 mb-4 font-mono price-base">加載中...</div>
-            <div class="grid grid-cols-2 gap-2 text-[11px] font-mono">
-                <div><span class="text-slate-500">波段買入 (Buy):</span><br><span id="btc-buy" class="text-emerald-400 font-semibold">-</span></div>
-                <div><span class="text-slate-500">目標止盈 (Sell):</span><br><span id="btc-sell" class="text-emerald-400 font-semibold">-</span></div>
-            </div>
-        </div>
+    <!-- 🌟 動態資產滾動卡片 (一次顯示 4 個，支援左右箭頭) -->
+    <div class="relative mb-6 group">
+        
+        <!-- 左箭頭 -->
+        <button onclick="scrollTicker(-1)" class="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-[#0A0E17]/80 hover:bg-[#131722] border border-[#2A2E39] text-emerald-400 w-8 h-8 rounded-full hidden md:flex items-center justify-center backdrop-blur-md transition-all opacity-0 group-hover:opacity-100 shadow-[0_0_10px_rgba(0,0,0,0.8)]">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
+        </button>
 
-        <!-- ETH -->
-        <div class="glass-panel rounded-xl p-5">
-            <div class="flex justify-between items-start mb-2">
-                <h2 class="text-blue-400 font-bold text-xs tracking-wide">ETH / USDT</h2>
-                <span id="eth-trend" class="text-[10px] px-1.5 py-0.5 rounded font-bold uppercase">-</span>
-            </div>
-            <div id="eth-price" class="text-[26px] font-bold text-blue-400 mb-4 font-mono price-base">加載中...</div>
-            <div class="grid grid-cols-2 gap-2 text-[11px] font-mono">
-                <div><span class="text-slate-500">波段買入 (Buy):</span><br><span id="eth-buy" class="text-blue-400 font-semibold">-</span></div>
-                <div><span class="text-slate-500">目標止盈 (Sell):</span><br><span id="eth-sell" class="text-blue-400 font-semibold">-</span></div>
-            </div>
-        </div>
-
-        <!-- ETH/BTC -->
-        <div class="glass-panel rounded-xl p-5">
-            <div class="flex justify-between items-start mb-2">
-                <h2 class="text-amber-500 font-bold text-xs tracking-wide">ETH / BTC</h2>
-                <span id="ethbtc-trend" class="text-[10px] px-1.5 py-0.5 rounded font-bold uppercase">-</span>
-            </div>
-            <div id="ethbtc-price" class="text-[26px] font-bold text-amber-500 mb-4 font-mono price-base">加載中...</div>
-            <div class="grid grid-cols-2 gap-2 text-[11px] font-mono">
-                <div><span class="text-slate-500">匯率買入 (Buy):</span><br><span id="ethbtc-buy" class="text-amber-500 font-semibold">-</span></div>
-                <div><span class="text-slate-500">匯率止盈 (Sell):</span><br><span id="ethbtc-sell" class="text-amber-500 font-semibold">-</span></div>
-            </div>
-        </div>
-
-        <!-- SOL -->
-        <div class="glass-panel rounded-xl p-5">
-            <div class="flex justify-between items-start mb-2">
-                <h2 class="text-purple-400 font-bold text-xs tracking-wide">SOL / USDT</h2>
-                <span id="sol-trend" class="text-[10px] px-1.5 py-0.5 rounded font-bold uppercase">-</span>
-            </div>
-            <div id="sol-price" class="text-[26px] font-bold text-purple-400 mb-4 font-mono price-base">加載中...</div>
-            <div class="grid grid-cols-2 gap-2 text-[11px] font-mono">
-                <div><span class="text-slate-500">波段買入 (Buy):</span><br><span id="sol-buy" class="text-purple-400 font-semibold">-</span></div>
-                <div><span class="text-slate-500">目標止盈 (Sell):</span><br><span id="sol-sell" class="text-purple-400 font-semibold">-</span></div>
-            </div>
-        </div>
-
-        <!-- UNI -->
-        <div class="glass-panel rounded-xl p-5">
-            <div class="flex justify-between items-start mb-2">
-                <h2 class="text-pink-400 font-bold text-xs tracking-wide">UNI / USDT</h2>
-                <span id="uni-trend" class="text-[10px] px-1.5 py-0.5 rounded font-bold uppercase">-</span>
-            </div>
-            <div id="uni-price" class="text-[26px] font-bold text-pink-400 mb-4 font-mono price-base">加載中...</div>
-            <div class="grid grid-cols-2 gap-2 text-[11px] font-mono">
-                <div><span class="text-slate-500">波段買入 (Buy):</span><br><span id="uni-buy" class="text-pink-400 font-semibold">-</span></div>
-                <div><span class="text-slate-500">目標止盈 (Sell):</span><br><span id="uni-sell" class="text-pink-400 font-semibold">-</span></div>
-            </div>
-        </div>
-
-        <!-- MSTR -->
-        <div class="glass-panel rounded-xl p-5">
-            <div class="flex justify-between items-start mb-2">
-                <h2 class="text-cyan-400 font-bold text-xs tracking-wide">MSTR / USDT</h2>
-                <div class="flex items-center">
-                    <span id="mstr-mnav-badge" class="text-[10px] px-1.5 py-0.5 rounded font-bold shrink-0 bg-cyan-900/50 text-cyan-400 tracking-wider">mNAV: <span id="mstr-mnav" class="font-mono">0.00</span>x</span>
+        <!-- 滾動容器 -->
+        <div id="ticker-container" class="flex overflow-x-auto gap-3 scroll-smooth snap-x snap-mandatory hide-scrollbar pb-1">
+            
+            <!-- BTC (w-full 佔滿手機, md 佔一半, lg 佔 25% 精準 4 格) -->
+            <div class="glass-panel rounded-xl p-5 flex-none w-full md:w-[calc(50%-6px)] lg:w-[calc(25%-9px)] snap-start">
+                <div class="flex justify-between items-start mb-2">
+                    <h2 class="text-emerald-400 font-bold text-xs tracking-wide">BTC / USDT</h2>
+                    <span id="btc-trend" class="text-[10px] px-1.5 py-0.5 rounded font-bold uppercase">-</span>
+                </div>
+                <div id="btc-price" class="text-[26px] font-bold text-emerald-400 mb-4 font-mono price-base">加載中...</div>
+                <div class="grid grid-cols-2 gap-2 text-[11px] font-mono">
+                    <div><span class="text-slate-500">波段買入 (Buy):</span><br><span id="btc-buy" class="text-emerald-400 font-semibold">-</span></div>
+                    <div><span class="text-slate-500">目標止盈 (Sell):</span><br><span id="btc-sell" class="text-emerald-400 font-semibold">-</span></div>
                 </div>
             </div>
-            <div id="mstr-price" class="text-[26px] font-bold text-cyan-400 mb-4 font-mono price-base">加載中...</div>
-            <div class="grid grid-cols-2 gap-2 text-[11px] font-mono">
-                <div><span class="text-slate-500">波段買入 (Buy):</span><br><span id="mstr-buy" class="text-cyan-400 font-semibold">-</span></div>
-                <div><span class="text-slate-500">目標止盈 (Sell):</span><br><span id="mstr-sell" class="text-cyan-400 font-semibold">-</span></div>
+
+            <!-- ETH -->
+            <div class="glass-panel rounded-xl p-5 flex-none w-full md:w-[calc(50%-6px)] lg:w-[calc(25%-9px)] snap-start">
+                <div class="flex justify-between items-start mb-2">
+                    <h2 class="text-blue-400 font-bold text-xs tracking-wide">ETH / USDT</h2>
+                    <span id="eth-trend" class="text-[10px] px-1.5 py-0.5 rounded font-bold uppercase">-</span>
+                </div>
+                <div id="eth-price" class="text-[26px] font-bold text-blue-400 mb-4 font-mono price-base">加載中...</div>
+                <div class="grid grid-cols-2 gap-2 text-[11px] font-mono">
+                    <div><span class="text-slate-500">波段買入 (Buy):</span><br><span id="eth-buy" class="text-blue-400 font-semibold">-</span></div>
+                    <div><span class="text-slate-500">目標止盈 (Sell):</span><br><span id="eth-sell" class="text-blue-400 font-semibold">-</span></div>
+                </div>
             </div>
+
+            <!-- ETH/BTC -->
+            <div class="glass-panel rounded-xl p-5 flex-none w-full md:w-[calc(50%-6px)] lg:w-[calc(25%-9px)] snap-start">
+                <div class="flex justify-between items-start mb-2">
+                    <h2 class="text-amber-500 font-bold text-xs tracking-wide">ETH / BTC</h2>
+                    <span id="ethbtc-trend" class="text-[10px] px-1.5 py-0.5 rounded font-bold uppercase">-</span>
+                </div>
+                <div id="ethbtc-price" class="text-[26px] font-bold text-amber-500 mb-4 font-mono price-base">加載中...</div>
+                <div class="grid grid-cols-2 gap-2 text-[11px] font-mono">
+                    <div><span class="text-slate-500">匯率買入 (Buy):</span><br><span id="ethbtc-buy" class="text-amber-500 font-semibold">-</span></div>
+                    <div><span class="text-slate-500">匯率止盈 (Sell):</span><br><span id="ethbtc-sell" class="text-amber-500 font-semibold">-</span></div>
+                </div>
+            </div>
+
+            <!-- SOL -->
+            <div class="glass-panel rounded-xl p-5 flex-none w-full md:w-[calc(50%-6px)] lg:w-[calc(25%-9px)] snap-start">
+                <div class="flex justify-between items-start mb-2">
+                    <h2 class="text-purple-400 font-bold text-xs tracking-wide">SOL / USDT</h2>
+                    <span id="sol-trend" class="text-[10px] px-1.5 py-0.5 rounded font-bold uppercase">-</span>
+                </div>
+                <div id="sol-price" class="text-[26px] font-bold text-purple-400 mb-4 font-mono price-base">加載中...</div>
+                <div class="grid grid-cols-2 gap-2 text-[11px] font-mono">
+                    <div><span class="text-slate-500">波段買入 (Buy):</span><br><span id="sol-buy" class="text-purple-400 font-semibold">-</span></div>
+                    <div><span class="text-slate-500">目標止盈 (Sell):</span><br><span id="sol-sell" class="text-purple-400 font-semibold">-</span></div>
+                </div>
+            </div>
+
+            <!-- UNI -->
+            <div class="glass-panel rounded-xl p-5 flex-none w-full md:w-[calc(50%-6px)] lg:w-[calc(25%-9px)] snap-start">
+                <div class="flex justify-between items-start mb-2">
+                    <h2 class="text-pink-400 font-bold text-xs tracking-wide">UNI / USDT</h2>
+                    <span id="uni-trend" class="text-[10px] px-1.5 py-0.5 rounded font-bold uppercase">-</span>
+                </div>
+                <div id="uni-price" class="text-[26px] font-bold text-pink-400 mb-4 font-mono price-base">加載中...</div>
+                <div class="grid grid-cols-2 gap-2 text-[11px] font-mono">
+                    <div><span class="text-slate-500">波段買入 (Buy):</span><br><span id="uni-buy" class="text-pink-400 font-semibold">-</span></div>
+                    <div><span class="text-slate-500">目標止盈 (Sell):</span><br><span id="uni-sell" class="text-pink-400 font-semibold">-</span></div>
+                </div>
+            </div>
+
+            <!-- MSTR -->
+            <div class="glass-panel rounded-xl p-5 flex-none w-full md:w-[calc(50%-6px)] lg:w-[calc(25%-9px)] snap-start">
+                <div class="flex justify-between items-start mb-2">
+                    <h2 class="text-cyan-400 font-bold text-xs tracking-wide">MSTR / USDT</h2>
+                    <div class="flex items-center">
+                        <span id="mstr-mnav-badge" class="text-[10px] px-1.5 py-0.5 rounded font-bold shrink-0 bg-cyan-900/50 text-cyan-400 tracking-wider">mNAV: <span id="mstr-mnav" class="font-mono">0.00</span>x</span>
+                    </div>
+                </div>
+                <div id="mstr-price" class="text-[26px] font-bold text-cyan-400 mb-4 font-mono price-base">加載中...</div>
+                <div class="grid grid-cols-2 gap-2 text-[11px] font-mono">
+                    <div><span class="text-slate-500">波段買入 (Buy):</span><br><span id="mstr-buy" class="text-cyan-400 font-semibold">-</span></div>
+                    <div><span class="text-slate-500">目標止盈 (Sell):</span><br><span id="mstr-sell" class="text-cyan-400 font-semibold">-</span></div>
+                </div>
+            </div>
+            
+            <!-- 未來可以隨意在這裡加入新的幣種卡片，UI會自動接在右邊！ -->
+
         </div>
+
+        <!-- 右箭頭 -->
+        <button onclick="scrollTicker(1)" class="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-[#0A0E17]/80 hover:bg-[#131722] border border-[#2A2E39] text-emerald-400 w-8 h-8 rounded-full hidden md:flex items-center justify-center backdrop-blur-md transition-all opacity-0 group-hover:opacity-100 shadow-[0_0_10px_rgba(0,0,0,0.8)]">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+        </button>
     </div>
 
     <!-- 底部主內容區 -->
@@ -325,12 +348,11 @@
 
     </div>
 
-    <!-- 🌟 底部落款：加入純圖示 (📊) 的計數徽章 -->
+    <!-- 底部落款 -->
     <footer class="mt-6 mb-4">
         <div class="flex flex-wrap justify-center items-center gap-2 text-[11.5px] text-[#4A5568] font-mono tracking-wide">
             <span>BITLYPHA // Designed & Architected by 比特利法 Lyphard · Macro-Swing Execution System</span>
             <span class="text-[#2A2E39] hidden md:inline">|</span> 
-            <!-- 將文字換成極簡圖示：📊 -->
             <img src="https://visitor-badge.laobi.icu/badge?page_id=lyphardlu.BITLYPHA&left_text=%F0%9F%93%8A&left_color=131722&right_color=34d399" alt="Traffic" class="h-4 opacity-80 hover:opacity-100 transition-opacity rounded">
         </div>
     </footer>
@@ -338,6 +360,16 @@
     <!-- JavaScript 核心邏輯 -->
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <script>
+        // ============================================
+        // 🌟 新增：頂部資產列左右滑動邏輯
+        // ============================================
+        function scrollTicker(direction) {
+            const container = document.getElementById('ticker-container');
+            // 每次點擊捲動一整個容器的寬度，達到翻頁效果
+            const scrollAmount = container.offsetWidth;
+            container.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+        }
+
         // ============================================
         // 1. TradingView 初始化與切換邏輯
         // ============================================
@@ -395,6 +427,8 @@
         function updateRealTimePrice(coin, price) {
             const isBtcBase = coin === 'ethbtc';
             const priceEl = document.getElementById(`${coin}-price`);
+            if (!priceEl) return; // 保護機制，防呆
+            
             const oldPrice = prevPrices[coin];
 
             if (oldPrice !== undefined && oldPrice !== price) {
@@ -466,6 +500,7 @@
 
         const formatPhaseBadge = (phase, elementId) => {
             const el = document.getElementById(elementId);
+            if (!el) return;
             el.innerText = phase;
             el.className = "text-[10px] font-bold px-1.5 py-0.5 rounded text-slate-800"; 
             
@@ -485,20 +520,20 @@
             if (!data) return;
             const isBtcBase = coin === 'ethbtc';
 
-            if (!prevPrices[coin]) {
+            if (!prevPrices[coin] && document.getElementById(`${coin}-price`)) {
                 document.getElementById(`${coin}-price`).innerText = formatValue(data.price, isBtcBase);
                 prevPrices[coin] = data.price;
             }
 
-            document.getElementById(`${coin}-buy`).innerText = formatValue(data.buy_target, isBtcBase);
-            document.getElementById(`${coin}-sell`).innerText = formatValue(data.sell_target, isBtcBase);
+            if (document.getElementById(`${coin}-buy`)) document.getElementById(`${coin}-buy`).innerText = formatValue(data.buy_target, isBtcBase);
+            if (document.getElementById(`${coin}-sell`)) document.getElementById(`${coin}-sell`).innerText = formatValue(data.sell_target, isBtcBase);
             
             if (coin !== 'mstr') {
                 formatTrendBadge(data.dow_status, `${coin}-trend`);
             }
             
             if(coin === 'mstr' && data.mnav_multiple) {
-                document.getElementById('mstr-mnav').innerText = data.mnav_multiple;
+                if (document.getElementById('mstr-mnav')) document.getElementById('mstr-mnav').innerText = data.mnav_multiple;
                 const mnavBadge = document.getElementById('mstr-mnav-badge');
                 if (mnavBadge) {
                     mnavBadge.className = "text-[10px] px-1.5 py-0.5 rounded font-bold shrink-0";
@@ -514,8 +549,8 @@
             }
 
             formatPhaseBadge(data.wyckoff_phase, `${coin}-wyckoff-phase`);
-            document.getElementById(`${coin}-dow-mini`).innerText = data.dow_status;
-            document.getElementById(`${coin}-wyckoff-hint`).innerHTML = formatWyckoffHint(data.wyckoff_hint);
+            if (document.getElementById(`${coin}-dow-mini`)) document.getElementById(`${coin}-dow-mini`).innerText = data.dow_status;
+            if (document.getElementById(`${coin}-wyckoff-hint`)) document.getElementById(`${coin}-wyckoff-hint`).innerHTML = formatWyckoffHint(data.wyckoff_hint);
 
             if(document.getElementById(`${coin}-fib-382`)) {
                 document.getElementById(`${coin}-fib-382`).innerText = formatValue(data.fib_382, isBtcBase);
@@ -528,7 +563,8 @@
             try {
                 const response = await fetch(`data.json?t=${new Date().getTime()}`); 
                 const data = await response.json();
-                document.getElementById('last-sync').innerText = data.updated_at || "-";
+                if (document.getElementById('last-sync')) document.getElementById('last-sync').innerText = data.updated_at || "-";
+                
                 bindDeepData('btc', data.btc);
                 bindDeepData('eth', data.eth);
                 bindDeepData('ethbtc', data.ethbtc);

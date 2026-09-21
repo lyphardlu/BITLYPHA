@@ -14,11 +14,11 @@ def find_fractal_pivots(highs, lows, closes):
     for i in range(1, min(15, n)):
         tr = max(highs[-i] - lows[-i], abs(highs[-i] - closes[-i-1]), abs(lows[-i] - closes[-i-1]))
         tr_list.append(tr)
-    atr = sum(tr_list) / len(tr_list) if tr_list else (highs[-1] * 0.035)
+    atr = sum(tr_list) / len(tr_list) if tr_list else (highs[-1] * 0.035 if highs else 1.0)
     return swing_highs, swing_lows, atr
 
 def calculate_fibonacci_levels(highs, lows, decimals=2):
-    if not highs or not lows: return {"macro_high": 0.0, "fib_236": 0.0, "fib_382": 0.0, "fib_500": 0.0, "fib_618": 0.0, "fib_786": 0.0}
+    if not highs or not lows: return {"macro_high": "N/A", "fib_236": "N/A", "fib_382": "N/A", "fib_500": "N/A", "fib_618": "N/A", "fib_786": "N/A"}
     macro_high, macro_low = max(highs), min(lows)
     diff = macro_high - macro_low
     return {
@@ -31,6 +31,9 @@ def calculate_fibonacci_levels(highs, lows, decimals=2):
     }
 
 def calculate_grid_targets(current_price, fib_levels, decimals=2):
+    if current_price == "N/A" or fib_levels["fib_382"] == "N/A":
+        return {"buy_target": "N/A", "sell_target": "N/A"}
+    
     fib_382, fib_500, fib_618, macro_high = fib_levels["fib_382"], fib_levels["fib_500"], fib_levels["fib_618"], fib_levels["macro_high"]
     if current_price > fib_382: buy_target = fib_382
     elif current_price > fib_500: buy_target = fib_500
@@ -41,9 +44,12 @@ def calculate_grid_targets(current_price, fib_levels, decimals=2):
     elif current_price < fib_500: sell_target = fib_382
     elif current_price < fib_382: sell_target = macro_high
     else: sell_target = macro_high * 1.05 
-    return {"buy_target": buy_target, "sell_target": sell_target}
+    return {"buy_target": round(buy_target, decimals), "sell_target": round(sell_target, decimals)}
 
 def get_dow_status(swing_highs, swing_lows, current_price, recent_closes, fib_levels):
+    if current_price == "N/A" or fib_levels["fib_382"] == "N/A":
+        return "N/A", "API 數據獲取失敗，標記為 N/A"
+    
     if current_price > fib_levels["fib_382"]:
         return "Primary Bull", "SOS 強勢修復"
     elif current_price < fib_levels["fib_618"]:
@@ -60,12 +66,12 @@ def get_dow_status(swing_highs, swing_lows, current_price, recent_closes, fib_le
     else:
         return ("Primary Bull", "趨勢延續") if current_price >= recent_closes[0] else ("Consolidation", "趨勢延續")
 
-# 🌟 核心升級：結合「路徑依賴過濾器」的決策矩陣
 def analyze_wyckoff_vsa(highs, lows, closes, volumes, fib_levels, dow_status):
-    if len(closes) < 30 or len(volumes) < 30: return "PHASE B", "資料不足，預設為區間震盪 (Phase B)。"
+    if not closes or len(closes) < 30 or dow_status == "N/A": 
+        return "N/A", "⚠️【數據缺失】API 斷線或數據不足，無法執行威科夫 VSA 診斷 (N/A)。"
     
-    vol_sma = sum(volumes[-20:]) / 20
-    recent_3d_vol = sum(volumes[-3:]) / 3
+    vol_sma = sum(volumes[-20:]) / 20 if len(volumes) >= 20 else 1.0
+    recent_3d_vol = sum(volumes[-3:]) / 3 if len(volumes) >= 3 else 1.0
     curr_close, prev_close = closes[-1], (closes[-4] if len(closes) >= 4 else closes[0])
     curr_high, curr_low = max(highs[-3:]), min(lows[-3:])   
     curr_spread = curr_high - curr_low if curr_high - curr_low > 0 else 0.001
@@ -73,14 +79,10 @@ def analyze_wyckoff_vsa(highs, lows, closes, volumes, fib_levels, dow_status):
     is_high_vol, is_low_vol = recent_3d_vol > vol_sma * 1.2, recent_3d_vol < vol_sma * 0.8
     fib_382, fib_618 = fib_levels["fib_382"], fib_levels["fib_618"]
     
-    # 🔍 【路徑偵測】檢查過去 20 天內價格是否曾經高於目前位置許多 (判斷是否為從低位彈上來的高位回調)
     recent_max_20 = max(highs[-20:])
     is_bouncing_from_low = (curr_close - min(lows[-20:])) > (recent_max_20 - min(lows[-20:])) * 0.5
     
-    # === 1. 底部區間 (接近或跌破 618) ===
     if curr_low <= fib_618 * 1.015:
-        
-        # 🛡️ 防禦過濾：若它是從低位彈上來、目前是從高檔回測到 618 附近，且盈虧比轉差，則降級過濾！
         if is_bouncing_from_low and dow_status == "Secondary Correction":
             return "PHASE B", "⚖️【高位回調】雖觸及 618 幾何支撐，但屬於自低位反彈後的回測，盈虧比不佳，建議暫時觀望。"
 
@@ -96,7 +98,6 @@ def analyze_wyckoff_vsa(highs, lows, closes, volumes, fib_levels, dow_status):
         else: 
             return "PHASE C", "【邊界測試】位於 618 深水區防守測試中，等待量能表態。"
             
-    # === 2. 頂部區間 (接近或突破 382) ===
     elif curr_high >= fib_382 * 0.985:
         if is_high_vol and close_pos <= 0.3 and curr_close < prev_close: 
             if dow_status == "Primary Bull": 
@@ -122,9 +123,8 @@ def analyze_wyckoff_vsa(highs, lows, closes, volumes, fib_levels, dow_status):
             if dow_status == "Primary Bull":
                 return "PHASE D", "【頂部突破】挑戰上方強壓區，關注多頭量能是否持續堆積。"
             else:
-                return "PHASE D", "【區間突圍】多空交戰中，嚴格觀望，等待方向表態。"
+                return "PHASE D", "【區間突圍】多空交戰中，嚴格觀望，等待方向表態."
             
-    # === 3. 中間震盪區間 ===
     else:
         if curr_close < prev_close and is_low_vol: 
             return "PHASE C", "【二次測試】(Secondary Test) 區間內回調且連續縮量，測試下方籌碼。"
@@ -134,17 +134,12 @@ def analyze_wyckoff_vsa(highs, lows, closes, volumes, fib_levels, dow_status):
             if dow_status == "Consolidation": return "PHASE B", "⚖️【籌碼沉澱】主力建立部位中，無明確方向，建議嚴格執行高拋低吸。"
             return "PHASE B", "【區間震盪】於黃金區間內縮量換手，籌碼沉澱中。"
 
-def analyze_mstr_mnav(mnav):
-    if mnav >= 2.0: return "OVERVALUED", "🛑【逃頂賣出】溢價過高！mNAV 超過 2.0x 極端溢價，脫離 BTC 基本面，強烈建議獲利了結！"
-    elif mnav >= 1.6: return "PREMIUM", "⚠️【高位溢價】mNAV 達 1.6x 以上，處於歷史相對高位，建議停止追高。"
-    elif mnav <= 0.95: return "DISCOUNT", "🚀【極度低估】mNAV 罕見跌破 1.0x 產生折價！絕對的黃金抄底坑！"
-    elif mnav <= 1.15: return "UNDERVALUED", "🔥【強力買進】折價買進！mNAV 接近基準線，溢價泡沫已洗淨，具備極高安全邊際！"
-    else: return "FAIR VALUE", "⚖️【合理區間】mNAV 位於 1.15x - 1.6x 常態區間，隨 BTC 現貨連動，無極端情緒干擾。"
-
 def analyze_crypto_symbol(symbol_binance, coingecko_id, vs_currency="usd"):
     current_price = 0.0
     highs, lows, closes, volumes = [], [], [], []
     limit_days = 100 
+    
+    # 1. 嘗試 Binance
     try:
         bn_url = f"https://api.binance.com/api/v3/klines?symbol={symbol_binance}&interval=1d&limit={limit_days}"
         res = requests.get(bn_url, headers={"User-Agent": "Mozilla/5.0"}, timeout=8).json()
@@ -153,6 +148,7 @@ def analyze_crypto_symbol(symbol_binance, coingecko_id, vs_currency="usd"):
             current_price = closes[-1]
     except: pass
 
+    # 2. 嘗試 CoinGecko
     if current_price == 0.0:
         try:
             cg_url = f"https://api.coingecko.com/api/v3/coins/{coingecko_id}/market_chart?vs_currency={vs_currency}&days={limit_days}&interval=daily"
@@ -166,16 +162,27 @@ def analyze_crypto_symbol(symbol_binance, coingecko_id, vs_currency="usd"):
                 current_price = closes[-1]
         except: pass
 
+    # 3. 嘗試讀取舊快取 data.json
     if current_price == 0.0:
         try:
             with open("data.json", "r", encoding="utf-8") as f:
                 old = json.load(f)
                 key = symbol_binance[:3].lower() if symbol_binance != "ETHBTC" else "ethbtc"
-                current_price = float(old[key]["price"])
-                closes, highs, lows, volumes = [current_price]*30, [current_price*1.02]*30, [current_price*0.98]*30, [1000]*30
-        except:
-            current_price = 1.0
-            closes, highs, lows, volumes = [1.0]*30, [1.02]*30, [0.98]*30, [1000]*30
+                if key in old and isinstance(old[key], dict) and "price" in old[key] and old[key]["price"] != "N/A":
+                    cached_p = float(old[key]["price"])
+                    # 如果舊快取有效，使用它並賦予基本的模擬歷史數據以防崩潰
+                    current_price = cached_p
+                    closes, highs, lows, volumes = [current_price]*30, [current_price*1.05]*30, [current_price*0.95]*30, [10000]*30
+        except: pass
+
+    # 4. 如果完全找不到數據：嚴格返回 N/A，絕不偽造假價格！
+    if current_price == 0.0 or not closes:
+        return {
+            "price": "N/A", "dow_status": "N/A", "dow_signal": "API 連線失敗，數據缺失 (N/A)",
+            "support": "N/A", "resistance": "N/A", "buy_target": "N/A", "sell_target": "N/A",
+            "wyckoff_phase": "N/A", "wyckoff_hint": "🛑【數據異常】無法取得即時行情與歷史 K 線，請檢查 API 狀態。",
+            "fib_236": "N/A", "fib_382": "N/A", "fib_500": "N/A", "fib_618": "N/A"
+        }
 
     decimals = 5 if current_price < 0.1 else (3 if current_price < 50 else 2)
     fib_levels = calculate_fibonacci_levels(highs, lows, decimals)
@@ -208,9 +215,10 @@ def analyze_crypto_symbol(symbol_binance, coingecko_id, vs_currency="usd"):
 
     return {
         "price": round(current_price, decimals), "dow_status": dow_status, "dow_signal": dow_signal,
-        "support": round(support, decimals), "resistance": round(resistance, decimals),
-        "buy_target": round(final_buy_target, decimals), 
-        "sell_target": round(final_sell_target, decimals),
+        "support": round(support, decimals) if support != "N/A" else "N/A", 
+        "resistance": round(resistance, decimals) if resistance != "N/A" else "N/A",
+        "buy_target": round(final_buy_target, decimals) if final_buy_target != "N/A" else "N/A", 
+        "sell_target": round(final_sell_target, decimals) if final_sell_target != "N/A" else "N/A",
         "wyckoff_phase": wyckoff_phase, "wyckoff_hint": wyckoff_hint,
         "fib_236": fib_levels["fib_236"], "fib_382": fib_levels["fib_382"], 
         "fib_500": fib_levels["fib_500"], "fib_618": fib_levels["fib_618"]
@@ -242,10 +250,13 @@ def analyze_tokenized_stock(stock_ticker, okx_prefix, is_mstr=False, btc_price=0
             if current_price == 0.0: current_price = closes[-1]
     except Exception: pass
 
-    if not closes or len(closes) < 20:
-        if current_price == 0.0: current_price = official_base_stock
-        closes = [current_price * (1 + 0.005 * (i - 15)) for i in range(30)]
-        highs, lows, volumes = [c * 1.02 for c in closes], [c * 0.98 for c in closes], [1000000]*30
+    if current_price == 0.0 or not closes:
+        return {
+            "price": "N/A", "dow_status": "N/A", "dow_signal": "API 連線失敗，數據缺失 (N/A)",
+            "buy_target": "N/A", "sell_target": "N/A",
+            "wyckoff_phase": "N/A", "wyckoff_hint": "🛑【數據異常】無法取得美股/代幣化資產行情。",
+            "fib_236": "N/A", "fib_382": "N/A", "fib_500": "N/A", "fib_618": "N/A"
+        }
 
     fib_levels = calculate_fibonacci_levels(highs, lows, 2)
     swing_plan = calculate_grid_targets(current_price, fib_levels, 2)
@@ -264,19 +275,6 @@ def analyze_tokenized_stock(stock_ticker, okx_prefix, is_mstr=False, btc_price=0
         
         stock_phase, stock_hint = analyze_mstr_mnav(mnav_multiple)
 
-        if stock_phase in ["OVERVALUED", "PREMIUM"]:  
-            final_buy_target = fib_levels["fib_236"]
-            final_sell_target = fib_levels["macro_high"] * 1.05
-        elif stock_phase == "FAIR VALUE":             
-            final_buy_target = fib_levels["fib_382"]
-            final_sell_target = fib_levels["macro_high"]
-        elif stock_phase == "UNDERVALUED":            
-            final_buy_target = fib_levels["fib_500"]
-            final_sell_target = fib_levels["fib_236"]
-        elif stock_phase == "DISCOUNT":               
-            final_buy_target = fib_levels["fib_618"]
-            final_sell_target = fib_levels["fib_382"]
-
         return {
             "price": round(current_price, 2), "mnav_multiple": f"{mnav_multiple}x",
             "dow_status": dow_status, 
@@ -288,19 +286,6 @@ def analyze_tokenized_stock(stock_ticker, okx_prefix, is_mstr=False, btc_price=0
     
     else:
         wyckoff_phase, wyckoff_hint = analyze_wyckoff_vsa(highs, lows, closes, volumes, fib_levels, dow_status)
-
-        if wyckoff_phase == "PHASE D":
-            final_buy_target = fib_levels["fib_236"]
-            final_sell_target = fib_levels["macro_high"] * 1.05
-        elif wyckoff_phase == "PHASE C":
-            final_buy_target = fib_levels["fib_618"]
-            final_sell_target = fib_levels["macro_high"]
-        elif wyckoff_phase == "PHASE B":
-            final_buy_target = fib_levels["fib_500"]
-            final_sell_target = fib_levels["fib_236"]
-        elif wyckoff_phase == "PHASE A" or wyckoff_phase == "PHASE E":
-            final_buy_target = fib_levels["fib_786"]
-            final_sell_target = fib_levels["fib_500"]
 
         return {
             "price": round(current_price, 2),
@@ -320,7 +305,8 @@ def main():
     ray_data = analyze_crypto_symbol("RAYUSDT", "raydium")
     zec_data = analyze_crypto_symbol("ZECUSDT", "zcash")
 
-    mstr_data = analyze_tokenized_stock("MSTR", "XMSTR", is_mstr=True, btc_price=btc_data["price"], official_base_stock=153.92, official_base_mnav=1.21)
+    mstr_btc_price = btc_data["price"] if btc_data["price"] != "N/A" else 80000.0
+    mstr_data = analyze_tokenized_stock("MSTR", "XMSTR", is_mstr=True, btc_price=mstr_btc_price, official_base_stock=153.92, official_base_mnav=1.21)
     xcoin_data = analyze_tokenized_stock("COIN", "XCOIN")
     xadbe_data = analyze_tokenized_stock("ADBE", "XADBE")
     xcrcl_data = analyze_tokenized_stock("CRCL", "XCRCL")
@@ -335,7 +321,7 @@ def main():
 
     with open("data.json", "w", encoding="utf-8") as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
-    print("Data.json updated successfully with Path-Dependent Filter Engine.")
+    print("Data.json updated successfully with Strict N/A Error Capture Engine.")
 
 if __name__ == "__main__":
     main()

@@ -41,7 +41,7 @@ def calculate_grid_targets(current_price, fib_levels, highs, lows, closes, decim
     macro_low = min(lows) if lows else current_price * 0.8
     macro_range = macro_high - macro_low
 
-    # 計算真實 ATR（取最近 14 天平均真實波幅）
+    # 計算真實 ATR（平均真實波幅，取最近 14 天）
     tr_list = []
     n = len(closes)
     for i in range(1, min(15, n)):
@@ -59,7 +59,7 @@ def calculate_grid_targets(current_price, fib_levels, highs, lows, closes, decim
     else: 
         buy_target = current_price - (atr * 1.5)
 
-    # 2. 賣出目標計算（未破新高依據費氏壓力，若已突破則採用華爾街費氏延伸 1.272 幾何目標）
+    # 2. 賣出目標計算：雙軌分工核心
     if current_price < fib_618: 
         sell_target = fib_500
     elif current_price < fib_500: 
@@ -67,9 +67,10 @@ def calculate_grid_targets(current_price, fib_levels, highs, lows, closes, decim
     elif current_price < macro_high: 
         sell_target = macro_high
     else: 
+        # 🚀 突破新高真空期：採用華爾街費氏黃金延伸 1.272 (macro_range * 0.272) 或 ATR 完美外推
         sell_target = macro_high + (macro_range * 0.272)
 
-    # 3. 嚴格機構防護：以 ATR 動態校正，確保買低賣高
+    # 3. 機構級防護：確保買低賣高，絕對不發生倒掛
     if sell_target <= current_price:
         sell_target = current_price + (atr * 2.0)
 
@@ -244,19 +245,15 @@ def analyze_crypto_symbol(symbol_binance, coingecko_id, vs_currency="usd", okx_i
     underlying = [l for l in swing_lows if l < current_price]
     support = max(underlying) if underlying else (current_price - atr * 1.618)
 
-    final_buy_target, final_sell_target = swing_plan["buy_target"], swing_plan["sell_target"]
-    if wyckoff_phase == "PHASE D":
-        final_buy_target = fib_levels["fib_236"]
-        final_sell_target = max(fib_levels["macro_high"] * 1.05, current_price * 1.08)
-    elif wyckoff_phase == "PHASE C":
+    # 🚀 雙軌分工：交易目標全面由幾何外推與 ATR 幾何網格主導，威科夫專責結構診斷
+    final_buy_target = swing_plan["buy_target"]
+    final_sell_target = swing_plan["sell_target"]
+
+    # 威科夫階段僅微調防守支撐，絕不破壞止盈倒掛
+    if wyckoff_phase == "PHASE C" and fib_levels["fib_618"] < current_price:
         final_buy_target = fib_levels["fib_618"]
-        final_sell_target = max(fib_levels["macro_high"], current_price * 1.08)
-    elif wyckoff_phase == "PHASE B":
-        final_buy_target = fib_levels["fib_500"]
-        final_sell_target = fib_levels["fib_236"]
-    elif wyckoff_phase == "PHASE A" or wyckoff_phase == "PHASE E":
-        final_buy_target = fib_levels["fib_786"]
-        final_sell_target = fib_levels["fib_500"]
+    elif wyckoff_phase == "PHASE D" and fib_levels["fib_236"] < current_price:
+        final_buy_target = fib_levels["fib_236"]
 
     return {
         "price": round(current_price, decimals), "dow_status": dow_status, "dow_signal": dow_signal,
@@ -366,7 +363,7 @@ def main():
 
     with open("data.json", "w", encoding="utf-8") as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
-    print("Data.json updated successfully with ATR & Fibonacci Extension targets.")
+    print("Data.json updated successfully with Dual-Engine Wyckoff & ATR Extension Targets.")
 
 if __name__ == "__main__":
     main()

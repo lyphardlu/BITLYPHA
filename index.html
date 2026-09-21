@@ -98,7 +98,7 @@
                     </div>
                 </div>`;
                 
-                // 將顯示的標題去除了 x
+                // 去除顯示上的 x，保持極簡
                 document.write(
                     createCard('btc', 'BTC / USDT', 'text-emerald-400', false) +
                     createCard('eth', 'ETH / USDT', 'text-blue-400', false) +
@@ -132,6 +132,7 @@
                     <h3 class="text-sm font-bold text-slate-300 flex items-center gap-2">
                         <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span> 深度量化盤口診斷
                     </h3>
+                    <!-- 專業標題正名 -->
                     <span class="text-[10px] text-slate-500">[主力籌碼階段] 宏觀市場結構</span>
                 </div>
                 
@@ -277,7 +278,7 @@
                 "hide_top_toolbar": false,
                 "hide_legend": false,
                 "save_image": false,
-                "withdateranges": false,
+                "withdateranges": false,  // 隱藏底部時間列
                 "hide_side_toolbar": false,
                 "container_id": "tradingview_chart"
             });
@@ -383,8 +384,8 @@
             if (hintText.includes("🔥【強力買進】") || hintText.includes("🔥【折價買進】")) return `<span class="text-orange-400 font-bold">${hintText}</span>`;
             if (hintText.includes("🚀【極度低估】")) return `<span class="text-emerald-400 font-bold">${hintText}</span>`;
             if (hintText.includes("🛑【逃頂賣出】") || hintText.includes("🛑【溢價過高】")) return `<span class="text-rose-500 font-bold">${hintText}</span>`;
-            if (hintText.includes("⚠️【高位溢價】") || hintText.includes("【恐慌拋售】")) return `<span class="text-rose-300">${hintText}</span>`;
-            if (hintText.includes("⚖️【合理區間】")) return `<span class="text-cyan-300">${hintText}</span>`;
+            if (hintText.includes("⚠️【高位溢價】") || hintText.includes("⚠️【死貓反彈】") || hintText.includes("⚠️【高位誘多】")) return `<span class="text-rose-300">${hintText}</span>`;
+            if (hintText.includes("⚖️【合理區間】") || hintText.includes("⚖️【籌碼沉澱】")) return `<span class="text-cyan-300">${hintText}</span>`;
             if (hintText.includes("【無供應測試】") || hintText.includes("【彈簧洗盤】")) return `<span class="text-orange-300">${hintText}</span>`;
             return `<span class="text-slate-300">${hintText}</span>`;
         }

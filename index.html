@@ -22,7 +22,6 @@
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
-        /* 專為內部區塊設計的科技極細捲軸 */
         .custom-scroll::-webkit-scrollbar {
             width: 4px;
             display: block;
@@ -38,6 +37,47 @@
         }
         .flash-up { color: #34d399 !important; text-shadow: 0 0 15px rgba(52, 211, 153, 0.9); transform: scale(1.02); }
         .flash-down { color: #fb7185 !important; text-shadow: 0 0 15px rgba(251, 113, 133, 0.9); transform: scale(1.02); }
+
+        /* --- AI 側邊欄專屬樣式 --- */
+        .ai-sidebar {
+            position: fixed;
+            right: -380px;
+            top: 0;
+            width: 360px;
+            height: 100vh;
+            background: #121418;
+            border-left: 1px solid #2A2E39;
+            z-index: 1000;
+            transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            box-shadow: -10px 0 30px rgba(0,0,0,0.8);
+        }
+        .ai-sidebar.open {
+            right: 0;
+        }
+        .ai-toggle-btn {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            z-index: 999;
+            background: #f0b90b;
+            color: #0A0E17;
+            border-radius: 50px;
+            padding: 10px 18px;
+            font-weight: bold;
+            font-size: 12px;
+            box-shadow: 0 4px 15px rgba(240, 185, 11, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+        }
+        .ai-toggle-btn:hover {
+            transform: scale(1.05);
+            background: #fcd535;
+        }
     </style>
 </head>
 <body class="min-h-screen p-4 md:p-6 flex flex-col lg:h-screen lg:overflow-hidden">
@@ -128,7 +168,6 @@
                     <h3 class="text-sm font-bold text-slate-300 flex items-center gap-2">
                         <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span> 深度量化盤口診斷
                     </h3>
-                    <!-- 🌟 對齊調整：宏觀在前，徽章在後 🌟 -->
                     <span class="text-[10px] text-slate-500">宏觀市場結構 [主力籌碼階段]</span>
                 </div>
                 
@@ -139,7 +178,6 @@
                             <div class="flex justify-between items-center mb-1.5">
                                 <span class="font-bold text-sm ${colorClass}">${title} ${hasMnav ? '<span class="text-[9px] text-cyan-700 font-normal ml-1 border border-cyan-800/30 px-1 rounded">mNAV 模型</span>' : ''}</span>
                                 <div class="flex items-center gap-2">
-                                    <!-- 🌟 順序互換：文字在前，徽章在後 🌟 -->
                                     <span id="${key}-dow-mini" class="text-xs text-slate-300 font-bold tracking-wide">-</span>
                                     <span id="${key}-wyckoff-phase" class="text-[10px] font-bold px-1.5 py-0.5 rounded">-</span>
                                 </div>
@@ -234,7 +272,7 @@
 
     </div>
 
-    <!-- 🌟 底部落款與瀏覽計數器 🌟 -->
+    <!-- 底部落款與瀏覽計數器 -->
     <footer class="mt-4 mb-2 shrink-0">
         <div class="flex flex-wrap justify-center items-center gap-x-1.5 gap-y-1 text-[11.5px] text-[#4A5568] font-mono tracking-wide text-center">
             <span>BITLYPHA // Designed & Architected by 比特利法 Lyphard · Macro-Swing Execution System</span>
@@ -247,6 +285,29 @@
             </div>
         </div>
     </footer>
+
+    <!-- 🌟 AI 智能操盤手懸浮按鈕與側邊欄 🌟 -->
+    <div class="ai-toggle-btn" onclick="toggleAiSidebar()">
+        <span>⚡ 盤口 AI 助理</span>
+    </div>
+
+    <div class="ai-sidebar" id="aiSidebar">
+        <div class="p-4 bg-[#1a1e24] border-b border-[#2A2E39] flex justify-between items-center">
+            <h3 class="text-xs font-bold text-amber-400 tracking-wider flex items-center gap-2">
+                <span>⚡ BITLYPHA QUANT AGENT</span>
+            </h3>
+            <button onclick="toggleAiSidebar()" class="text-slate-400 hover:text-white text-sm font-bold px-2 py-0.5 rounded bg-[#2A2E39]/50">✕</button>
+        </div>
+        <div id="aiChatBody" class="flex-1 p-4 overflow-y-auto custom-scroll space-y-3 text-xs font-mono bg-[#0b0e11]">
+            <div class="p-3 rounded bg-[#1a1e24] border-l-2 border-amber-400 text-slate-300">
+                您好！我是您的 AI 首席量化操盤手。我已連線當前終端數據 (`data.json`)。您可以問我任何資產的威科夫 VSA 階段、買入/止盈價，或 ATR 幾何外推邏輯！
+            </div>
+        </div>
+        <div class="p-3 bg-[#1a1e24] border-t border-[#2A2E39] flex gap-2">
+            <input type="text" id="aiInput" placeholder="輸入指令（例如：分析 RAY 盤口）..." class="flex-1 bg-[#0b0e11] border border-[#2A2E39] rounded px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-amber-400" onkeypress="if(event.key==='Enter') sendAiMessage()">
+            <button onclick="sendAiMessage()" class="bg-amber-400 text-[#0A0E17] font-bold px-3 py-2 rounded hover:bg-amber-500 transition">發送</button>
+        </div>
+    </div>
 
     <!-- JavaScript 核心邏輯 -->
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
@@ -310,6 +371,7 @@
             return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(num);
         };
 
+        let latestMarketData = {};
         const prevPrices = {};
         const animationTimers = {};
 
@@ -425,7 +487,6 @@
 
             formatPhaseBadge(data.wyckoff_phase, `${coin}-wyckoff-phase`);
             
-            // 🌟 核心：全中文翻譯引擎 🌟
             let dowCn = data.dow_status;
             if (dowCn === "Primary Bull" || dowCn === "Bullish") dowCn = "主升趨勢";
             else if (dowCn === "Secondary Correction" || dowCn === "Bearish") dowCn = "次級折返";
@@ -447,6 +508,7 @@
             try {
                 const response = await fetch(`data.json?t=${new Date().getTime()}`); 
                 const data = await response.json();
+                latestMarketData = data; // 儲存全域脈絡供 AI 使用
                 if (document.getElementById('last-sync')) document.getElementById('last-sync').innerText = data.updated_at || "-";
                 
                 ['btc', 'eth', 'mstr', 'ethbtc', 'sol', 'uni', 'ray', 'zec', 'xcrcl', 'xcoin', 'xadbe'].forEach(key => {
@@ -459,6 +521,58 @@
 
         fetchData();
         setInterval(fetchData, 30000);
+
+        // --- AI 助手互動邏輯 ---
+        function toggleAiSidebar() {
+            document.getElementById('aiSidebar').classList.toggle('open');
+        }
+
+        function sendAiMessage() {
+            const input = document.getElementById('aiInput');
+            const chatBody = document.getElementById('aiChatBody');
+            const text = input.value.trim();
+            if (!text) return;
+
+            // 顯示使用者訊息
+            chatBody.innerHTML += `<div class="p-2 rounded bg-[#2962ff]/20 text-blue-300 text-right ml-4">${escapeHtml(text)}</div>`;
+            input.value = '';
+            chatBody.scrollTop = chatBody.scrollHeight;
+
+            // 智慧分析回應
+            setTimeout(() => {
+                const reply = generateAiReply(text, latestMarketData);
+                chatBody.innerHTML += `<div class="p-3 rounded bg-[#1a1e24] border-l-2 border-amber-400 text-slate-300">${reply}</div>`;
+                chatBody.scrollTop = chatBody.scrollHeight;
+            }, 300);
+        }
+
+        function generateAiReply(query, data) {
+            const q = query.toUpperCase();
+            
+            // 掃描指定幣種
+            for (let key in data) {
+                if (key === 'updated_at') continue;
+                if (q.includes(key.toUpperCase()) || q.includes(key)) {
+                    const item = data[key];
+                    return `📊 <b>${key.toUpperCase()} 即時量化診斷</b>：<br>` +
+                           `• 現價：$${item.price}<br>` +
+                           `• 威科夫階段：<b>${item.wyckoff_phase || 'N/A'}</b><br>` +
+                           `• 波段買入 (Buy)：$${item.buy_target}<br>` +
+                           `• 目標止盈 (Sell)：$${item.sell_target}<br>` +
+                           `• 盤口提示：${item.wyckoff_hint || item.dow_signal || '結構正常'}`;
+                }
+            }
+
+            if (q.includes('買') || q.includes('BUY')) {
+                return `🔥 系統會透過 <b>ATR 幾何與費氏回撤聯防</b> 自動抓取各資產的黃金買點（如 Phase C 彈簧洗盤或 0.618 支撐）。您可以直接輸入幣種名稱（例如：「RAY 買點」）來查詢！`;
+            }
+
+            return `收到您的詢問：「${query}」。本終端目前已載入最新數據，採用雙軌分工架構：買入交由費氏回撤與威科夫聯防，止盈由 ATR 幾何外推守護。請問想檢視哪一檔資產？`;
+        }
+
+        function escapeHtml(text) {
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
     </script>
 </body>
 </html>

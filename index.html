@@ -11,25 +11,22 @@
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             background-color: #0A0E17;
             color: #f8fafc;
-            /* 讓整個網頁鎖定在一螢幕高度，不出現全域滾動條 */
-            overflow-x: hidden;
         }
         .glass-panel {
             background-color: #131722;
             border: 1px solid #2A2E39;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
         }
-        
-        /* 完全隱藏不需要的預設捲軸 (用於頂部卡片和 Tab列) */
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        ::-webkit-scrollbar { display: none; }
         .hide-scrollbar {
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
 
-        /* 🌟 專為左側數據庫設計的「終端機極細捲軸」 */
+        /* 🌟 專為內部區塊設計的科技極細捲軸 */
         .custom-scroll::-webkit-scrollbar {
             width: 4px;
+            display: block; /* 強制在內部區塊顯示捲軸 */
         }
         .custom-scroll::-webkit-scrollbar-track {
             background: transparent;
@@ -39,10 +36,10 @@
             border-radius: 10px;
         }
         .custom-scroll::-webkit-scrollbar-thumb:hover {
-            background-color: #34d399; /* 懸停時亮起科技青 */
+            background-color: #34d399;
         }
 
-        /* 極致平滑的價格跳動動畫 */
+        /* 價格跳動動畫 */
         .price-base {
             transition: color 0.5s ease-out, text-shadow 0.5s ease-out, transform 0.2s ease-out;
             display: inline-block;
@@ -60,16 +57,16 @@
         }
     </style>
 </head>
-<body class="min-h-screen p-4 md:p-6 flex flex-col">
+<!-- 🌟 關鍵修正：在電腦版 (lg) 強制高度為 screen，並隱藏外層捲軸，強迫內部滾動 -->
+<body class="min-h-screen p-4 md:p-6 flex flex-col lg:h-screen lg:overflow-hidden">
 
     <!-- 頂部 Header -->
-    <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 border-b border-[#2A2E39] pb-4 gap-4">
+    <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 border-b border-[#2A2E39] pb-4 gap-4 shrink-0">
         <div>
             <div class="flex items-center gap-3">
                 <div class="bg-emerald-500/20 text-emerald-400 p-2 rounded-lg font-bold text-xl leading-none">α</div>
                 <h1 class="text-2xl font-bold tracking-wider">BITLYPHA <span class="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-1 rounded ml-2 align-middle animate-pulse tracking-widest font-mono">● LIVE TICKER WS</span></h1>
             </div>
-            <!-- 個人品牌副標題與聯絡資訊 -->
             <div class="text-[#64748B] text-[10px] font-mono mt-2.5 font-semibold flex flex-wrap items-center gap-y-1.5 gap-x-2">
                 <span class="uppercase">System Architect & Quant Trader:</span> 
                 <span class="text-[#94A3B8] font-bold">比特利法 Lyphard</span> 
@@ -87,18 +84,16 @@
         </div>
         <div class="flex items-center gap-3 text-sm mt-2 md:mt-0">
             <div id="last-sync" class="text-emerald-500/80 font-mono text-xs tracking-wide pt-0.5">-</div>
-            
             <div class="border border-amber-900/30 bg-amber-900/10 text-amber-500/80 px-2 py-1 rounded text-[10px] font-mono tracking-widest flex items-center gap-1.5">
                 <span>⚠️ 非投資建議 Not Financial Advice</span>
             </div>
         </div>
     </header>
 
-    <!-- 頂部資產滾動卡片 (一次顯示 4 個) -->
-    <div class="relative mb-6 group">
-        
-        <!-- 左箭頭 -->
-        <button onclick="scrollTicker(-1)" class="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-[#0A0E17]/80 hover:bg-[#131722] border border-[#2A2E39] text-emerald-400 w-8 h-8 rounded-full hidden md:flex items-center justify-center backdrop-blur-md transition-all opacity-0 group-hover:opacity-100 shadow-[0_0_10px_rgba(0,0,0,0.8)]">
+    <!-- 頂部資產滾動卡片 -->
+    <div class="relative mb-4 group shrink-0">
+        <!-- 左箭頭：改為 opacity-50 常駐微光，提示可點擊 -->
+        <button onclick="scrollTicker(-1)" class="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-[#0A0E17]/80 hover:bg-[#131722] border border-[#2A2E39] text-emerald-400 w-8 h-8 rounded-full hidden md:flex items-center justify-center backdrop-blur-md transition-all opacity-50 hover:opacity-100 shadow-[0_0_10px_rgba(0,0,0,0.8)]">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
         </button>
 
@@ -185,19 +180,19 @@
         </div>
 
         <!-- 右箭頭 -->
-        <button onclick="scrollTicker(1)" class="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-[#0A0E17]/80 hover:bg-[#131722] border border-[#2A2E39] text-emerald-400 w-8 h-8 rounded-full hidden md:flex items-center justify-center backdrop-blur-md transition-all opacity-0 group-hover:opacity-100 shadow-[0_0_10px_rgba(0,0,0,0.8)]">
+        <button onclick="scrollTicker(1)" class="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-[#0A0E17]/80 hover:bg-[#131722] border border-[#2A2E39] text-emerald-400 w-8 h-8 rounded-full hidden md:flex items-center justify-center backdrop-blur-md transition-all opacity-50 hover:opacity-100 shadow-[0_0_10px_rgba(0,0,0,0.8)]">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
         </button>
     </div>
 
-    <!-- 底部主內容區 -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1 h-[calc(100vh-280px)] min-h-[500px]">
+    <!-- 🌟 底部主內容區：關鍵的 min-h-0 強制限制高度 -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1 min-h-0">
         
         <!-- 左側：量化診斷與費氏支撐 -->
-        <div class="lg:col-span-4 flex flex-col gap-6 h-full">
+        <div class="lg:col-span-4 flex flex-col gap-4 lg:h-full min-h-0">
             
-            <!-- 🌟 VSA 量化盤口診斷 (垂直滾動化) -->
-            <div class="glass-panel rounded-xl p-5 flex flex-col" style="max-height: 55%;">
+            <!-- VSA 量化盤口診斷 (加上 min-h-0 防止膨脹) -->
+            <div class="glass-panel rounded-xl p-5 flex flex-col lg:h-[55%] min-h-[300px] lg:min-h-0 shrink-0">
                 <div class="flex justify-between items-center mb-4 border-b border-[#2A2E39] pb-2 shrink-0">
                     <h3 class="text-sm font-bold text-slate-300 flex items-center gap-2">
                         <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span> 深度量化盤口診斷
@@ -205,8 +200,8 @@
                     <span class="text-[10px] text-slate-500">[威科夫階段] 道氏趨勢</span>
                 </div>
                 
-                <!-- 加入 custom-scroll 讓此區塊獨立滾動 -->
-                <div class="space-y-5 overflow-y-auto custom-scroll pr-2 flex-1">
+                <!-- 真正的滾動區域 -->
+                <div class="space-y-4 overflow-y-auto custom-scroll pr-2 flex-1 min-h-0">
                     <div>
                         <div class="flex justify-between items-center mb-1.5">
                             <span class="font-bold text-sm text-emerald-400">BTC · 比特幣</span>
@@ -272,20 +267,18 @@
                         </div>
                         <p id="mstr-wyckoff-hint" class="text-[11.5px] text-slate-300 leading-relaxed">等待 Python 運算...</p>
                     </div>
-                    
-                    <!-- 預留未來擴充幣種的空間 -->
                 </div>
             </div>
 
-            <!-- 🌟 1D FIB LEVELS (垂直滾動化) -->
-            <div class="glass-panel rounded-xl p-5 flex flex-col flex-1" style="max-height: 45%;">
+            <!-- 🌟 1D FIB LEVELS (加上 min-h-0 防止膨脹) -->
+            <div class="glass-panel rounded-xl p-5 flex flex-col flex-1 min-h-[300px] lg:min-h-0 shrink-0">
                 <div class="flex justify-between items-center mb-4 border-b border-[#2A2E39] pb-2 shrink-0">
                     <h3 class="text-sm font-bold text-slate-300">日線費氏大支撐 (1D FIB LEVELS)</h3>
                     <span class="text-[10px] bg-[#2A2E39] text-slate-400 px-2 rounded">MACRO-SWING</span>
                 </div>
                 
-                <!-- 加入 custom-scroll 讓此區塊獨立滾動 -->
-                <div class="grid grid-cols-2 gap-x-8 gap-y-6 overflow-y-auto custom-scroll pr-2 flex-1 content-start">
+                <!-- 真正的滾動區域 -->
+                <div class="grid grid-cols-2 gap-x-8 gap-y-6 overflow-y-auto custom-scroll pr-2 flex-1 min-h-0 content-start">
                     <div>
                         <div class="text-xs font-bold text-emerald-400 mb-2">BTC 檔位</div>
                         <ul class="text-xs font-mono space-y-1.5">
@@ -334,21 +327,20 @@
                             <li class="flex justify-between"><span class="text-slate-500">618:</span> <span id="mstr-fib-618" class="text-cyan-400 font-semibold">-</span></li>
                         </ul>
                     </div>
-                    <!-- 預留未來擴充幣種的空間 -->
                 </div>
             </div>
         </div>
 
-        <!-- 右側：互動式 Tabs TradingView 走勢圖 -->
-        <div class="lg:col-span-8 h-full">
-            <div class="glass-panel rounded-xl p-5 h-full flex flex-col">
-                <div class="flex flex-col xl:flex-row xl:justify-between items-start xl:items-center mb-4 border-b border-[#2A2E39] pb-3 gap-3">
+        <!-- 🌟 右側：互動式 Tabs TradingView 走勢圖 -->
+        <div class="lg:col-span-8 lg:h-full min-h-[500px] lg:min-h-0 flex flex-col">
+            <div class="glass-panel rounded-xl p-5 flex-1 flex flex-col min-h-0">
+                <div class="flex flex-col xl:flex-row xl:justify-between items-start xl:items-center mb-4 border-b border-[#2A2E39] pb-3 gap-3 shrink-0">
                     <h3 class="text-sm font-bold text-slate-300 flex items-center gap-2 shrink-0">
                         <span id="chart-dot" class="w-2 h-2 bg-emerald-400 rounded-full"></span> 
                         <span id="chart-title">BTC/USDT 即時走勢</span>
                     </h3>
                     
-                    <!-- 🌟 走勢圖切換列：改為水平無縫滾動，支援無限擴充幣種 -->
+                    <!-- 水平滾動的 Tabs -->
                     <div class="flex gap-2 text-xs font-bold w-full xl:w-auto overflow-x-auto hide-scrollbar whitespace-nowrap pb-1">
                         <button onclick="changeChart('BINANCE:BTCUSDT', this, 'btc')" class="tv-tab active text-emerald-400 bg-emerald-900/20 px-2 py-1 rounded transition shrink-0">BTC</button>
                         <button onclick="changeChart('BINANCE:ETHUSDT', this, 'eth')" class="tv-tab text-slate-500 hover:text-slate-300 px-2 py-1 rounded transition shrink-0">ETH</button>
@@ -356,11 +348,10 @@
                         <button onclick="changeChart('BINANCE:SOLUSDT', this, 'sol')" class="tv-tab text-slate-500 hover:text-slate-300 px-2 py-1 rounded transition shrink-0">SOL</button>
                         <button onclick="changeChart('BINANCE:UNIUSDT', this, 'uni')" class="tv-tab text-slate-500 hover:text-slate-300 px-2 py-1 rounded transition shrink-0">UNI</button>
                         <button onclick="changeChart('OKX:XMSTRUSDT', this, 'mstr')" class="tv-tab text-slate-500 hover:text-slate-300 px-2 py-1 rounded transition shrink-0">MSTR</button>
-                        <!-- 未來可以在這裡隨便加 Button，會自動長在右邊並可滑動 -->
                     </div>
                 </div>
                 
-                <div id="tv_container" class="tradingview-widget-container flex-1 rounded overflow-hidden">
+                <div id="tv_container" class="tradingview-widget-container flex-1 rounded overflow-hidden min-h-0">
                     <div id="tradingview_chart" class="h-full"></div>
                 </div>
             </div>
@@ -369,7 +360,7 @@
     </div>
 
     <!-- 底部落款 -->
-    <footer class="mt-4 mb-2">
+    <footer class="mt-4 mb-2 shrink-0">
         <div class="flex flex-wrap justify-center items-center gap-2 text-[11.5px] text-[#4A5568] font-mono tracking-wide">
             <span>BITLYPHA // Designed & Architected by 比特利法 Lyphard · Macro-Swing Execution System</span>
             <span class="text-[#2A2E39] hidden md:inline">|</span> 
@@ -380,7 +371,6 @@
     <!-- JavaScript 核心邏輯 -->
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <script>
-        // 🌟 新增：頂部資產列左右滑動邏輯
         function scrollTicker(direction) {
             const container = document.getElementById('ticker-container');
             const scrollAmount = container.offsetWidth;
@@ -429,7 +419,6 @@
             document.getElementById('chart-dot').className = `w-2 h-2 rounded-full ${tabConfigs[coinKey].dotClass}`;
             loadTradingView(symbol);
             
-            // 點擊後，自動讓被點擊的按鈕滾動到可視區域內 (針對小螢幕)
             btnElement.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         }
 

@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             background-color: #0A0E17;
             color: #f8fafc;
         }
@@ -18,10 +18,18 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
         }
         ::-webkit-scrollbar { display: none; }
-        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        .custom-scroll::-webkit-scrollbar { width: 4px; display: block; }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .custom-scroll::-webkit-scrollbar {
+            width: 4px;
+            display: block;
+        }
         .custom-scroll::-webkit-scrollbar-track { background: transparent; }
         .custom-scroll::-webkit-scrollbar-thumb { background-color: #2A2E39; border-radius: 10px; }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background-color: #34d399; }
+        
         .price-base {
             transition: color 0.5s ease-out, text-shadow 0.5s ease-out, transform 0.2s ease-out;
             display: inline-block;
@@ -30,35 +38,66 @@
         .flash-up { color: #34d399 !important; text-shadow: 0 0 15px rgba(52, 211, 153, 0.9); transform: scale(1.02); }
         .flash-down { color: #fb7185 !important; text-shadow: 0 0 15px rgba(251, 113, 133, 0.9); transform: scale(1.02); }
 
+        /* AI 側邊欄專屬樣式 */
         .ai-sidebar {
-            position: fixed; right: -380px; top: 0; width: 360px; height: 100vh;
-            background: #121418; border-left: 1px solid #2A2E39; z-index: 1000;
-            transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column;
+            position: fixed;
+            right: -380px;
+            top: 0;
+            width: 360px;
+            height: 100vh;
+            background: #121418;
+            border-left: 1px solid #2A2E39;
+            z-index: 1000;
+            transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
             box-shadow: -10px 0 30px rgba(0,0,0,0.8);
         }
         .ai-sidebar.open { right: 0; }
         .ai-toggle-btn {
-            position: fixed; right: 20px; bottom: 20px; z-index: 999;
-            background: #f0b90b; color: #0A0E17; border-radius: 50px;
-            padding: 10px 18px; font-weight: bold; font-size: 12px;
-            box-shadow: 0 4px 15px rgba(240, 185, 11, 0.4); display: flex; align-items: center; gap: 8px;
-            cursor: pointer; transition: transform 0.2s, background 0.2s;
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            z-index: 999;
+            background: #f0b90b;
+            color: #0A0E17;
+            border-radius: 50px;
+            padding: 10px 18px;
+            font-weight: bold;
+            font-size: 12px;
+            box-shadow: 0 4px 15px rgba(240, 185, 11, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
         }
         .ai-toggle-btn:hover { transform: scale(1.05); background: #fcd535; }
     </style>
 </head>
 <body class="min-h-screen p-4 md:p-6 flex flex-col lg:h-screen lg:overflow-hidden">
 
+    <!-- 頂部 Header -->
     <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 border-b border-[#2A2E39] pb-3 gap-4 shrink-0">
         <div>
             <div class="flex items-center gap-3">
                 <div class="bg-emerald-500/20 text-emerald-400 p-2 rounded-lg font-bold text-xl leading-none">α</div>
                 <h1 class="text-2xl font-bold tracking-wider">BITLYPHA <span class="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-1 rounded ml-2 align-middle animate-pulse tracking-widest font-mono">● LIVE TICKER WS</span></h1>
             </div>
-            <div class="text-[#64748B] text-[10px] font-mono mt-2 font-semibold flex items-center gap-2">
-                <span>System Architect & Quant Trader:</span> <span class="text-[#94A3B8] font-bold">比特利法 Lyphard</span>
+            <div class="text-[#64748B] text-[10px] font-mono mt-2 font-semibold flex flex-wrap items-center gap-y-1 gap-x-2">
+                <span class="uppercase">System Architect & Quant Trader:</span> 
+                <span class="text-[#94A3B8] font-bold">比特利法 Lyphard</span> 
+                <span class="text-[#2A2E39] hidden md:inline">|</span> 
+                <a href="https://x.com/lyphardlu" target="_blank" title="x.com/lyphardlu" class="hover:text-emerald-400 transition-colors flex items-center group">
+                    <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path></svg>
+                </a>
+                <span class="text-[#2A2E39] hidden md:inline">|</span> 
+                <a href="mailto:lyphardlu@gmail.com" title="lyphardlu@gmail.com" class="hover:text-emerald-400 transition-colors flex items-center group">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                </a>
             </div>
         </div>
+        
         <div class="flex flex-col items-start md:items-end gap-1.5 mt-2 md:mt-0">
             <div class="border border-amber-900/30 bg-amber-900/10 text-amber-500/80 px-2 py-1 rounded text-[10px] font-mono tracking-widest">
                 ⚠️ 非投資建議 Not Financial Advice
@@ -67,8 +106,9 @@
         </div>
     </header>
 
+    <!-- 頂部資產滾動卡片 -->
     <div class="relative mb-3 group shrink-0">
-        <button onclick="scrollTicker(-1)" class="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-[#0A0E17]/85 hover:bg-[#131722] border border-[#2A2E39] text-emerald-400 w-8 h-8 rounded-full hidden md:flex items-center justify-center backdrop-blur-md opacity-50 hover:opacity-100">
+        <button onclick="scrollTicker(-1)" class="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-[#0A0E17]/85 hover:bg-[#131722] border border-[#2A2E39] text-emerald-400 w-8 h-8 rounded-full hidden md:flex items-center justify-center backdrop-blur-md transition-all opacity-50 hover:opacity-100 shadow-[0_0_10px_rgba(0,0,0,0.8)]">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
         </button>
 
@@ -86,6 +126,7 @@
                         <div><span class="text-slate-500">目標止盈 (Sell):</span><br><span id="${key}-sell" class="${colorClass} font-semibold">-</span></div>
                     </div>
                 </div>`;
+                
                 document.write(
                     createCard('btc', 'BTC / USDT', 'text-emerald-400', false) +
                     createCard('eth', 'ETH / USDT', 'text-blue-400', false) +
@@ -102,15 +143,18 @@
             </script>
         </div>
 
-        <button onclick="scrollTicker(1)" class="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-[#0A0E17]/85 hover:bg-[#131722] border border-[#2A2E39] text-emerald-400 w-8 h-8 rounded-full hidden md:flex items-center justify-center backdrop-blur-md opacity-50 hover:opacity-100">
+        <button onclick="scrollTicker(1)" class="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-[#0A0E17]/85 hover:bg-[#131722] border border-[#2A2E39] text-emerald-400 w-8 h-8 rounded-full hidden md:flex items-center justify-center backdrop-blur-md transition-all opacity-50 hover:opacity-100 shadow-[0_0_10px_rgba(0,0,0,0.8)]">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
         </button>
     </div>
 
+    <!-- 底部主內容區 -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 flex-1 min-h-0">
         
+        <!-- 左側：量化診斷、寬版費氏支撐、最下方礦工監控 -->
         <div class="lg:col-span-4 flex flex-col gap-3 lg:h-full min-h-0">
             
+            <!-- VSA 量化盤口診斷 -->
             <div class="glass-panel rounded-xl p-4 flex flex-col lg:h-[35%] min-h-[220px] lg:min-h-0 shrink-0">
                 <div class="flex justify-between items-center mb-3 border-b border-[#2A2E39] pb-2 shrink-0">
                     <h3 class="text-xs font-bold text-slate-300 flex items-center gap-2">
@@ -124,7 +168,7 @@
                         const createDiag = (key, title, colorClass, hasMnav=false) => `
                         <div>
                             <div class="flex justify-between items-center mb-1">
-                                <span class="font-bold text-xs ${colorClass}">${title}</span>
+                                <span class="font-bold text-xs ${colorClass}">${title} ${hasMnav ? '<span class="text-[9px] text-cyan-700 font-normal ml-1 border border-cyan-800/30 px-1 rounded">mNAV</span>' : ''}</span>
                                 <div class="flex items-center gap-1.5">
                                     <span id="${key}-dow-mini" class="text-[11px] text-slate-300 font-bold">-</span>
                                     <span id="${key}-wyckoff-phase" class="text-[9px] font-bold px-1.5 py-0.5 rounded">-</span>
@@ -132,6 +176,7 @@
                             </div>
                             <p id="${key}-wyckoff-hint" class="text-[11px] text-slate-300 leading-tight">等待 Python 運算...</p>
                         </div>`;
+                        
                         document.write(
                             createDiag('btc', 'BTC · 比特幣', 'text-emerald-400', false) +
                             createDiag('eth', 'ETH · 以太坊', 'text-blue-400', false) +
@@ -149,6 +194,7 @@
                 </div>
             </div>
 
+            <!-- 1D FIB LEVELS (放大為寬版主體) -->
             <div class="glass-panel rounded-xl p-4 flex flex-col flex-1 min-h-[260px] lg:min-h-0 shrink-0">
                 <div class="flex justify-between items-center mb-3 border-b border-[#2A2E39] pb-2 shrink-0">
                     <h3 class="text-xs font-bold text-slate-300">日線費氏大支撐 (1D FIB LEVELS)</h3>
@@ -167,6 +213,7 @@
                                 <li class="flex justify-between"><span class="text-slate-500">618:</span> <span id="${key}-fib-618" class="${colorClass} font-semibold">-</span></li>
                             </ul>
                         </div>`;
+                        
                         document.write(
                             createFib('btc', 'BTC 檔位', 'text-emerald-400') +
                             createFib('eth', 'ETH 檔位', 'text-blue-400') +
@@ -184,7 +231,7 @@
                 </div>
             </div>
 
-            <!-- ⛏️ 鏈上與礦工真實監控區（誠實顯示真實數據或 N/A） -->
+            <!-- ⛏️ 礦工與鏈上成本監控區（誠實對應真實數據或 N/A） -->
             <div class="glass-panel rounded-xl p-3.5 flex flex-col shrink-0">
                 <div class="flex justify-between items-center mb-2 border-b border-[#2A2E39] pb-1.5">
                     <h3 class="text-xs font-bold text-amber-400 flex items-center gap-1.5">
@@ -203,12 +250,13 @@
                     </div>
                 </div>
                 <div class="mt-2 bg-[#0b0e11] p-2 rounded border border-[#2A2E39] text-[11px] font-mono flex justify-between items-center">
-                    <span class="text-slate-400">鏈上狀態:</span>
-                    <span id="mining-status" class="text-slate-400 font-bold">等待 data.json 同步</span>
+                    <span class="text-slate-400">礦工狀態評估:</span>
+                    <span id="mining-status" class="text-slate-400 font-bold">等待同步</span>
                 </div>
             </div>
         </div>
 
+        <!-- 右側：互動式 Tabs TradingView 走勢圖 -->
         <div class="lg:col-span-8 lg:h-full min-h-[500px] lg:min-h-0 flex flex-col">
             <div class="glass-panel rounded-xl p-4 flex-1 flex flex-col min-h-0">
                 <div class="flex flex-col xl:flex-row xl:justify-between items-start xl:items-center mb-3 border-b border-[#2A2E39] pb-3 gap-3 shrink-0">
@@ -240,12 +288,21 @@
 
     </div>
 
+    <!-- 底部落款與瀏覽計數器 -->
     <footer class="mt-3 mb-1 shrink-0">
         <div class="flex flex-wrap justify-center items-center gap-x-1.5 gap-y-1 text-[11px] text-[#4A5568] font-mono tracking-wide text-center">
             <span>BITLYPHA // Designed & Architected by 比特利法 Lyphard · Macro-Swing Execution System</span>
+            
+            <div class="flex items-center gap-1 opacity-60 hover:opacity-100 transition-opacity" title="Total Visitors">
+                <svg class="w-3 h-3 text-[#4A5568]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 20V10M12 20V4M6 20v-6"></path>
+                </svg>
+                <img src="https://visitor-badge.laobi.icu/badge?page_id=lyphardlu.BITLYPHA&left_color=0A0E17&right_color=0A0E17&left_text=%20" alt="Views" class="h-[14px]">
+            </div>
         </div>
     </footer>
 
+    <!-- AI 智能操盤手懸浮按鈕與側邊欄 -->
     <div class="ai-toggle-btn" onclick="toggleAiSidebar()">
         <span>⚡ 盤口 AI 助理</span>
     </div>
@@ -259,7 +316,7 @@
         </div>
         <div id="aiChatBody" class="flex-1 p-4 overflow-y-auto custom-scroll space-y-3 text-xs font-mono bg-[#0b0e11]">
             <div class="p-3 rounded bg-[#1a1e24] border-l-2 border-amber-400 text-slate-300">
-                您好！我已連線當前終端數據 (`data.json`)。
+                您好！我是您的 AI 首席量化操盤手。我已連線當前終端數據 (`data.json`)。您可以問我任何資產的威科夫 VSA 階段、買入/止盈價，或比特幣礦工鏈上算力狀態！
             </div>
         </div>
         <div class="p-3 bg-[#1a1e24] border-t border-[#2A2E39] flex gap-2">
@@ -268,19 +325,34 @@
         </div>
     </div>
 
+    <!-- JavaScript 核心邏輯 -->
     <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
     <script>
         function scrollTicker(direction) {
             const container = document.getElementById('ticker-container');
-            container.scrollBy({ left: direction * container.offsetWidth, behavior: 'smooth' });
+            const scrollAmount = container.offsetWidth;
+            container.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
         }
 
         let tvWidget = null;
         function loadTradingView(symbolToLoad) {
             tvWidget = new TradingView.widget({
-                "autosize": true, "symbol": symbolToLoad, "interval": "240", "timezone": "Etc/UTC",
-                "theme": "dark", "style": "1", "locale": "zh_TW", "enable_publishing": false,
-                "backgroundColor": "#131722", "gridColor": "#1e222d", "container_id": "tradingview_chart"
+                "autosize": true,
+                "symbol": symbolToLoad,
+                "interval": "240",
+                "timezone": "Etc/UTC",
+                "theme": "dark",
+                "style": "1",
+                "locale": "zh_TW",
+                "enable_publishing": false,
+                "backgroundColor": "#131722",
+                "gridColor": "#1e222d",
+                "hide_top_toolbar": false,
+                "hide_legend": false,
+                "save_image": false,
+                "withdateranges": false, 
+                "hide_side_toolbar": false,
+                "container_id": "tradingview_chart"
             });
         }
         loadTradingView("BINANCE:BTCUSDT");
@@ -300,26 +372,100 @@
         };
 
         function changeChart(symbol, btnElement, coinKey) {
-            document.querySelectorAll('.tv-tab').forEach(btn => btn.className = "tv-tab text-slate-500 hover:text-slate-300 px-2 py-1 rounded transition shrink-0");
+            document.querySelectorAll('.tv-tab').forEach(btn => {
+                btn.className = "tv-tab text-slate-500 hover:text-slate-300 px-2 py-1 rounded transition shrink-0";
+            });
             btnElement.className = `tv-tab active ${tabConfigs[coinKey].colorClass} px-2 py-1 rounded transition shrink-0`;
             document.getElementById('chart-title').innerText = tabConfigs[coinKey].title;
             document.getElementById('chart-dot').className = `w-2 h-2 rounded-full ${tabConfigs[coinKey].dotClass}`;
             loadTradingView(symbol);
+            btnElement.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         }
 
         const formatValue = (num, isBtcBase = false) => {
-            if (num === "N/A" || num === undefined) return "N/A";
+            if (num === "N/A" || num === undefined || num === null) return "N/A";
             if (isBtcBase) return "₿ " + Number(num).toFixed(5);
             return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(num);
         };
 
         let latestMarketData = {};
+        const prevPrices = {};
+        const animationTimers = {};
 
-        function bindDeepData(coin, data) {
+        function updateRealTimePrice(coin, price) {
+            const isBtcBase = coin === 'ethbtc';
+            const priceEl = document.getElementById(`${coin}-price`);
+            if (!priceEl) return;
+            const oldPrice = prevPrices[coin];
+            if (oldPrice !== undefined && oldPrice !== price) {
+                const isUp = price > oldPrice;
+                priceEl.classList.remove('flash-up', 'flash-down');
+                void priceEl.offsetWidth; 
+                priceEl.classList.add(isUp ? 'flash-up' : 'flash-down');
+                clearTimeout(animationTimers[coin]);
+                animationTimers[coin] = setTimeout(() => priceEl.classList.remove('flash-up', 'flash-down'), 500); 
+            }
+            priceEl.innerText = formatValue(price, isBtcBase);
+            prevPrices[coin] = price;
+        }
+
+        // WebSocket 監聽
+        const bnWs = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@ticker/ethusdt@ticker/ethbtc@ticker/solusdt@ticker/uniusdt@ticker/rayusdt@ticker/zecusdt@ticker');
+        bnWs.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            const symbol = data.s.toLowerCase();
+            const price = parseFloat(data.c);
+            let coinKey = '';
+            if (symbol === 'btcusdt') coinKey = 'btc';
+            else if (symbol === 'ethusdt') coinKey = 'eth';
+            else if (symbol === 'ethbtc') coinKey = 'ethbtc';
+            else if (symbol === 'solusdt') coinKey = 'sol';
+            else if (symbol === 'uniusdt') coinKey = 'uni';
+            else if (symbol === 'rayusdt') coinKey = 'ray';
+            else if (symbol === 'zecusdt') coinKey = 'zec';
+            if (coinKey) updateRealTimePrice(coinKey, price);
+        };
+
+        const okxWs = new WebSocket('wss://ws.okx.com:8443/ws/v5/public');
+        okxWs.onopen = () => {
+            okxWs.send(JSON.stringify({ op: 'subscribe', args: [
+                { channel: 'tickers', instId: 'XMSTR-USDT' },
+                { channel: 'tickers', instId: 'XCOIN-USDT' },
+                { channel: 'tickers', instId: 'XADBE-USDT' },
+                { channel: 'tickers', instId: 'XCRCL-USDT' }
+            ] }));
+        };
+        okxWs.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            if (data && data.data && data.data[0]) {
+                const instId = data.data[0].instId;
+                const price = parseFloat(data.data[0].last);
+                if (instId === 'XMSTR-USDT') updateRealTimePrice('mstr', price);
+                else if (instId === 'XCOIN-USDT') updateRealTimePrice('xcoin', price);
+                else if (instId === 'XADBE-USDT') updateRealTimePrice('xadbe', price);
+                else if (instId === 'XCRCL-USDT') updateRealTimePrice('xcrcl', price);
+            }
+        };
+
+        const formatPhaseBadge = (phase, elementId) => {
+            const el = document.getElementById(elementId);
+            if (!el) return;
+            el.innerText = phase || "N/A";
+            el.className = "text-[9px] font-bold px-1.5 py-0.5 rounded text-slate-800"; 
+            if (phase === "PHASE C") el.classList.add("bg-amber-500");
+            else if (phase === "PHASE D" || phase === "PHASE E") el.classList.add("bg-emerald-500");
+            else if (phase === "DISCOUNT") el.classList.add("bg-emerald-400", "animate-pulse");
+            else el.classList.add("bg-slate-400");
+        };
+
+        const bindDeepData = (coin, data) => {
             if (!data) return;
             const isBtcBase = coin === 'ethbtc';
 
-            if (document.getElementById(`${coin}-price`)) document.getElementById(`${coin}-price`).innerText = formatValue(data.price, isBtcBase);
+            if (!prevPrices[coin] && document.getElementById(`${coin}-price`)) {
+                document.getElementById(`${coin}-price`).innerText = formatValue(data.price, isBtcBase);
+                prevPrices[coin] = data.price;
+            }
             if (document.getElementById(`${coin}-buy`)) document.getElementById(`${coin}-buy`).innerText = formatValue(data.buy_target, isBtcBase);
             if (document.getElementById(`${coin}-sell`)) document.getElementById(`${coin}-sell`).innerText = formatValue(data.sell_target, isBtcBase);
             
@@ -327,7 +473,15 @@
                 document.getElementById(`${coin}-mnav`).innerText = data.mnav_multiple;
             }
 
-            if (document.getElementById(`${coin}-dow-mini`)) document.getElementById(`${coin}-dow-mini`).innerText = data.dow_status || "N/A";
+            formatPhaseBadge(data.wyckoff_phase, `${coin}-wyckoff-phase`);
+            
+            let dowCn = data.dow_status;
+            if (dowCn === "Primary Bull") dowCn = "主升趨勢";
+            else if (dowCn === "Secondary Correction") dowCn = "次級折返";
+            else if (dowCn === "Consolidation") dowCn = "橫盤震盪";
+            else dowCn = data.dow_status || "N/A";
+            
+            if (document.getElementById(`${coin}-dow-mini`)) document.getElementById(`${coin}-dow-mini`).innerText = dowCn;
             if (document.getElementById(`${coin}-wyckoff-hint`)) document.getElementById(`${coin}-wyckoff-hint`).innerHTML = `<span class="text-slate-300">${data.wyckoff_hint || 'N/A'}</span>`;
 
             if(document.getElementById(`${coin}-fib-236`)) {
@@ -336,7 +490,7 @@
                 document.getElementById(`${coin}-fib-500`).innerText = data.fib_500 ? formatValue(data.fib_500, isBtcBase) : "N/A";
                 document.getElementById(`${coin}-fib-618`).innerText = data.fib_618 ? formatValue(data.fib_618, isBtcBase) : "N/A";
             }
-        }
+        };
 
         async function fetchData() {
             try {
@@ -349,8 +503,8 @@
                     if(data[key]) bindDeepData(key, data[key]);
                 });
 
-                // 鏈上礦工數據：若 data.json 有則顯示真實值，否則誠實呈現 N/A
-                const mData = (data.btc && data.btc.mining_data) ? data.btc.mining_data : { hashrate_eh: "N/A", production_cost: "N/A", mining_status: "數據未同步" };
+                // 鏈上礦工數據：誠實讀取 data.json，若無則顯示 N/A
+                const mData = (data.btc && data.btc.mining_data) ? data.btc.mining_data : { hashrate_eh: "N/A", production_cost: "N/A", mining_status: "N/A (未同步)" };
                 if(document.getElementById('mining-hashrate')) document.getElementById('mining-hashrate').innerText = mData.hashrate_eh;
                 if(document.getElementById('mining-cost')) document.getElementById('mining-cost').innerText = mData.production_cost;
                 if(document.getElementById('mining-status')) document.getElementById('mining-status').innerText = mData.mining_status;
@@ -363,14 +517,48 @@
         fetchData();
         setInterval(fetchData, 30000);
 
-        function toggleAiSidebar() { document.getElementById('aiSidebar').classList.toggle('open'); }
+        function toggleAiSidebar() {
+            document.getElementById('aiSidebar').classList.toggle('open');
+        }
+
         function sendAiMessage() {
             const input = document.getElementById('aiInput');
             const chatBody = document.getElementById('aiChatBody');
             const text = input.value.trim();
             if (!text) return;
-            chatBody.innerHTML += `<div class="p-2 rounded bg-[#2962ff]/20 text-blue-300 text-right ml-4">${text}</div>`;
+
+            chatBody.innerHTML += `<div class="p-2 rounded bg-[#2962ff]/20 text-blue-300 text-right ml-4">${escapeHtml(text)}</div>`;
             input.value = '';
+            chatBody.scrollTop = chatBody.scrollHeight;
+
+            setTimeout(() => {
+                const reply = generateAiReply(text, latestMarketData);
+                chatBody.innerHTML += `<div class="p-3 rounded bg-[#1a1e24] border-l-2 border-amber-400 text-slate-300">${reply}</div>`;
+                chatBody.scrollTop = chatBody.scrollHeight;
+            }, 300);
+        }
+
+        function generateAiReply(query, data) {
+            const q = query.toUpperCase();
+            if (q.includes('礦工') || q.includes('算力') || q.includes('COST')) {
+                if (data.btc && data.btc.mining_data) {
+                    const m = data.btc.mining_data;
+                    return `⛏️ <b>比特幣礦工鏈上監控</b>：<br>• 全網算力：<b>${m.hashrate_eh}</b><br>• 生產成本底線：<b>${m.production_cost}</b><br>• 狀態：<b>${m.mining_status}</b>`;
+                }
+                return `⛏️ <b>比特幣礦工鏈上監控</b>：目前無有效鏈上數據 (N/A)。`;
+            }
+            for (let key in data) {
+                if (key === 'updated_at') continue;
+                if (q.includes(key.toUpperCase()) || q.includes(key)) {
+                    const item = data[key];
+                    return `📊 <b>${key.toUpperCase()} 即時量化診斷</b>：<br>• 現價：$${item.price}<br>• 威科夫階段：<b>${item.wyckoff_phase}</b><br>• 買入：$${item.buy_target} | 止盈：$${item.sell_target}`;
+                }
+            }
+            return `收到您的詢問。本終端已完成雙軌威科夫與鏈上礦工監控聯網。請問想檢視哪一檔資產？`;
+        }
+
+        function escapeHtml(text) {
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         }
     </script>
 </body>

@@ -83,13 +83,13 @@
 <body class="min-h-screen p-4 md:p-6 flex flex-col lg:h-screen lg:overflow-hidden">
 
     <!-- 頂部 Header -->
-    <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 border-b border-[#2A2E39] pb-3 gap-4 shrink-0">
+    <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 border-b border-[#2A2E39] pb-4 gap-4 shrink-0">
         <div>
             <div class="flex items-center gap-3">
                 <div class="bg-emerald-500/20 text-emerald-400 p-2 rounded-lg font-bold text-xl leading-none">α</div>
                 <h1 class="text-2xl font-bold tracking-wider">BITLYPHA <span class="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-1 rounded ml-2 align-middle animate-pulse tracking-widest font-mono">● LIVE TICKER WS</span></h1>
             </div>
-            <div class="text-[#64748B] text-[10px] font-mono mt-2 font-semibold flex flex-wrap items-center gap-y-1 gap-x-2">
+            <div class="text-[#64748B] text-[10px] font-mono mt-2.5 font-semibold flex flex-wrap items-center gap-y-1.5 gap-x-2">
                 <span class="uppercase">System Architect & Quant Trader:</span> 
                 <span class="text-[#94A3B8] font-bold">比特利法 Lyphard</span> 
                 <span class="text-[#2A2E39] hidden md:inline">|</span> 
@@ -112,20 +112,23 @@
     </header>
 
     <!-- 頂部資產滾動卡片 -->
-    <div class="relative mb-3 group shrink-0">
-        <button onclick="scrollTicker(-1)" class="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-[#0A0E17]/85 hover:bg-[#131722] border border-[#2A2E39] text-emerald-400 w-8 h-8 rounded-full hidden md:flex items-center justify-center backdrop-blur-md transition-all opacity-50 hover:opacity-100 shadow-[0_0_10px_rgba(0,0,0,0.8)]">
+    <div class="relative mb-4 group shrink-0">
+        <button onclick="scrollTicker(-1)" class="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-[#0A0E17]/80 hover:bg-[#131722] border border-[#2A2E39] text-emerald-400 w-8 h-8 rounded-full hidden md:flex items-center justify-center backdrop-blur-md transition-all opacity-50 hover:opacity-100 shadow-[0_0_10px_rgba(0,0,0,0.8)]">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
         </button>
 
         <div id="ticker-container" class="flex overflow-x-auto gap-3 scroll-smooth snap-x snap-mandatory hide-scrollbar pb-1">
             <script>
                 const createCard = (key, title, colorClass, isMnav=false) => `
-                <div class="glass-panel rounded-xl p-3.5 lg:p-4 flex-none w-[75vw] md:w-[calc(50%-6px)] lg:w-[calc(25%-9px)] snap-start">
-                    <div class="flex justify-between items-start mb-1.5">
+                <div class="glass-panel rounded-xl p-4 lg:p-5 flex-none w-[75vw] md:w-[calc(50%-6px)] lg:w-[calc(25%-9px)] snap-start">
+                    <div class="flex justify-between items-start mb-2">
                         <h2 class="${colorClass} font-bold text-xs tracking-wide">${title}</h2>
-                        ${isMnav ? `<span id="${key}-mnav-badge" class="text-[10px] px-1.5 py-0.5 rounded font-bold shrink-0 bg-cyan-900/50 text-cyan-400 font-mono">mNAV: <span id="${key}-mnav">0.00</span></span>` : ``}
+                        ${isMnav 
+                            ? `<div class="flex items-center"><span id="${key}-mnav-badge" class="text-[10px] px-1.5 py-0.5 rounded font-bold shrink-0 bg-cyan-900/50 text-cyan-400 tracking-wider">mNAV: <span id="${key}-mnav" class="font-mono">0.00</span></span></div>` 
+                            : `` 
+                        }
                     </div>
-                    <div id="${key}-price" class="text-[24px] font-bold ${colorClass} mb-3 font-mono price-base">加載中...</div>
+                    <div id="${key}-price" class="text-[26px] font-bold ${colorClass} mb-4 font-mono price-base">加載中...</div>
                     <div class="grid grid-cols-2 gap-2 text-[11px] font-mono">
                         <div><span class="text-slate-500">波段買入 (Buy):</span><br><span id="${key}-buy" class="${colorClass} font-semibold">-</span></div>
                         <div><span class="text-slate-500">目標止盈 (Sell):</span><br><span id="${key}-sell" class="${colorClass} font-semibold">-</span></div>
@@ -148,38 +151,38 @@
             </script>
         </div>
 
-        <button onclick="scrollTicker(1)" class="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-[#0A0E17]/85 hover:bg-[#131722] border border-[#2A2E39] text-emerald-400 w-8 h-8 rounded-full hidden md:flex items-center justify-center backdrop-blur-md transition-all opacity-50 hover:opacity-100 shadow-[0_0_10px_rgba(0,0,0,0.8)]">
+        <button onclick="scrollTicker(1)" class="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-[#0A0E17]/80 hover:bg-[#131722] border border-[#2A2E39] text-emerald-400 w-8 h-8 rounded-full hidden md:flex items-center justify-center backdrop-blur-md transition-all opacity-50 hover:opacity-100 shadow-[0_0_10px_rgba(0,0,0,0.8)]">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
         </button>
     </div>
 
     <!-- 底部主內容區 -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 flex-1 min-h-0">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1 min-h-0">
         
-        <!-- 左側：量化診斷、寬版費氏支撐、左下角礦工關機價監控 -->
-        <div class="lg:col-span-4 flex flex-col gap-3 lg:h-full min-h-0">
+        <!-- 左側：量化診斷與費氏支撐 -->
+        <div class="lg:col-span-4 flex flex-col gap-4 lg:h-full min-h-0">
             
             <!-- VSA 量化盤口診斷 -->
-            <div class="glass-panel rounded-xl p-4 flex flex-col lg:h-[35%] min-h-[220px] lg:min-h-0 shrink-0">
-                <div class="flex justify-between items-center mb-3 border-b border-[#2A2E39] pb-2 shrink-0">
-                    <h3 class="text-xs font-bold text-slate-300 flex items-center gap-2">
+            <div class="glass-panel rounded-xl p-5 flex flex-col lg:h-[55%] min-h-[300px] lg:min-h-0 shrink-0">
+                <div class="flex justify-between items-center mb-4 border-b border-[#2A2E39] pb-2 shrink-0">
+                    <h3 class="text-sm font-bold text-slate-300 flex items-center gap-2">
                         <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span> 深度量化盤口診斷
                     </h3>
-                    <span class="text-[10px] text-slate-500">主力籌碼階段</span>
+                    <span class="text-[10px] text-slate-500">宏觀市場結構 [主力籌碼階段]</span>
                 </div>
                 
-                <div class="space-y-3 overflow-y-auto custom-scroll pr-2 flex-1 min-h-0">
+                <div class="space-y-4 overflow-y-auto custom-scroll pr-2 flex-1 min-h-0">
                     <script>
                         const createDiag = (key, title, colorClass, hasMnav=false) => `
                         <div>
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="font-bold text-xs ${colorClass}">${title} ${hasMnav ? '<span class="text-[9px] text-cyan-700 font-normal ml-1 border border-cyan-800/30 px-1 rounded">mNAV</span>' : ''}</span>
-                                <div class="flex items-center gap-1.5">
-                                    <span id="${key}-dow-mini" class="text-[11px] text-slate-300 font-bold">-</span>
-                                    <span id="${key}-wyckoff-phase" class="text-[9px] font-bold px-1.5 py-0.5 rounded">-</span>
+                            <div class="flex justify-between items-center mb-1.5">
+                                <span class="font-bold text-sm ${colorClass}">${title} ${hasMnav ? '<span class="text-[9px] text-cyan-700 font-normal ml-1 border border-cyan-800/30 px-1 rounded">mNAV 模型</span>' : ''}</span>
+                                <div class="flex items-center gap-2">
+                                    <span id="${key}-dow-mini" class="text-xs text-slate-300 font-bold tracking-wide">-</span>
+                                    <span id="${key}-wyckoff-phase" class="text-[10px] font-bold px-1.5 py-0.5 rounded">-</span>
                                 </div>
                             </div>
-                            <p id="${key}-wyckoff-hint" class="text-[11px] text-slate-300 leading-tight">等待 Python 運算...</p>
+                            <p id="${key}-wyckoff-hint" class="text-[11.5px] text-slate-300 leading-relaxed">等待 Python 運算...</p>
                         </div>`;
                         
                         document.write(
@@ -200,18 +203,18 @@
             </div>
 
             <!-- 1D FIB LEVELS -->
-            <div class="glass-panel rounded-xl p-4 flex flex-col flex-1 min-h-[240px] lg:min-h-0 shrink-0">
-                <div class="flex justify-between items-center mb-3 border-b border-[#2A2E39] pb-2 shrink-0">
-                    <h3 class="text-xs font-bold text-slate-300">日線費氏大支撐 (1D FIB LEVELS)</h3>
-                    <span class="text-[10px] bg-[#2A2E39] text-slate-400 px-1.5 py-0.5 rounded">MACRO-SWING</span>
+            <div class="glass-panel rounded-xl p-5 flex flex-col flex-1 min-h-[300px] lg:min-h-0 shrink-0">
+                <div class="flex justify-between items-center mb-4 border-b border-[#2A2E39] pb-2 shrink-0">
+                    <h3 class="text-sm font-bold text-slate-300">日線費氏大支撐 (1D FIB LEVELS)</h3>
+                    <span class="text-[10px] bg-[#2A2E39] text-slate-400 px-2 rounded">MACRO-SWING</span>
                 </div>
                 
-                <div class="grid grid-cols-2 gap-x-6 gap-y-4 overflow-y-auto custom-scroll pr-2 flex-1 min-h-0 content-start">
+                <div class="grid grid-cols-2 gap-x-8 gap-y-6 overflow-y-auto custom-scroll pr-2 flex-1 min-h-0 content-start">
                     <script>
                         const createFib = (key, title, colorClass) => `
-                        <div class="bg-[#0b0e11]/60 p-2.5 rounded border border-[#2A2E39]/50">
-                            <div class="text-xs font-bold ${colorClass} mb-1.5">${title}</div>
-                            <ul class="text-[11px] font-mono space-y-1">
+                        <div>
+                            <div class="text-xs font-bold ${colorClass} mb-2">${title}</div>
+                            <ul class="text-xs font-mono space-y-1.5">
                                 <li class="flex justify-between"><span class="text-slate-500">236:</span> <span id="${key}-fib-236" class="${colorClass} font-semibold">-</span></li>
                                 <li class="flex justify-between"><span class="text-slate-500">382:</span> <span id="${key}-fib-382" class="${colorClass} font-semibold">-</span></li>
                                 <li class="flex justify-between"><span class="text-slate-500">500:</span> <span id="${key}-fib-500" class="${colorClass} font-semibold">-</span></li>
@@ -235,36 +238,12 @@
                     </script>
                 </div>
             </div>
-
-            <!-- ⛏️ 左下角：礦工關機價格監控 (MINER SHUTDOWN FLOOR) -->
-            <div class="glass-panel rounded-xl p-3.5 flex flex-col shrink-0">
-                <div class="flex justify-between items-center mb-2 border-b border-[#2A2E39] pb-1.5">
-                    <h3 class="text-xs font-bold text-amber-400 flex items-center gap-1.5">
-                        <span>⛏️ 礦工關機價格監控 (SHUTDOWN FLOOR)</span>
-                    </h3>
-                    <span class="text-[9px] bg-amber-900/30 text-amber-400 px-1 py-0.5 rounded font-mono">ON-CHAIN</span>
-                </div>
-                <div class="grid grid-cols-2 gap-2 text-xs font-mono">
-                    <div class="bg-[#0b0e11] p-2 rounded border border-[#2A2E39]">
-                        <span class="text-slate-500 text-[10px]">全網算力 (Hashrate):</span>
-                        <div id="mining-hashrate" class="text-cyan-400 font-bold mt-0.5 text-xs">N/A</div>
-                    </div>
-                    <div class="bg-[#0b0e11] p-2 rounded border border-[#2A2E39]">
-                        <span class="text-slate-500 text-[10px]">礦工關機價 (Shutdown):</span>
-                        <div id="mining-shutdown" class="text-rose-400 font-bold mt-0.5 text-xs">N/A</div>
-                    </div>
-                </div>
-                <div class="mt-2 bg-[#0b0e11] p-2 rounded border border-[#2A2E39] text-[11px] font-mono flex justify-between items-center">
-                    <span class="text-slate-400">礦工狀態評估:</span>
-                    <span id="mining-status" class="text-slate-400 font-bold">等待同步</span>
-                </div>
-            </div>
         </div>
 
         <!-- 右側：互動式 Tabs TradingView 走勢圖 -->
         <div class="lg:col-span-8 lg:h-full min-h-[500px] lg:min-h-0 flex flex-col">
-            <div class="glass-panel rounded-xl p-4 flex-1 flex flex-col min-h-0">
-                <div class="flex flex-col xl:flex-row xl:justify-between items-start xl:items-center mb-3 border-b border-[#2A2E39] pb-3 gap-3 shrink-0">
+            <div class="glass-panel rounded-xl p-5 flex-1 flex flex-col min-h-0">
+                <div class="flex flex-col xl:flex-row xl:justify-between items-start xl:items-center mb-4 border-b border-[#2A2E39] pb-3 gap-3 shrink-0">
                     <h3 class="text-sm font-bold text-slate-300 flex items-center gap-2 shrink-0">
                         <span id="chart-dot" class="w-2 h-2 bg-emerald-400 rounded-full"></span> 
                         <span id="chart-title">BTC/USDT 即時走勢</span>
@@ -294,8 +273,8 @@
     </div>
 
     <!-- 底部落款與瀏覽計數器 -->
-    <footer class="mt-3 mb-1 shrink-0">
-        <div class="flex flex-wrap justify-center items-center gap-x-1.5 gap-y-1 text-[11px] text-[#4A5568] font-mono tracking-wide text-center">
+    <footer class="mt-4 mb-2 shrink-0">
+        <div class="flex flex-wrap justify-center items-center gap-x-1.5 gap-y-1 text-[11.5px] text-[#4A5568] font-mono tracking-wide text-center">
             <span>BITLYPHA // Designed & Architected by 比特利法 Lyphard · Macro-Swing Execution System</span>
             
             <div class="flex items-center gap-1 opacity-60 hover:opacity-100 transition-opacity" title="Total Visitors">
@@ -307,7 +286,7 @@
         </div>
     </footer>
 
-    <!-- AI 智能操盤手懸浮按鈕與側邊欄 -->
+    <!-- 🌟 AI 智能操盤手懸浮按鈕與側邊欄 🌟 -->
     <div class="ai-toggle-btn" onclick="toggleAiSidebar()">
         <span>⚡ 盤口 AI 助理</span>
     </div>
@@ -321,11 +300,11 @@
         </div>
         <div id="aiChatBody" class="flex-1 p-4 overflow-y-auto custom-scroll space-y-3 text-xs font-mono bg-[#0b0e11]">
             <div class="p-3 rounded bg-[#1a1e24] border-l-2 border-amber-400 text-slate-300">
-                您好！我是您的 AI 首席量化操盤手。我已連線當前終端數據 (`data.json`)。您可以問我任何資產的威科夫 VSA 階段、買入/止盈價，或比特幣礦工關機價狀態！
+                您好！我是您的 AI 首席量化操盤手。我已連線當前終端數據 (`data.json`)。您可以問我任何資產的威科夫 VSA 階段、買入/止盈價，或 ATR 幾何外推邏輯！
             </div>
         </div>
         <div class="p-3 bg-[#1a1e24] border-t border-[#2A2E39] flex gap-2">
-            <input type="text" id="aiInput" placeholder="輸入指令..." class="flex-1 bg-[#0b0e11] border border-[#2A2E39] rounded px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-amber-400" onkeypress="if(event.key==='Enter') sendAiMessage()">
+            <input type="text" id="aiInput" placeholder="輸入指令（例如：分析 RAY 盤口）..." class="flex-1 bg-[#0b0e11] border border-[#2A2E39] rounded px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-amber-400" onkeypress="if(event.key==='Enter') sendAiMessage()">
             <button onclick="sendAiMessage()" class="bg-amber-400 text-[#0A0E17] font-bold px-3 py-2 rounded hover:bg-amber-500 transition">發送</button>
         </div>
     </div>
@@ -388,7 +367,6 @@
         }
 
         const formatValue = (num, isBtcBase = false) => {
-            if (num === "N/A" || num === undefined || num === null) return "N/A";
             if (isBtcBase) return "₿ " + Number(num).toFixed(5);
             return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(num);
         };
@@ -401,14 +379,18 @@
             const isBtcBase = coin === 'ethbtc';
             const priceEl = document.getElementById(`${coin}-price`);
             if (!priceEl) return;
+            
             const oldPrice = prevPrices[coin];
+
             if (oldPrice !== undefined && oldPrice !== price) {
                 const isUp = price > oldPrice;
                 priceEl.classList.remove('flash-up', 'flash-down');
                 void priceEl.offsetWidth; 
                 priceEl.classList.add(isUp ? 'flash-up' : 'flash-down');
                 clearTimeout(animationTimers[coin]);
-                animationTimers[coin] = setTimeout(() => priceEl.classList.remove('flash-up', 'flash-down'), 500); 
+                animationTimers[coin] = setTimeout(() => {
+                    priceEl.classList.remove('flash-up', 'flash-down');
+                }, 500); 
             }
             priceEl.innerText = formatValue(price, isBtcBase);
             prevPrices[coin] = price;
@@ -452,13 +434,30 @@
             }
         };
 
+        function formatWyckoffHint(hintText) {
+            if (!hintText) return "";
+            if (hintText.includes("🔥【強力買進】") || hintText.includes("🔥【折價買進】")) return `<span class="text-orange-400 font-bold">${hintText}</span>`;
+            if (hintText.includes("🚀【極度低估】")) return `<span class="text-emerald-400 font-bold">${hintText}</span>`;
+            if (hintText.includes("🛑【逃頂賣出】") || hintText.includes("🛑【溢價過高】")) return `<span class="text-rose-500 font-bold">${hintText}</span>`;
+            if (hintText.includes("⚠️【高位溢價】") || hintText.includes("⚠️【死貓反彈】") || hintText.includes("⚠️【高位誘多】")) return `<span class="text-rose-300">${hintText}</span>`;
+            if (hintText.includes("⚖️【合理區間】") || hintText.includes("⚖️【籌碼沉澱】")) return `<span class="text-cyan-300">${hintText}</span>`;
+            if (hintText.includes("【無供應測試】") || hintText.includes("【彈簧洗盤】")) return `<span class="text-orange-300">${hintText}</span>`;
+            return `<span class="text-slate-300">${hintText}</span>`;
+        }
+
         const formatPhaseBadge = (phase, elementId) => {
             const el = document.getElementById(elementId);
             if (!el) return;
-            el.innerText = phase || "N/A";
-            el.className = "text-[9px] font-bold px-1.5 py-0.5 rounded text-slate-800"; 
-            if (phase === "PHASE C") el.classList.add("bg-amber-500");
+            el.innerText = phase;
+            el.className = "text-[10px] font-bold px-1.5 py-0.5 rounded text-slate-800"; 
+            if (phase === "PHASE A") el.classList.add("bg-rose-400");
+            else if (phase === "PHASE B") el.classList.add("bg-slate-400");
+            else if (phase === "PHASE C") el.classList.add("bg-amber-500");
             else if (phase === "PHASE D" || phase === "PHASE E") el.classList.add("bg-emerald-500");
+            else if (phase === "OVERVALUED") el.classList.add("bg-rose-600", "text-white", "animate-pulse");
+            else if (phase === "PREMIUM") el.classList.add("bg-rose-400");
+            else if (phase === "FAIR VALUE") el.classList.add("bg-slate-500", "text-white");
+            else if (phase === "UNDERVALUED") el.classList.add("bg-emerald-500");
             else if (phase === "DISCOUNT") el.classList.add("bg-emerald-400", "animate-pulse");
             else el.classList.add("bg-slate-400");
         };
@@ -474,26 +473,34 @@
             if (document.getElementById(`${coin}-buy`)) document.getElementById(`${coin}-buy`).innerText = formatValue(data.buy_target, isBtcBase);
             if (document.getElementById(`${coin}-sell`)) document.getElementById(`${coin}-sell`).innerText = formatValue(data.sell_target, isBtcBase);
             
-            if (data.mnav_multiple && document.getElementById(`${coin}-mnav`)) {
-                document.getElementById(`${coin}-mnav`).innerText = data.mnav_multiple;
+            if (data.mnav_multiple) {
+                if (document.getElementById(`${coin}-mnav`)) document.getElementById(`${coin}-mnav`).innerText = data.mnav_multiple;
+                const mnavBadge = document.getElementById(`${coin}-mnav-badge`);
+                if (mnavBadge) {
+                    mnavBadge.className = "text-[10px] px-1.5 py-0.5 rounded font-bold shrink-0";
+                    const phase = data.wyckoff_phase;
+                    if (phase === "OVERVALUED" || phase === "PREMIUM") mnavBadge.classList.add("bg-rose-900/50", "text-rose-400");
+                    else if (phase === "UNDERVALUED" || phase === "DISCOUNT") mnavBadge.classList.add("bg-emerald-900/50", "text-emerald-400");
+                    else mnavBadge.classList.add("bg-cyan-900/50", "text-cyan-400");
+                }
             }
 
             formatPhaseBadge(data.wyckoff_phase, `${coin}-wyckoff-phase`);
             
             let dowCn = data.dow_status;
-            if (dowCn === "Primary Bull") dowCn = "主升趨勢";
-            else if (dowCn === "Secondary Correction") dowCn = "次級折返";
-            else if (dowCn === "Consolidation") dowCn = "橫盤震盪";
-            else dowCn = data.dow_status || "N/A";
+            if (dowCn === "Primary Bull" || dowCn === "Bullish") dowCn = "主升趨勢";
+            else if (dowCn === "Secondary Correction" || dowCn === "Bearish") dowCn = "次級折返";
+            else if (dowCn === "Consolidation" || dowCn === "Neutral") dowCn = "橫盤震盪";
             
             if (document.getElementById(`${coin}-dow-mini`)) document.getElementById(`${coin}-dow-mini`).innerText = dowCn;
-            if (document.getElementById(`${coin}-wyckoff-hint`)) document.getElementById(`${coin}-wyckoff-hint`).innerHTML = `<span class="text-slate-300">${data.wyckoff_hint || 'N/A'}</span>`;
+            
+            if (document.getElementById(`${coin}-wyckoff-hint`)) document.getElementById(`${coin}-wyckoff-hint`).innerHTML = formatWyckoffHint(data.wyckoff_hint);
 
             if(document.getElementById(`${coin}-fib-236`)) {
-                document.getElementById(`${coin}-fib-236`).innerText = data.fib_236 ? formatValue(data.fib_236, isBtcBase) : "N/A";
-                document.getElementById(`${coin}-fib-382`).innerText = data.fib_382 ? formatValue(data.fib_382, isBtcBase) : "N/A";
-                document.getElementById(`${coin}-fib-500`).innerText = data.fib_500 ? formatValue(data.fib_500, isBtcBase) : "N/A";
-                document.getElementById(`${coin}-fib-618`).innerText = data.fib_618 ? formatValue(data.fib_618, isBtcBase) : "N/A";
+                document.getElementById(`${coin}-fib-236`).innerText = data.fib_236 ? formatValue(data.fib_236, isBtcBase) : "-";
+                document.getElementById(`${coin}-fib-382`).innerText = data.fib_382 ? formatValue(data.fib_382, isBtcBase) : "-";
+                document.getElementById(`${coin}-fib-500`).innerText = data.fib_500 ? formatValue(data.fib_500, isBtcBase) : "-";
+                document.getElementById(`${coin}-fib-618`).innerText = data.fib_618 ? formatValue(data.fib_618, isBtcBase) : "-";
             }
         };
 
@@ -501,19 +508,12 @@
             try {
                 const response = await fetch(`data.json?t=${new Date().getTime()}`); 
                 const data = await response.json();
-                latestMarketData = data; 
+                latestMarketData = data; // 儲存全域脈絡供 AI 使用
                 if (document.getElementById('last-sync')) document.getElementById('last-sync').innerText = data.updated_at || "-";
                 
                 ['btc', 'eth', 'mstr', 'ethbtc', 'sol', 'uni', 'ray', 'zec', 'xcrcl', 'xcoin', 'xadbe'].forEach(key => {
                     if(data[key]) bindDeepData(key, data[key]);
                 });
-
-                // 鏈上礦工關機價數據綁定（完全以 data.json 為準，無寫死假數值）
-                const mData = (data.btc && data.btc.mining_data) ? data.btc.mining_data : { hashrate_eh: "N/A", shutdown_price: "N/A", mining_status: "N/A (未同步)" };
-                if(document.getElementById('mining-hashrate')) document.getElementById('mining-hashrate').innerText = mData.hashrate_eh;
-                if(document.getElementById('mining-shutdown')) document.getElementById('mining-shutdown').innerText = mData.shutdown_price;
-                if(document.getElementById('mining-status')) document.getElementById('mining-status').innerText = mData.mining_status;
-
             } catch (error) {
                 console.error("無法載入結構資料:", error);
             }
@@ -522,6 +522,7 @@
         fetchData();
         setInterval(fetchData, 30000);
 
+        // --- AI 助手互動邏輯 ---
         function toggleAiSidebar() {
             document.getElementById('aiSidebar').classList.toggle('open');
         }
@@ -532,10 +533,12 @@
             const text = input.value.trim();
             if (!text) return;
 
+            // 顯示使用者訊息
             chatBody.innerHTML += `<div class="p-2 rounded bg-[#2962ff]/20 text-blue-300 text-right ml-4">${escapeHtml(text)}</div>`;
             input.value = '';
             chatBody.scrollTop = chatBody.scrollHeight;
 
+            // 智慧分析回應
             setTimeout(() => {
                 const reply = generateAiReply(text, latestMarketData);
                 chatBody.innerHTML += `<div class="p-3 rounded bg-[#1a1e24] border-l-2 border-amber-400 text-slate-300">${reply}</div>`;
@@ -545,21 +548,26 @@
 
         function generateAiReply(query, data) {
             const q = query.toUpperCase();
-            if (q.includes('礦工') || q.includes('算力') || q.includes('關機') || q.includes('SHUTDOWN')) {
-                if (data.btc && data.btc.mining_data) {
-                    const m = data.btc.mining_data;
-                    return `⛏️ <b>比特幣礦工關機價監控</b>：<br>• 全網算力：<b>${m.hashrate_eh}</b><br>• 礦工關機價：<b>${m.shutdown_price}</b><br>• 狀態：<b>${m.mining_status}</b>`;
-                }
-                return `⛏️ <b>比特幣礦工關機價監控</b>：目前無有效鏈上數據 (N/A)。`;
-            }
+            
+            // 掃描指定幣種
             for (let key in data) {
                 if (key === 'updated_at') continue;
                 if (q.includes(key.toUpperCase()) || q.includes(key)) {
                     const item = data[key];
-                    return `📊 <b>${key.toUpperCase()} 即時量化診斷</b>：<br>• 現價：$${item.price}<br>• 威科夫階段：<b>${item.wyckoff_phase}</b><br>• 買入：$${item.buy_target} | 止盈：$${item.sell_target}`;
+                    return `📊 <b>${key.toUpperCase()} 即時量化診斷</b>：<br>` +
+                           `• 現價：$${item.price}<br>` +
+                           `• 威科夫階段：<b>${item.wyckoff_phase || 'N/A'}</b><br>` +
+                           `• 波段買入 (Buy)：$${item.buy_target}<br>` +
+                           `• 目標止盈 (Sell)：$${item.sell_target}<br>` +
+                           `• 盤口提示：${item.wyckoff_hint || item.dow_signal || '結構正常'}`;
                 }
             }
-            return `收到您的詢問。本終端已完成雙軌威科夫與礦工關機價監控聯網。請問想檢視哪一檔資產？`;
+
+            if (q.includes('買') || q.includes('BUY')) {
+                return `🔥 系統會透過 <b>ATR 幾何與費氏回撤聯防</b> 自動抓取各資產的黃金買點（如 Phase C 彈簧洗盤或 0.618 支撐）。您可以直接輸入幣種名稱（例如：「RAY 買點」）來查詢！`;
+            }
+
+            return `收到您的詢問：「${query}」。本終端目前已載入最新數據，採用雙軌分工架構：買入交由費氏回撤與威科夫聯防，止盈由 ATR 幾何外推守護。請問想檢視哪一檔資產？`;
         }
 
         function escapeHtml(text) {

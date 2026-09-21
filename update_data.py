@@ -43,7 +43,6 @@ def calculate_grid_targets(current_price, fib_levels, decimals=2):
     else: sell_target = macro_high * 1.05 
     return {"buy_target": buy_target, "sell_target": sell_target}
 
-# 🌟 核心一：結合斐波那契 SOS 的動態道氏判定
 def get_dow_status(swing_highs, swing_lows, current_price, recent_closes, fib_levels):
     if current_price > fib_levels["fib_382"]:
         return "Primary Bull", "SOS 強勢修復"
@@ -61,9 +60,9 @@ def get_dow_status(swing_highs, swing_lows, current_price, recent_closes, fib_le
     else:
         return ("Primary Bull", "趨勢延續") if current_price >= recent_closes[0] else ("Consolidation", "趨勢延續")
 
-# 🌟 核心二：結合「確認機制」與精準提示的決策矩陣
+# 🌟 核心升級：結合「路徑依賴過濾器」的決策矩陣
 def analyze_wyckoff_vsa(highs, lows, closes, volumes, fib_levels, dow_status):
-    if len(closes) < 20 or len(volumes) < 20: return "PHASE B", "資料不足，預設為區間震盪 (Phase B)。"
+    if len(closes) < 30 or len(volumes) < 30: return "PHASE B", "資料不足，預設為區間震盪 (Phase B)。"
     
     vol_sma = sum(volumes[-20:]) / 20
     recent_3d_vol = sum(volumes[-3:]) / 3
@@ -74,8 +73,17 @@ def analyze_wyckoff_vsa(highs, lows, closes, volumes, fib_levels, dow_status):
     is_high_vol, is_low_vol = recent_3d_vol > vol_sma * 1.2, recent_3d_vol < vol_sma * 0.8
     fib_382, fib_618 = fib_levels["fib_382"], fib_levels["fib_618"]
     
+    # 🔍 【路徑偵測】檢查過去 20 天內價格是否曾經高於目前位置許多 (判斷是否為從低位彈上來的高位回調)
+    recent_max_20 = max(highs[-20:])
+    is_bouncing_from_low = (curr_close - min(lows[-20:])) > (recent_max_20 - min(lows[-20:])) * 0.5
+    
     # === 1. 底部區間 (接近或跌破 618) ===
     if curr_low <= fib_618 * 1.015:
+        
+        # 🛡️ 防禦過濾：若它是從低位彈上來、目前是從高檔回測到 618 附近，且盈虧比轉差，則降級過濾！
+        if is_bouncing_from_low and dow_status == "Secondary Correction":
+            return "PHASE B", "⚖️【高位回調】雖觸及 618 幾何支撐，但屬於自低位反彈後的回測，盈虧比不佳，建議暫時觀望。"
+
         if is_low_vol: 
             return "PHASE C", "🔥【強力買進】無供應測試 (No Supply)：賣壓枯竭，右側絕佳買點！"
         elif is_high_vol and close_pos >= 0.5: 
@@ -90,8 +98,6 @@ def analyze_wyckoff_vsa(highs, lows, closes, volumes, fib_levels, dow_status):
             
     # === 2. 頂部區間 (接近或突破 382) ===
     elif curr_high >= fib_382 * 0.985:
-        
-        # 🛡️ 系統確認機制 B：UTAD 假突破 / 吞噬過濾器 (防禦)
         if is_high_vol and close_pos <= 0.3 and curr_close < prev_close: 
             if dow_status == "Primary Bull": 
                 return "PHASE B", "🛑【逃頂賣出】高位假突破 (UTAD)！爆量卻留長上影線或實體大跌，主力倒貨，此前的突破宣告失敗！"
@@ -100,18 +106,15 @@ def analyze_wyckoff_vsa(highs, lows, closes, volumes, fib_levels, dow_status):
             else: 
                 return "PHASE B", "🛑【逃頂賣出】上衝回落 (Upthrust)：高檔爆量卻無法收高，危險訊號！"
                 
-        # 🛡️ 系統確認機制 A：BUEC 回踩確認 (進攻)
         elif curr_close >= fib_382 * 0.98 and curr_close < closes[-2] and is_low_vol:
-            return "PHASE D", "✅【回踩確認】(BUEC) 突破後縮量回測支撐，無明顯拋售壓，確認為真實 SOS，右側買點浮現。"
+            return "PHASE D", "✅【回踩確認】(BUEC) 突破後縮量回測支撐，無明顯拋售壓，確認為真實 SOS，右側買點浮現."
 
-        # 🚀 原始 SOS 觸發
         elif curr_close > prev_close and is_high_vol and close_pos >= 0.5: 
             if dow_status == "Primary Bull": 
                 return "PHASE D", "🚀【強勢表態】(SOS) 爆量突破強壓！(系統提示：準備觀察後續是否出現 BUEC 縮量回踩確認)"
             else: 
                 return "PHASE D", "🚀【強勢表態】需求強勁湧現，挑戰上方強壓區。"
                 
-        # ⚠️ 需求不足過濾
         elif curr_close > prev_close and is_low_vol: 
             return "PHASE B", "⚠️【高位誘多】需求不足 (No Demand)：無量過高，提防假突破！"
             
@@ -119,7 +122,6 @@ def analyze_wyckoff_vsa(highs, lows, closes, volumes, fib_levels, dow_status):
             if dow_status == "Primary Bull":
                 return "PHASE D", "【頂部突破】挑戰上方強壓區，關注多頭量能是否持續堆積。"
             else:
-                # 🌟 這裡已更新為更明確的觀望指令
                 return "PHASE D", "【區間突圍】多空交戰中，嚴格觀望，等待方向表態。"
             
     # === 3. 中間震盪區間 ===
@@ -333,7 +335,7 @@ def main():
 
     with open("data.json", "w", encoding="utf-8") as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
-    print("Data.json updated successfully with Refined Quant Engine.")
+    print("Data.json updated successfully with Path-Dependent Filter Engine.")
 
 if __name__ == "__main__":
     main()

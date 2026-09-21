@@ -43,14 +43,13 @@ def calculate_grid_targets(current_price, fib_levels, decimals=2):
     else: sell_target = macro_high * 1.05 
     return {"buy_target": buy_target, "sell_target": sell_target}
 
-# 🌟 核心：結合斐波那契與 Wyckoff SOS 的終極道氏判定
+# 🌟 核心一：結合斐波那契 SOS 的動態道氏判定
 def get_dow_status(swing_highs, swing_lows, current_price, recent_closes, fib_levels):
-    # ⚡️ 1. 威科夫 SOS 強勢反轉判定 (黃金法則)
-    # 價格收復宏觀跌幅的 61.8% (突破 fib_382 壓力線) 代表底部 SOS 確立，強制翻轉主升趨勢
+    # ⚡️ 1. 威科夫 SOS 強勢反轉判定 (突破 fib_382 強制翻多)
     if current_price > fib_levels["fib_382"]:
         return "Primary Bull", "SOS 強勢修復"
         
-    # ⚡️ 2. 極度弱勢判定 (跌破 618 深水區維持空頭看法)
+    # ⚡️ 2. 極度弱勢判定 (跌破 618 維持空頭)
     elif current_price < fib_levels["fib_618"]:
         return "Secondary Correction", "空頭壓制"
 
@@ -59,20 +58,14 @@ def get_dow_status(swing_highs, swing_lows, current_price, recent_closes, fib_le
         last_high, prev_high = swing_highs[-1], swing_highs[-2]
         last_low, prev_low = swing_lows[-1], swing_lows[-2]
 
-        # 動態微觀突破 (ChoCh)
-        if current_price > last_high:
-            return "Primary Bull", "強勢突破"
-        
-        if last_high >= prev_high and last_low >= prev_low: 
-            return "Primary Bull", "多頭推進"
-        elif last_high <= prev_high and last_low <= prev_low: 
-            return "Secondary Correction", "空頭受阻"
-        else: 
-            return "Consolidation", "結構收斂"
+        if current_price > last_high: return "Primary Bull", "強勢突破"
+        if last_high >= prev_high and last_low >= prev_low: return "Primary Bull", "多頭推進"
+        elif last_high <= prev_high and last_low <= prev_low: return "Secondary Correction", "空頭受阻"
+        else: return "Consolidation", "結構收斂"
     else:
         return ("Primary Bull", "趨勢延續") if current_price >= recent_closes[0] else ("Consolidation", "趨勢延續")
 
-# 🌟 核心：結合宏觀(Dow)與微觀(Wyckoff)的終極決策矩陣
+# 🌟 核心二：結合「確認機制 (過濾器)」的終極決策矩陣
 def analyze_wyckoff_vsa(highs, lows, closes, volumes, fib_levels, dow_status):
     if len(closes) < 20 or len(volumes) < 20: return "PHASE B", "資料不足，預設為區間震盪 (Phase B)。"
     
@@ -101,18 +94,36 @@ def analyze_wyckoff_vsa(highs, lows, closes, volumes, fib_levels, dow_status):
             
     # === 2. 頂部區間 (接近或突破 382) ===
     elif curr_high >= fib_382 * 0.985:
-        if curr_close > prev_close and is_high_vol and close_pos >= 0.5: 
-            return "PHASE D", "🚀【強勢表態】(SOS) 放量突破壓力區且收盤飽滿，需求強勁，準備迎來趨勢展開。"
+        
+        # 🛡️ 系統確認機制 B：UTAD 假突破 / 吞噬過濾器 (防禦)
+        if is_high_vol and close_pos <= 0.3 and curr_close < prev_close: 
+            if dow_status == "Primary Bull": 
+                return "PHASE B", "🛑【逃頂賣出】高位假突破 (UTAD)！爆量卻留長上影線或實體大跌，主力倒貨，此前的突破宣告失敗！"
+            elif dow_status == "Secondary Correction": 
+                return "PHASE B", "⚠️【死貓反彈】空頭結構微觀拉升 (LPSY)，遭遇解套賣壓，注意誘多風險！"
+            else: 
+                return "PHASE B", "🛑【逃頂賣出】上衝回落 (Upthrust)：高檔爆量卻無法收高，危險訊號！"
+                
+        # 🛡️ 系統確認機制 A：BUEC 回踩確認 (進攻)
+        elif curr_close >= fib_382 * 0.98 and curr_close < closes[-2] and is_low_vol:
+            return "PHASE D", "✅【回踩確認】(BUEC) 突破後縮量回測支撐，無明顯拋售壓，確認為真實 SOS，右側買點浮現。"
+
+        # 🚀 原始 SOS 觸發 (加上警語，提醒交易員等待回踩)
+        elif curr_close > prev_close and is_high_vol and close_pos >= 0.5: 
+            if dow_status == "Primary Bull": 
+                return "PHASE D", "🚀【強勢表態】(SOS) 爆量突破強壓！(系統提示：準備觀察後續是否出現 BUEC 縮量回踩確認)"
+            else: 
+                return "PHASE D", "🚀【強勢表態】需求強勁湧現，挑戰上方強壓區。"
+                
+        # ⚠️ 需求不足過濾
         elif curr_close > prev_close and is_low_vol: 
             return "PHASE B", "⚠️【高位誘多】需求不足 (No Demand)：無量過高，提防假突破！"
-        elif is_high_vol and close_pos <= 0.4 and curr_close < prev_close: 
-            if dow_status == "Primary Bull": return "PHASE B", "🛑【逃頂賣出】溢價過高！高檔出現假突破派發 (UTAD)，主力倒貨中。"
-            elif dow_status == "Secondary Correction": return "PHASE B", "⚠️【死貓反彈】空頭結構微觀拉升 (LPSY)，遭遇解套賣壓，注意風險！"
-            else: return "PHASE B", "🛑【逃頂賣出】上衝回落 (Upthrust)：爆量挑戰前高卻留長上影線，高位危險！"
+            
         else: 
-            if dow_status == "Primary Bull": return "PHASE D", "🚀【強勢表態】需求強勁湧現 (SOS)，挑戰上方強壓區，持多續抱。"
-            elif dow_status == "Secondary Correction": return "PHASE D", "⚠️【死貓反彈】高位誘多 (LPSY)！空頭結構中的微觀拉升，極可能遭遇解套賣壓。"
-            else: return "PHASE D", "【區間突圍】區間內出現明顯方向性推動，挑戰上方強壓，準備迎來表態。"
+            if dow_status == "Primary Bull":
+                return "PHASE D", "【頂部突破】挑戰上方強壓區，關注多頭量能是否持續堆積。"
+            else:
+                return "PHASE D", "【區間突圍】區間內出現明顯方向性推動，挑戰上方強壓，準備迎來表態。"
             
     # === 3. 中間震盪區間 ===
     else:
@@ -174,10 +185,7 @@ def analyze_crypto_symbol(symbol_binance, coingecko_id, vs_currency="usd"):
     recent_highs, recent_lows, recent_closes = highs[-45:], lows[-45:], closes[-45:]
     swing_highs, swing_lows, atr = find_fractal_pivots(recent_highs, recent_lows, recent_closes)
     
-    # 🌟 傳入 fib_levels，判斷是否強勢翻轉
     dow_status, dow_signal = get_dow_status(swing_highs, swing_lows, current_price, recent_closes, fib_levels)
-    
-    # 🌟 結合宏觀趨勢產出最終文字
     wyckoff_phase, wyckoff_hint = analyze_wyckoff_vsa(highs, lows, closes, volumes, fib_levels, dow_status)
 
     overhead = [h for h in swing_highs if h > current_price]
@@ -246,9 +254,7 @@ def analyze_tokenized_stock(stock_ticker, okx_prefix, is_mstr=False, btc_price=0
     recent_highs, recent_lows, recent_closes = highs[-45:], lows[-45:], closes[-45:]
     swing_highs, swing_lows, atr = find_fractal_pivots(recent_highs, recent_lows, recent_closes)
 
-    # 🌟 傳入 fib_levels，判斷是否強勢翻轉
     dow_status, dow_signal = get_dow_status(swing_highs, swing_lows, current_price, recent_closes, fib_levels)
-    
     final_buy_target, final_sell_target = swing_plan["buy_target"], swing_plan["sell_target"]
 
     if is_mstr:
@@ -282,7 +288,6 @@ def analyze_tokenized_stock(stock_ticker, okx_prefix, is_mstr=False, btc_price=0
         }
     
     else:
-        # 🌟 結合宏觀趨勢產出最終文字
         wyckoff_phase, wyckoff_hint = analyze_wyckoff_vsa(highs, lows, closes, volumes, fib_levels, dow_status)
 
         if wyckoff_phase == "PHASE D":
@@ -331,7 +336,7 @@ def main():
 
     with open("data.json", "w", encoding="utf-8") as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
-    print("Data.json updated successfully with Dow-Wyckoff Matrix Engine.")
+    print("Data.json updated successfully with Ultimate Confirmed Dow-Wyckoff Engine.")
 
 if __name__ == "__main__":
     main()

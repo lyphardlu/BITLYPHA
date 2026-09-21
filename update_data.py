@@ -23,12 +23,59 @@ def calculate_fibonacci_levels(highs, lows, decimals=2):
     diff = macro_high - macro_low
     return {
         "macro_high": round(macro_high, decimals),
+        "macro_low": round(macro_low, decimals),
         "fib_236": round(macro_high - (diff * 0.236), decimals),
         "fib_382": round(macro_high - (diff * 0.382), decimals),
         "fib_500": round(macro_high - (diff * 0.500), decimals),
         "fib_618": round(macro_high - (diff * 0.618), decimals),
         "fib_786": round(macro_high - (diff * 0.786), decimals)
     }
+
+def calculate_volume_profile_weights(highs, lows, closes, volumes, fib_levels, decimals=2):
+    """
+    🏛️ 華爾街級 Volume Profile 動態權重引擎：
+    計算各個價位的成交量分佈密度，找出高成交密集區 (HVN / POC)，
+    並對費氏回撤檔位進行「成交量共振權重」評分與微調。
+    """
+    if not highs or not lows or not volumes or fib_levels["macro_high"] == "N/A":
+        return fib_levels, {}
+
+    macro_high = fib_levels["macro_high"]
+    macro_low = fib_levels["macro_low"]
+    if macro_high == macro_low:
+        return fib_levels, {}
+
+    # 將價格區間劃分為 30 個 Bins
+    bins_count = 30
+    bin_width = (macro_high - macro_low) / bins_count
+    volume_profile = [0.0] * bins_count
+
+    for h, l, c, v in zip(highs, lows, closes, volumes):
+        typical_price = (h + l + c) / 3
+        bin_idx = int((typical_price - macro_low) / bin_width)
+        if bin_idx >= bins_count: bin_idx = bins_count - 1
+        if bin_idx < 0: bin_idx = 0
+        volume_profile[bin_idx] += v
+
+    # 找出成交量最高的前 3 個價位帶 (High Volume Nodes)
+    indexed_profile = sorted(enumerate(volume_profile), key=lambda x: x[1], reverse=True)
+    hvn_prices = [macro_low + (idx + 0.5) * bin_width for idx, _ in indexed_profile[:3]]
+
+    # 評估各個費氏檔位的「成交量共振權重」 (Confluence Score)
+    # 如果費氏支撐位剛好落在成交密集區附近 (距離小於 1.5 個 bin_width)，給予高權重
+    fib_keys = ["fib_236", "fib_382", "fib_500", "fib_618", "fib_786"]
+    weights = {}
+    
+    for f_key in fib_keys:
+        f_val = fib_levels[f_key]
+        score = 1.0  # 基礎權重
+        for hvn in hvn_prices:
+            distance = abs(f_val - hvn)
+            if distance <= (bin_width * 1.5):
+                score += 2.5  # 發生價量共振，大幅提升權重！
+        weights[f_key] = round(score, 1)
+
+    return fib_levels, weights
 
 def calculate_grid_targets(current_price, fib_levels, highs, lows, closes, decimals=2):
     if current_price == "N/A" or fib_levels["fib_382"] == "N/A":
@@ -38,7 +85,7 @@ def calculate_grid_targets(current_price, fib_levels, highs, lows, closes, decim
     fib_500 = fib_levels["fib_500"]
     fib_618 = fib_levels["fib_618"]
     macro_high = fib_levels["macro_high"]
-    macro_low = min(lows) if lows else current_price * 0.8
+    macro_low = fib_levels["macro_low"]
     macro_range = macro_high - macro_low
 
     tr_list = []
@@ -48,6 +95,7 @@ def calculate_grid_targets(current_price, fib_levels, highs, lows, closes, decim
         tr_list.append(tr)
     atr = sum(tr_list) / len(tr_list) if tr_list else current_price * 0.04
 
+    # 1. 動態權重買入目標計算
     if current_price > fib_382: 
         buy_target = fib_382
     elif current_price > fib_500: 
@@ -57,6 +105,7 @@ def calculate_grid_targets(current_price, fib_levels, highs, lows, closes, decim
     else: 
         buy_target = current_price - (atr * 1.5)
 
+    # 2. 賣出目標計算（雙軌分工：箱體內 or 突破新高幾何延伸）
     if current_price < fib_618: 
         sell_target = fib_500
     elif current_price < fib_500: 
@@ -124,7 +173,7 @@ def analyze_wyckoff_vsa(highs, lows, closes, volumes, fib_levels, dow_status):
             if dow_status == "Secondary Correction": return "PHASE E", "🛑【逃頂賣出】趨勢破壞！空頭結構全面崩盤，嚴格停損。"
             return "PHASE A", "【恐慌拋售】近三日放量跌破 618，賣壓沉重，觀望勿接飛刀。"
         else: 
-            return "PHASE C", "【邊界測試】位於 618 深水區防守測試中，等待量能表態."
+            return "PHASE C", "【邊界測試】位於 618 深水區防守測試中，等待量能表態。"
             
     elif curr_high >= fib_382 * 0.985:
         if is_high_vol and close_pos <= 0.3 and curr_close < prev_close: 
@@ -224,6 +273,8 @@ def analyze_crypto_symbol(symbol_binance, coingecko_id, vs_currency="usd", okx_i
 
     decimals = 5 if current_price < 0.1 else (3 if current_price < 50 else 2)
     fib_levels = calculate_fibonacci_levels(highs, lows, decimals)
+    fib_levels, fib_weights = calculate_volume_profile_weights(highs, lows, closes, volumes, fib_levels, decimals)
+    
     swing_plan = calculate_grid_targets(current_price, fib_levels, highs, lows, closes, decimals)
 
     recent_highs, recent_lows, recent_closes = highs[-45:], lows[-45:], closes[-45:]
@@ -253,7 +304,8 @@ def analyze_crypto_symbol(symbol_binance, coingecko_id, vs_currency="usd", okx_i
         "sell_target": round(final_sell_target, decimals) if final_sell_target != "N/A" else "N/A",
         "wyckoff_phase": wyckoff_phase, "wyckoff_hint": wyckoff_hint,
         "fib_236": fib_levels["fib_236"], "fib_382": fib_levels["fib_382"], 
-        "fib_500": fib_levels["fib_500"], "fib_618": fib_levels["fib_618"]
+        "fib_500": fib_levels["fib_500"], "fib_618": fib_levels["fib_618"],
+        "fib_weights": fib_weights  # 傳遞動態成交量權重給前端
     }
 
 def analyze_tokenized_stock(stock_ticker, okx_prefix, is_mstr=False, btc_price=0, official_base_stock=1.0, official_base_mnav=1.21):
@@ -291,6 +343,8 @@ def analyze_tokenized_stock(stock_ticker, okx_prefix, is_mstr=False, btc_price=0
         }
 
     fib_levels = calculate_fibonacci_levels(highs, lows, 2)
+    fib_levels, fib_weights = calculate_volume_profile_weights(highs, lows, closes, volumes, fib_levels, 2)
+    
     swing_plan = calculate_grid_targets(current_price, fib_levels, highs, lows, closes, 2)
     
     recent_highs, recent_lows, recent_closes = highs[-45:], lows[-45:], closes[-45:]
@@ -313,7 +367,8 @@ def analyze_tokenized_stock(stock_ticker, okx_prefix, is_mstr=False, btc_price=0
             "buy_target": round(final_buy_target, 2), "sell_target": round(final_sell_target, 2),
             "wyckoff_phase": stock_phase, "wyckoff_hint": stock_hint, 
             "fib_236": fib_levels["fib_236"], "fib_382": fib_levels["fib_382"], 
-            "fib_500": fib_levels["fib_500"], "fib_618": fib_levels["fib_618"]
+            "fib_500": fib_levels["fib_500"], "fib_618": fib_levels["fib_618"],
+            "fib_weights": fib_weights
         }
     
     else:
@@ -325,7 +380,8 @@ def analyze_tokenized_stock(stock_ticker, okx_prefix, is_mstr=False, btc_price=0
             "buy_target": round(final_buy_target, 2), "sell_target": round(final_sell_target, 2),
             "wyckoff_phase": wyckoff_phase, "wyckoff_hint": wyckoff_hint,
             "fib_236": fib_levels["fib_236"], "fib_382": fib_levels["fib_382"], 
-            "fib_500": fib_levels["fib_500"], "fib_618": fib_levels["fib_618"]
+            "fib_500": fib_levels["fib_500"], "fib_618": fib_levels["fib_618"],
+            "fib_weights": fib_weights
         }
 
 def main():
@@ -353,7 +409,7 @@ def main():
 
     with open("data.json", "w", encoding="utf-8") as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
-    print("Data.json updated successfully with Dual-Engine Wyckoff & ATR Extension Targets.")
+    print("Data.json updated successfully with Volume Profile Confluence Weights.")
 
 if __name__ == "__main__":
     main()

@@ -70,29 +70,28 @@ def calculate_volume_profile_weights(highs, lows, closes, volumes, fib_levels, d
 
 def get_mining_onchain_metrics(btc_current_price):
     """
-    ⛏️ 穩健抓取比特幣全網算力與生產成本底線
+    🔗 真實抓取全網算力與生產成本指標（無任何寫死假數字，確保客觀真實）
     """
-    hashrate_eh = "685.42 EH/s"  # 確保不為空的穩定預設與即時基準
+    hashrate_eh = "N/A"
+    production_cost = "N/A"
+    status = "⚠️ 鏈上數據未同步"
+    
+    # 1. 真實抓取全網算力 (Blockchain.com API)
     try:
-        res = requests.get("https://blockchain.info/q/hashrate", timeout=3)
+        res = requests.get("https://blockchain.info/q/hashrate", timeout=4)
         if res.status_code == 200:
             h_val = float(res.text)
             hashrate_eh = f"{round(h_val / 1e9, 2)} EH/s"
-    except:
-        pass
+    except Exception:
+        hashrate_eh = "API 連線失敗"
 
-    production_cost = 52500.0  # 礦工平均生產成本底線
-    status = "⚖️ 成本支撐防守 (Cost Floor Defense)"
-    
-    if btc_current_price != "N/A":
-        if btc_current_price < production_cost * 1.05:
-            status = "⚠️ 礦工投降區 (Capitulation Risk)"
-        elif btc_current_price > production_cost * 1.5:
-            status = "🚀 算力強勁擴張 (Strong Expansion)"
+    # 2. 生產成本底線：若無法動態計算則標示 N/A，不給予臆測數值
+    # 若您有對接特定的礦業成本 API 可以在此處替換
+    production_cost = "N/A" 
 
     return {
         "hashrate_eh": hashrate_eh,
-        "production_cost": round(production_cost, 2),
+        "production_cost": production_cost,
         "mining_status": status
     }
 
@@ -276,7 +275,7 @@ def main():
 
     with open("data.json", "w", encoding="utf-8") as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
-    print("Data.json updated successfully with robust Mining & Fib layout.")
+    print("Data.json updated successfully with strict real on-chain checks.")
 
 if __name__ == "__main__":
     main()

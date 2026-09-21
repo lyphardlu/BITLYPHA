@@ -1,7 +1,7 @@
 {
-  "updated_at": "2026-09-21 14:07 UTC",
+  "updated_at": "2026-09-21 14:10 UTC",
   "btc": {
-    "price": 85139.9,
+    "price": 85333.1,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "buy_target": 75133.24,
@@ -20,13 +20,13 @@
       "fib_786": 8.5
     },
     "mining_data": {
-      "hashrate_eh": "1016.31 EH/s",
+      "hashrate_eh": "1009.71 EH/s",
       "production_cost": "N/A",
       "mining_status": "⚠️ 鏈上數據未同步"
     }
   },
   "eth": {
-    "price": 2715.41,
+    "price": 2722.17,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "buy_target": 2276.48,
@@ -52,7 +52,7 @@
     "wyckoff_hint": "資料讀取失敗"
   },
   "sol": {
-    "price": 117.62,
+    "price": 118.03,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "buy_target": 97.89,
@@ -72,7 +72,7 @@
     }
   },
   "uni": {
-    "price": 8.77,
+    "price": 8.799,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "buy_target": 6.801,
@@ -92,7 +92,7 @@
     }
   },
   "ray": {
-    "price": 1.753,
+    "price": 1.761,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "buy_target": 1.402,
@@ -112,7 +112,7 @@
     }
   },
   "zec": {
-    "price": 1523.93,
+    "price": 1519.61,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "buy_target": 1126.36,
@@ -132,7 +132,7 @@
     }
   },
   "mstr": {
-    "price": 165.44,
+    "price": 166.22,
     "mnav_multiple": "1.24x",
     "dow_status": "Primary Bull",
     "buy_target": 153.0,
@@ -152,7 +152,7 @@
     }
   },
   "xcoin": {
-    "price": 204.16,
+    "price": 204.59,
     "dow_status": "Primary Bull",
     "buy_target": 190.55,
     "sell_target": 222.35,
@@ -190,7 +190,7 @@
     }
   },
   "xcrcl": {
-    "price": 94.67,
+    "price": 95.21,
     "dow_status": "Consolidation",
     "buy_target": 89.23,
     "sell_target": 108.61,

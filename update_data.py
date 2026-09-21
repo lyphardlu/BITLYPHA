@@ -151,18 +151,18 @@ def analyze_crypto_symbol(symbol_binance, coingecko_id, vs_currency="usd"):
         "buy_target": round(final_buy_target, decimals), 
         "sell_target": round(final_sell_target, decimals),
         "wyckoff_phase": wyckoff_phase, "wyckoff_hint": wyckoff_hint,
-        "fib_236": fib_levels["fib_236"],
-        "fib_382": fib_levels["fib_382"], "fib_500": fib_levels["fib_500"], "fib_618": fib_levels["fib_618"]
+        "fib_236": fib_levels["fib_236"], "fib_382": fib_levels["fib_382"], 
+        "fib_500": fib_levels["fib_500"], "fib_618": fib_levels["fib_618"]
     }
 
-# 🌟 更新：新增 is_mstr 開關。其他美股回歸標準威科夫算法
+# 🌟 更新：混合引擎。即時價格看 OKX，量價歷史看 Yahoo
 def analyze_tokenized_stock(stock_ticker, okx_prefix, is_mstr=False, btc_price=0, official_base_stock=1.0, official_base_mnav=1.21):
     current_price = 0.0
     highs, lows, closes, volumes = [], [], [], []
     headers = {"User-Agent": "Mozilla/5.0"}
     limit_days = 100
 
-    # 1. 抓取 OKX 報價
+    # 1. 抓取 OKX 報價 (確保終端機能 24H 顯示最新價格)
     okx_inst_ids = [f"{okx_prefix}-USDT", f"{okx_prefix}-USDT-SWAP"]
     for instId in okx_inst_ids:
         if current_price != 0.0: break
@@ -171,25 +171,19 @@ def analyze_tokenized_stock(stock_ticker, okx_prefix, is_mstr=False, btc_price=0
             res = requests.get(okx_url, headers=headers, timeout=4).json()
             if res.get("code") == "0" and len(res.get("data", [])) > 0:
                 current_price = float(res["data"][0]["last"])
-                okx_kline = f"https://www.okx.com/api/v5/market/candles?instId={instId}&bar=1D&limit={limit_days}"
-                k_res = requests.get(okx_kline, headers=headers, timeout=4).json()
-                if k_res.get("code") == "0" and len(k_res.get("data", [])) > 0:
-                    candles = k_res["data"]
-                    candles.reverse()
-                    closes, highs, lows, volumes = [float(k[4]) for k in candles], [float(k[2]) for k in candles], [float(k[3]) for k in candles], [float(k[5]) for k in candles]
         except Exception: continue
 
-    # 2. 備用抓取 Yahoo Finance 原股數據
-    if current_price == 0.0 or not volumes:
-        try:
-            url = f"https://query1.finance.yahoo.com/v8/finance/chart/{stock_ticker}?interval=1d&range={limit_days}d"
-            res = requests.get(url, headers=headers, timeout=6).json()
-            quotes = res['chart']['result'][0]['indicators']['quote'][0]
-            valid = [(c, h, l, v) for c, h, l, v in zip(quotes['close'], quotes['high'], quotes['low'], quotes['volume']) if None not in (c, h, l, v)]
-            if valid:
-                closes, highs, lows, volumes = [x[0] for x in valid], [x[1] for x in valid], [x[2] for x in valid], [x[3] for x in valid]
-                if current_price == 0.0: current_price = closes[-1]
-        except Exception: pass
+    # 2. 強制抓取 Yahoo Finance 原股數據 (完美避開週末，取得真實華爾街量能)
+    try:
+        url = f"https://query1.finance.yahoo.com/v8/finance/chart/{stock_ticker}?interval=1d&range={limit_days}d"
+        res = requests.get(url, headers=headers, timeout=6).json()
+        quotes = res['chart']['result'][0]['indicators']['quote'][0]
+        valid = [(c, h, l, v) for c, h, l, v in zip(quotes['close'], quotes['high'], quotes['low'], quotes['volume']) if None not in (c, h, l, v)]
+        if valid:
+            closes, highs, lows, volumes = [x[0] for x in valid], [x[1] for x in valid], [x[2] for x in valid], [x[3] for x in valid]
+            # 若 OKX API 突然當機，就用美股最新收盤價兜底
+            if current_price == 0.0: current_price = closes[-1]
+    except Exception: pass
 
     # 防呆機制
     if not closes or len(closes) < 20:
@@ -212,7 +206,6 @@ def analyze_tokenized_stock(stock_ticker, okx_prefix, is_mstr=False, btc_price=0
 
     final_buy_target, final_sell_target = swing_plan["buy_target"], swing_plan["sell_target"]
 
-    # 🌟 邏輯分流：如果是 MSTR，走 mNAV 溢價套利模型
     if is_mstr:
         official_base_btc = 81240.0
         stock_ratio = current_price / official_base_stock
@@ -242,8 +235,8 @@ def analyze_tokenized_stock(stock_ticker, okx_prefix, is_mstr=False, btc_price=0
             "fib_500": fib_levels["fib_500"], "fib_618": fib_levels["fib_618"]
         }
     
-    # 🌟 邏輯分流：其他美股 (COIN, ADBE 等)，回歸標準虛擬幣 Wyckoff 量價分析
     else:
+        # 這裡丟進去的 volumes 是真實美股的成交量，絕不會有週末無量盲區！
         wyckoff_phase, wyckoff_hint = analyze_wyckoff_vsa(highs, lows, closes, volumes, fib_levels)
 
         if wyckoff_phase == "PHASE D":
@@ -277,10 +270,7 @@ def main():
     ray_data = analyze_crypto_symbol("RAYUSDT", "raydium")
     zec_data = analyze_crypto_symbol("ZECUSDT", "zcash")
 
-    # MSTR：開啟 is_mstr=True
     mstr_data = analyze_tokenized_stock("MSTR", "XMSTR", is_mstr=True, btc_price=btc_data["price"], official_base_stock=153.92, official_base_mnav=1.21)
-    
-    # 其他美股：is_mstr=False (預設)，回歸標準算法，也不需要傳入不準確的 base_stock 了
     xcoin_data = analyze_tokenized_stock("COIN", "XCOIN")
     xadbe_data = analyze_tokenized_stock("ADBE", "XADBE")
     xcrcl_data = analyze_tokenized_stock("CRCL", "XCRCL")
@@ -295,7 +285,7 @@ def main():
 
     with open("data.json", "w", encoding="utf-8") as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
-    print("Data.json updated successfully. MSTR uses mNAV, others use standard VSA.")
+    print("Data.json updated successfully with Hybrid Engine (OKX Price + Yahoo Volumes).")
 
 if __name__ == "__main__":
     main()

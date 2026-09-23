@@ -208,14 +208,18 @@
             <div class="glass-panel rounded-xl p-5 flex flex-col flex-1 min-h-[300px] lg:min-h-0 shrink-0">
                 <div class="flex justify-between items-center mb-4 border-b border-[#2A2E39] pb-2 shrink-0">
                     <h3 class="text-sm font-bold text-slate-300">日線費氏大支撐 (1D FIB LEVELS)</h3>
+                    <div class="flex items-center gap-2">
+                        <span class="text-[10px] bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded font-mono font-semibold">⛏️ BTC 成本 <span id="btc-mining-cost">-</span>
+                        </span>
                     <span class="text-[10px] bg-[#2A2E39] text-slate-400 px-2 rounded">MACRO-SWING</span>
+                    </div>
                 </div>
-                
+            
                 <div class="grid grid-cols-2 gap-x-8 gap-y-6 overflow-y-auto custom-scroll pr-2 flex-1 min-h-0 content-start">
                     <script>
                         const createFib = (key, title, colorClass) => `
                         <div>
-                            <div class="flex justify-between items-center text-xs font-bold ${colorClass} mb-2"><span>${title}</span>${key === 'btc' ? '<span>⛏️ 成本 <span id="btc-mining-cost">-</span></span>' : ''}</div>                            
+                            <div class="text-xs font-bold ${colorClass} mb-2"><span>${title}</span></div>
                             <ul class="text-xs font-mono space-y-1.5">
                                 <li class="flex justify-between"><span class="text-slate-500">236:</span> <span id="${key}-fib-236" class="${colorClass} font-semibold">-</span></li>
                                 <li class="flex justify-between"><span class="text-slate-500">382:</span> <span id="${key}-fib-382" class="${colorClass} font-semibold">-</span></li>

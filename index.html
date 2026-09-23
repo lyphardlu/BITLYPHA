@@ -215,7 +215,7 @@
                     <script>
                         const createFib = (key, title, colorClass) => `
                         <div>
-                            <div class="flex justify-between items-center text-xs font-bold ${colorClass} mb-2"><span>${title}</span>${key === 'btc' ? '<span>⛏️ 成本 $72000</span>' : ''}</div>                            
+                            <div class="flex justify-between items-center text-xs font-bold ${colorClass} mb-2"><span>${title}</span>${key === 'btc' ? '<span>⛏️ 成本 <span id="btc-mining-cost">-</span></span>' : ''}</div>                            
                             <ul class="text-xs font-mono space-y-1.5">
                                 <li class="flex justify-between"><span class="text-slate-500">236:</span> <span id="${key}-fib-236" class="${colorClass} font-semibold">-</span></li>
                                 <li class="flex justify-between"><span class="text-slate-500">382:</span> <span id="${key}-fib-382" class="${colorClass} font-semibold">-</span></li>
@@ -516,6 +516,10 @@
                 const data = await response.json();
                 latestMarketData = data; // 儲存全域脈絡供 AI 使用
                 if (document.getElementById('last-sync')) document.getElementById('last-sync').innerText = data.updated_at || "-";
+                
+                const costEl = document.getElementById('btc-mining-cost');
+                
+                if (costEl && data.btc_mining_cost) costEl.textContent = data.btc_mining_cost;
                 
                 ['btc', 'eth', 'mstr', 'ethbtc', 'sol', 'uni', 'ray', 'near', 'zec', 'xcrcl', 'xcoin', 'xadbe'].forEach(key => {
                     if(data[key]) bindDeepData(key, data[key]);

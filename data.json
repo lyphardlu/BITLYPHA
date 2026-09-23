@@ -1,12 +1,12 @@
 {
-  "updated_at": "2026-09-23 11:12 UTC",
-  "btc_mining_cost": "-",
+  "updated_at": "2026-09-23 11:23 UTC",
+  "btc_mining_cost": "$111,829",
   "btc": {
-    "price": 85733.3,
+    "price": 85630.3,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 76888.0,
-    "resistance": 89987.69,
+    "resistance": 89894.18,
     "buy_target": 80415.85,
     "sell_target": 87399.0,
     "wyckoff_phase": "PHASE D",
@@ -24,11 +24,11 @@
     }
   },
   "eth": {
-    "price": 2731.79,
+    "price": 2725.95,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 2414.92,
-    "resistance": 2921.9,
+    "resistance": 2916.45,
     "buy_target": 2501.9,
     "sell_target": 2807.67,
     "wyckoff_phase": "PHASE D",
@@ -46,7 +46,7 @@
     }
   },
   "ethbtc": {
-    "price": 0.0317,
+    "price": 0.03163,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 0.03107,
@@ -68,11 +68,11 @@
     }
   },
   "sol": {
-    "price": 117.32,
+    "price": 116.92,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 97.9,
-    "resistance": 126.24,
+    "resistance": 125.84,
     "buy_target": 106.79,
     "sell_target": 119.99,
     "wyckoff_phase": "PHASE D",
@@ -90,11 +90,11 @@
     }
   },
   "uni": {
-    "price": 9.862,
+    "price": 9.753,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 6.001,
-    "resistance": 11.342,
+    "resistance": 11.233,
     "buy_target": 8.991,
     "sell_target": 10.944,
     "wyckoff_phase": "PHASE D",
@@ -112,7 +112,7 @@
     }
   },
   "ray": {
-    "price": 1.891,
+    "price": 1.903,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 1.193,
@@ -134,11 +134,11 @@
     }
   },
   "near": {
-    "price": 4.578,
+    "price": 4.55,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 2.269,
-    "resistance": 5.259,
+    "resistance": 5.231,
     "buy_target": 3.945,
     "sell_target": 4.689,
     "wyckoff_phase": "PHASE D",
@@ -156,11 +156,11 @@
     }
   },
   "zec": {
-    "price": 1638.62,
+    "price": 1638.96,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 1054.04,
-    "resistance": 1865.68,
+    "resistance": 1866.02,
     "buy_target": 1178.89,
     "sell_target": 1680.0,
     "wyckoff_phase": "PHASE B",
@@ -178,8 +178,8 @@
     }
   },
   "mstr": {
-    "price": 167.19,
-    "mnav_multiple": "1.25x",
+    "price": 166.66,
+    "mnav_multiple": "1.24x",
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "buy_target": 153.0,
@@ -199,7 +199,7 @@
     }
   },
   "xcoin": {
-    "price": 198.3,
+    "price": 197.45,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "buy_target": 190.55,
@@ -239,7 +239,7 @@
     }
   },
   "xcrcl": {
-    "price": 93.43,
+    "price": 93.01,
     "dow_status": "Secondary Correction",
     "dow_signal": "空頭受阻",
     "buy_target": 89.23,

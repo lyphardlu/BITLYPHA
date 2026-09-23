@@ -143,6 +143,7 @@
                     createCard('sol', 'SOL / USDT', 'text-purple-400', false) +
                     createCard('uni', 'UNI / USDT', 'text-pink-400', false) +
                     createCard('ray', 'RAY / USDT', 'text-amber-400', false) +
+                    createCard('near', 'NEAR / USDT', 'text-teal-400', false) +
                     createCard('zec', 'ZEC / USDT', 'text-yellow-500', false) +
                     createCard('xcrcl', 'CRCL / USDT', 'text-indigo-400', false) +
                     createCard('xcoin', 'COIN / USDT', 'text-blue-500', false) +
@@ -193,6 +194,7 @@
                             createDiag('sol', 'SOL · Solana', 'text-purple-400', false) +
                             createDiag('uni', 'UNI · Uniswap', 'text-pink-400', false) +
                             createDiag('ray', 'RAY · Raydium', 'text-amber-400', false) +
+                            createDiag('near', 'NEAR · NEAR Protocol', 'text-teal-400', false) +
                             createDiag('zec', 'ZEC · Zcash', 'text-yellow-500', false) +
                             createDiag('xcrcl', 'CRCL', 'text-indigo-400', false) +
                             createDiag('xcoin', 'COIN · Coinbase', 'text-blue-500', false) +
@@ -230,6 +232,7 @@
                             createFib('sol', 'SOL 檔位', 'text-purple-400') +
                             createFib('uni', 'UNI 檔位', 'text-pink-400') +
                             createFib('ray', 'RAY 檔位', 'text-amber-400') +
+                            createFib('near', 'NEAR 檔位', 'text-teal-400') +
                             createFib('zec', 'ZEC 檔位', 'text-yellow-500') +
                             createFib('xcrcl', 'CRCL 檔位', 'text-indigo-400') +
                             createFib('xcoin', 'COIN 檔位', 'text-blue-500') +
@@ -257,6 +260,7 @@
                         <button onclick="changeChart('BINANCE:SOLUSDT', this, 'sol')" class="tv-tab text-slate-500 hover:text-slate-300 px-2 py-1 rounded transition shrink-0">SOL</button>
                         <button onclick="changeChart('BINANCE:UNIUSDT', this, 'uni')" class="tv-tab text-slate-500 hover:text-slate-300 px-2 py-1 rounded transition shrink-0">UNI</button>
                         <button onclick="changeChart('BINANCE:RAYUSDT', this, 'ray')" class="tv-tab text-slate-500 hover:text-slate-300 px-2 py-1 rounded transition shrink-0">RAY</button>
+                        <button onclick="changeChart('BINANCE:NEARUSDT', this, 'near')" class="tv-tab text-slate-500 hover:text-slate-300 px-2 py-1 rounded transition shrink-0">NEAR</button>
                         <button onclick="changeChart('BINANCE:ZECUSDT', this, 'zec')" class="tv-tab text-slate-500 hover:text-slate-300 px-2 py-1 rounded transition shrink-0">ZEC</button>
                         <button onclick="changeChart('OKX:XCRCLUSDT', this, 'xcrcl')" class="tv-tab text-slate-500 hover:text-slate-300 px-2 py-1 rounded transition shrink-0">CRCL</button>
                         <button onclick="changeChart('OKX:XCOINUSDT', this, 'xcoin')" class="tv-tab text-slate-500 hover:text-slate-300 px-2 py-1 rounded transition shrink-0">COIN</button>
@@ -349,6 +353,7 @@
             sol: { colorClass: 'text-purple-400 bg-purple-900/20', dotClass: 'bg-purple-400', title: 'SOL/USDT 即時走勢' },
             uni: { colorClass: 'text-pink-400 bg-pink-900/20', dotClass: 'bg-pink-400', title: 'UNI/USDT 即時走勢' },
             ray: { colorClass: 'text-amber-400 bg-amber-900/20', dotClass: 'bg-amber-400', title: 'RAY/USDT 即時走勢' },
+            near: { colorClass: 'text-teal-400 bg-teal-900/20', dotClass: 'bg-teal-400', title: 'NEAR/USDT 即時走勢' },
             zec: { colorClass: 'text-yellow-500 bg-yellow-900/20', dotClass: 'bg-yellow-500', title: 'ZEC/USDT 即時走勢' },
             xcrcl: { colorClass: 'text-indigo-400 bg-indigo-900/20', dotClass: 'bg-indigo-400', title: 'CRCL/USDT 即時走勢' },
             xcoin: { colorClass: 'text-blue-500 bg-blue-900/20', dotClass: 'bg-blue-500', title: 'COIN/USDT 即時走勢' },
@@ -397,7 +402,7 @@
         }
 
         // WebSocket 監聽
-        const bnWs = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@ticker/ethusdt@ticker/ethbtc@ticker/solusdt@ticker/uniusdt@ticker/rayusdt@ticker/zecusdt@ticker');
+        const bnWs = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@ticker/ethusdt@ticker/ethbtc@ticker/solusdt@ticker/uniusdt@ticker/rayusdt@ticker/nearusdt@ticker/zecusdt@ticker');
         bnWs.onmessage = (event) => {
             const data = JSON.parse(event.data);
             const symbol = data.s.toLowerCase();
@@ -409,6 +414,7 @@
             else if (symbol === 'solusdt') coinKey = 'sol';
             else if (symbol === 'uniusdt') coinKey = 'uni';
             else if (symbol === 'rayusdt') coinKey = 'ray';
+            else if (symbol === 'nearusdt') coinKey = 'near';
             else if (symbol === 'zecusdt') coinKey = 'zec';
             if (coinKey) updateRealTimePrice(coinKey, price);
         };
@@ -511,7 +517,7 @@
                 latestMarketData = data; // 儲存全域脈絡供 AI 使用
                 if (document.getElementById('last-sync')) document.getElementById('last-sync').innerText = data.updated_at || "-";
                 
-                ['btc', 'eth', 'mstr', 'ethbtc', 'sol', 'uni', 'ray', 'zec', 'xcrcl', 'xcoin', 'xadbe'].forEach(key => {
+                ['btc', 'eth', 'mstr', 'ethbtc', 'sol', 'uni', 'ray', 'near', 'zec', 'xcrcl', 'xcoin', 'xadbe'].forEach(key => {
                     if(data[key]) bindDeepData(key, data[key]);
                 });
             } catch (error) {

@@ -296,7 +296,7 @@
 
     <!-- 🌟 AI 智能操盤手懸浮按鈕與側邊欄 🌟 -->
     <div class="ai-toggle-btn" onclick="toggleAiSidebar()">
-        <span>⚡ 盤口 AI 助理</span>
+        <span>⚡ BITLYPHA AI 研報</span>
     </div>
 
     <div class="ai-sidebar" id="aiSidebar">
@@ -513,16 +513,15 @@
                 document.getElementById(`${coin}-fib-618`).innerText = data.fib_618 ? formatValue(data.fib_618, isBtcBase) : "-";
             }
         };
-
+        
         async function fetchData() {
             try {
                 const response = await fetch(`data.json?t=${new Date().getTime()}`); 
                 const data = await response.json();
-                latestMarketData = data; // 儲存全域脈絡供 AI 使用
+                latestMarketData = data;
                 if (document.getElementById('last-sync')) document.getElementById('last-sync').innerText = data.updated_at || "-";
                 
                 const costEl = document.getElementById('btc-mining-cost');
-                
                 if (costEl && data.btc_mining_cost) costEl.textContent = data.btc_mining_cost;
                 
                 ['btc', 'eth', 'mstr', 'ethbtc', 'sol', 'uni', 'ray', 'near', 'zec', 'xcrcl', 'xcoin', 'xadbe'].forEach(key => {
@@ -530,6 +529,31 @@
                 });
             } catch (error) {
                 console.error("無法載入結構資料:", error);
+            }
+
+            // 讀取 daily_bitlypha_review.json 並以純文字全形格式填入 AI 助理
+            try {
+                const reviewRes = await fetch(`daily_bitlypha_review.json?t=${new Date().getTime()}`);
+                if (reviewRes.ok) {
+                    const reviewData = await reviewRes.json();
+                    const chatBody = document.getElementById('aiChatBody');
+                    if (chatBody && reviewData.posts && reviewData.posts.length > 0) {
+                        let pureText = "【 BITLYPHA 今日量化研報摘要 】\n";
+                        pureText += "更新時間：" + (reviewData.updated_at || "-") + "\n";
+                        pureText += "＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝\n\n";
+
+                        reviewData.posts.forEach((post, idx) => {
+                            pureText += "［ 方案 " + (idx + 1) + " ］\n" + post + "\n\n";
+                            pureText += "－－－－－－－－－－－－－－－－－－－－\n\n";
+                        });
+
+                        // 清空並以純文字模式輸出，完全不破圖
+                        chatBody.innerText = pureText;
+                        chatBody.style.whiteSpace = "pre-wrap";
+                    }
+                }
+            } catch (err) {
+                console.log("尚未取得每日短評:", err);
             }
         }
 

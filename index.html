@@ -106,9 +106,10 @@
         <div class="flex flex-col items-start md:items-end gap-1.5 mt-2 md:mt-0">
             <div class="border border-amber-900/30 bg-amber-900/10 text-amber-500/80 px-2 py-1 rounded text-[10px] font-mono tracking-widest">
                 ⚠️ 非投資建議 Not Financial Advice
-            </div>
-            <div id="last-sync" class="text-emerald-500/80 font-mono text-[10px] tracking-wide mr-1">-</div>
+          </div>
+          <div id="current-utc-time" class="text-emerald-500/80 font-mono text-[10px] tracking-wide mr-1">-</div>
         </div>
+        
     </header>
 
     <!-- 頂部資產滾動卡片 -->
@@ -376,7 +377,7 @@
         }
 
         const formatValue = (num, isBtcBase = false) => {
-            if (isBtcBase) return "₿ " + Number(num).(5);
+            if (isBtcBase) return "₿ " + Number(num).toFixed(5);
             return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(num);
         };
 
@@ -519,7 +520,6 @@
                 const response = await fetch(`data.json?t=${new Date().getTime()}`); 
                 const data = await response.json();
                 latestMarketData = data;
-                if (document.getElementById('last-sync')) document.getElementById('last-sync').innerText = data.updated_at || "-";
                 
                 const costEl = document.getElementById('btc-mining-cost');
                 if (costEl && data.btc_mining_cost) costEl.textContent = data.btc_mining_cost;
@@ -640,6 +640,23 @@
         function escapeHtml(text) {
             return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         }
+
+        function updateCurrentUtcTime() {
+              const now = new Date();
+              const yyyy = now.getUTCFullYear();
+              const mm = String(now.getUTCMonth() + 1).padStart(2, '0');
+              const dd = String(now.getUTCDate()).padStart(2, '0');
+              const hh = String(now.getUTCHours()).padStart(2, '0');
+              const min = String(now.getUTCMinutes()).padStart(2, '0');
+              const sec = String(now.getUTCSeconds()).padStart(2, '0');
+            
+              const timeEl = document.getElementById('current-utc-time');
+              if (timeEl) {
+                timeEl.textContent = `${yyyy}-${mm}-${dd} ${hh}:${min}:${sec} UTC`;
+              }
+        }
+        updateCurrentUtcTime();
+        setInterval(updateCurrentUtcTime, 1000);
     </script>
 </body>
 </html>

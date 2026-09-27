@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-09-26 22:13 UTC",
-  "btc_mining_cost": "$73,571",
+  "updated_at": "2026-09-27 02:02 UTC",
+  "btc_mining_cost": "$73,564",
   "btc": {
-    "price": 84354.0,
+    "price": 84472.9,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 82874.5,
     "resistance": 87399.0,
-    "buy_target": 80415.85,
+    "buy_target": 76095.77,
     "sell_target": 87399.0,
-    "wyckoff_phase": "PHASE D",
-    "wyckoff_hint": "【頂部突破】挑戰上方強壓區，關注多頭量能是否持續堆積。",
+    "wyckoff_phase": "PHASE B",
+    "wyckoff_hint": "⚠️【高位誘多】需求不足 (No Demand)：無量過高，提防假突破！",
     "fib_236": 80415.85,
     "fib_382": 76095.77,
     "fib_500": 72604.2,
@@ -24,15 +24,15 @@
     }
   },
   "eth": {
-    "price": 2690.36,
+    "price": 2701.17,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 2628.18,
     "resistance": 2807.67,
-    "buy_target": 2501.9,
+    "buy_target": 2312.74,
     "sell_target": 2807.67,
-    "wyckoff_phase": "PHASE D",
-    "wyckoff_hint": "✅【回踩確認】(BUEC) 突破後縮量回測支撐，確認為真實 SOS，右側買點浮現。",
+    "wyckoff_phase": "PHASE B",
+    "wyckoff_hint": "⚠️【高位誘多】需求不足 (No Demand)：無量過高，提防假突破！",
     "fib_236": 2501.9,
     "fib_382": 2312.74,
     "fib_500": 2159.86,
@@ -46,15 +46,15 @@
     }
   },
   "ethbtc": {
-    "price": 0.03201,
+    "price": 0.032,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 0.03117,
     "resistance": 0.03203,
-    "buy_target": 0.0315,
+    "buy_target": 0.03037,
     "sell_target": 0.03333,
-    "wyckoff_phase": "PHASE D",
-    "wyckoff_hint": "✅【回踩確認】(BUEC) 突破後縮量回測支撐，確認為真實 SOS，右側買點浮現。",
+    "wyckoff_phase": "PHASE B",
+    "wyckoff_hint": "⚠️【高位誘多】需求不足 (No Demand)：無量過高，提防假突破！",
     "fib_236": 0.0315,
     "fib_382": 0.03037,
     "fib_500": 0.02945,
@@ -68,11 +68,11 @@
     }
   },
   "sol": {
-    "price": 121.78,
+    "price": 121.5,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 112.51,
-    "resistance": 130.73,
+    "resistance": 130.45,
     "buy_target": 109.06,
     "sell_target": 122.97,
     "wyckoff_phase": "PHASE D",
@@ -90,7 +90,7 @@
     }
   },
   "uni": {
-    "price": 9.76,
+    "price": 9.844,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 6.001,
@@ -112,7 +112,7 @@
     }
   },
   "ray": {
-    "price": 2.076,
+    "price": 2.089,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 1.193,
@@ -134,15 +134,15 @@
     }
   },
   "near": {
-    "price": 5.019,
+    "price": 5.13,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 2.269,
-    "resistance": 5.849,
-    "buy_target": 3.809,
+    "resistance": 5.972,
+    "buy_target": 4.346,
     "sell_target": 5.213,
-    "wyckoff_phase": "PHASE B",
-    "wyckoff_hint": "⚠️【高位誘多】需求不足 (No Demand)：無量過高，提防假突破！",
+    "wyckoff_phase": "PHASE D",
+    "wyckoff_hint": "【頂部突破】挑戰上方強壓區，關注多頭量能是否持續堆積。",
     "fib_236": 4.346,
     "fib_382": 3.809,
     "fib_500": 3.376,
@@ -156,7 +156,7 @@
     }
   },
   "zec": {
-    "price": 1663.35,
+    "price": 1647.72,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 1054.04,
@@ -178,7 +178,7 @@
     }
   },
   "mstr": {
-    "price": 159.84,
+    "price": 160.55,
     "mnav_multiple": "1.21x",
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
@@ -199,7 +199,7 @@
     }
   },
   "xcoin": {
-    "price": 196.98,
+    "price": 197.09,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "buy_target": 190.55,
@@ -219,7 +219,7 @@
     }
   },
   "xadbe": {
-    "price": 236.71,
+    "price": 236.69,
     "dow_status": "Secondary Correction",
     "dow_signal": "空頭受阻",
     "buy_target": 230.0,
@@ -239,11 +239,11 @@
     }
   },
   "xcrcl": {
-    "price": 88.73,
-    "dow_status": "Secondary Correction",
-    "dow_signal": "空頭壓制",
-    "buy_target": 78.95,
-    "sell_target": 98.92,
+    "price": 89.28,
+    "dow_status": "Consolidation",
+    "dow_signal": "結構收斂",
+    "buy_target": 89.23,
+    "sell_target": 108.61,
     "wyckoff_phase": "PHASE C",
     "wyckoff_hint": "🔥【強力買進】無供應測試 (No Supply)：賣壓枯竭，右側絕佳買點！",
     "fib_236": 120.61,

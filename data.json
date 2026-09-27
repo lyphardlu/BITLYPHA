@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-27 07:15 UTC",
+  "updated_at": "2026-09-27 07:17 UTC",
   "btc_mining_cost": "$73,554",
   "btc_mvrv": {
     "zscore": 1.37,
@@ -7,11 +7,11 @@
     "hint": "⚖️【常態波動】MVRV Z-Score (1.37) 處於健康發展區間，跟隨量價趨勢操作。"
   },
   "btc_etf": {
-    "flow_1d": "N/A",
-    "flow_5d": "N/A"
+    "flow_1d": "+$162M",
+    "flow_5d": "+$1.15B"
   },
   "btc": {
-    "price": 84543.6,
+    "price": 84541.4,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 82874.5,
@@ -36,7 +36,7 @@
     "mvrv_hint": "⚖️【常態波動】MVRV Z-Score (1.37) 處於健康發展區間，跟隨量價趨勢操作。"
   },
   "eth": {
-    "price": 2706.92,
+    "price": 2707.82,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 2628.18,
@@ -80,11 +80,11 @@
     }
   },
   "sol": {
-    "price": 121.44,
+    "price": 121.49,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 112.51,
-    "resistance": 130.39,
+    "resistance": 130.44,
     "buy_target": 109.06,
     "sell_target": 122.97,
     "wyckoff_phase": "PHASE D",
@@ -102,7 +102,7 @@
     }
   },
   "uni": {
-    "price": 10.013,
+    "price": 10.006,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 6.001,
@@ -124,7 +124,7 @@
     }
   },
   "ray": {
-    "price": 2.175,
+    "price": 2.168,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 1.193,
@@ -146,11 +146,11 @@
     }
   },
   "near": {
-    "price": 5.459,
+    "price": 5.464,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 2.269,
-    "resistance": 6.339,
+    "resistance": 6.344,
     "buy_target": 4.556,
     "sell_target": 5.488,
     "wyckoff_phase": "PHASE D",
@@ -168,7 +168,7 @@
     }
   },
   "zec": {
-    "price": 1663.22,
+    "price": 1663.01,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 1054.04,
@@ -190,7 +190,7 @@
     }
   },
   "mstr": {
-    "price": 160.79,
+    "price": 160.76,
     "mnav_multiple": "1.21x",
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
@@ -251,7 +251,7 @@
     }
   },
   "xcrcl": {
-    "price": 89.84,
+    "price": 89.85,
     "dow_status": "Consolidation",
     "dow_signal": "結構收斂",
     "buy_target": 89.23,

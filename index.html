@@ -529,24 +529,24 @@
                 const costEl = document.getElementById('btc-mining-cost');
                 if (costEl && data.btc_mining_cost) costEl.textContent = data.btc_mining_cost;
 
-                // --- 渲染 BTC ETF 資金流動（正綠負紅） ---
+                // --- 渲染 BTC ETF 資金流動（正綠負紅） ---             
                 const etfValEl = document.getElementById('btc-etf-flow-val');
                 if (etfValEl && data.btc_etf) {
                     const f1d = data.btc_etf.flow_1d || 'N/A';
                     const f5d = data.btc_etf.flow_5d || 'N/A';
-
+                
                     const getColorClass = (val) => {
                         if (val.startsWith('+')) return 'text-emerald-400 font-bold';
                         if (val.startsWith('-')) return 'text-rose-400 font-bold';
                         return 'text-slate-300';
                     };
-
-                    const span1d = `${f1d}(1d)`;
-                    const span5d = `${f5d}(5d)`;
-
-                    etfValEl.innerHTML = `\({span1d},\){span5d}`;
-                }                
-
+                
+                    const span1d = `<span class="${getColorClass(f1d)}">${f1d}</span>(1d)`;
+                    const span5d = `<span class="${getColorClass(f5d)}">${f5d}</span>(5d)`;
+                
+                    etfValEl.innerHTML = `${span1d}, ${span5d}`;
+                }
+                
                 // --- 渲染 MVRV 數值與動態顏色 ---
                 const mvrvBadge = document.getElementById('btc-mvrv-badge');
                 const mvrvValEl = document.getElementById('btc-mvrv-val');

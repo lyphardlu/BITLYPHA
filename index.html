@@ -170,7 +170,12 @@
                     <h3 class="text-sm font-bold text-slate-300 flex items-center gap-2">
                         <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span> 深度量化盤口診斷
                     </h3>
-                    <span class="text-[10px] text-slate-500">宏觀市場結構 [主力籌碼階段]</span>
+                    <div class="flex items-center gap-2">
+                        <span id="btc-etf-flow-badge" class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-800/80 border border-slate-700/50 text-slate-300">
+                            etf： <span id="btc-etf-flow-val">-</span>
+                        </span>
+                        <span class="text-[10px] text-slate-500 hidden sm:inline">宏觀市場結構 [主力籌碼階段]</span>
+                    </div>
                 </div>
                 
                 <div class="space-y-4 overflow-y-auto custom-scroll pr-2 flex-1 min-h-0">
@@ -523,6 +528,14 @@
                 
                 const costEl = document.getElementById('btc-mining-cost');
                 if (costEl && data.btc_mining_cost) costEl.textContent = data.btc_mining_cost;
+
+                // --- 渲染 BTC ETF 資金流動 ---
+                const etfValEl = document.getElementById('btc-etf-flow-val');
+                if (etfValEl && data.btc_etf) {
+                    const f1d = data.btc_etf.flow_1d || 'N/A';
+                    const f5d = data.btc_etf.flow_5d || 'N/A';
+                    etfValEl.textContent = `${f1d}(1d), ${f5d}(5d)`;
+                }
 
                 // --- 渲染 MVRV 數值與動態顏色 ---
                 const mvrvBadge = document.getElementById('btc-mvrv-badge');

@@ -522,6 +522,7 @@
         
         async function fetchData() {
             try {
+                // --- 1. 讀取現價與技術指標 (從 data.json) ---
                 const response = await fetch(`data.json?t=${new Date().getTime()}`); 
                 const data = await response.json();
                 latestMarketData = data;
@@ -529,25 +530,7 @@
                 const costEl = document.getElementById('btc-mining-cost');
                 if (costEl && data.btc_mining_cost) costEl.textContent = data.btc_mining_cost;
 
-                // --- 渲染 BTC ETF 資金流動（正綠負紅） ---             
-                const etfValEl = document.getElementById('btc-etf-flow-val');
-                if (etfValEl && data.btc_etf) {
-                    const f1d = data.btc_etf.flow_1d || 'N/A';
-                    const f5d = data.btc_etf.flow_5d || 'N/A';
-                
-                    const getColorClass = (val) => {
-                        if (val.startsWith('+')) return 'text-emerald-400 font-bold';
-                        if (val.startsWith('-')) return 'text-rose-400 font-bold';
-                        return 'text-slate-300';
-                    };
-                
-                    const span1d = `<span class="${getColorClass(f1d)}">${f1d}</span>(1d)`;
-                    const span5d = `<span class="${getColorClass(f5d)}">${f5d}</span>(5d)`;
-                
-                    etfValEl.innerHTML = `${span1d}, ${span5d}`;
-                }
-                
-                // --- 渲染 MVRV 數值與動態顏色 ---
+                // 渲染 MVRV 數值與動態顏色
                 const mvrvBadge = document.getElementById('btc-mvrv-badge');
                 const mvrvValEl = document.getElementById('btc-mvrv-val');
                 const mvrvRaw = data.btc_mvrv ? data.btc_mvrv.zscore : (data.btc ? data.btc.mvrv_zscore : null);
@@ -555,19 +538,13 @@
                 if (mvrvBadge && mvrvValEl) {
                     if (mvrvRaw !== null && mvrvRaw !== undefined && mvrvRaw !== 'N/A' && mvrvRaw !== '-') {
                         const score = parseFloat(mvrvRaw);
-                        mvrvValEl.textContent = score.toFixed(2); // 顯示類似 1.34 或 1.42
-                
-                        // 重設 Tailwind 顏色樣式
+                        mvrvValEl.textContent = score.toFixed(2); // 顯示類似 1.34
                         mvrvBadge.className = "text-[10px] px-2 py-0.5 rounded font-mono font-bold tracking-wide transition-colors border";
-                
                         if (score < 3.0) {
-                            // 健康 < 3：綠色
                             mvrvBadge.classList.add('bg-emerald-500/10', 'text-emerald-400', 'border-emerald-500/30');
                         } else if (score <= 6.0) {
-                            // 亞健康 3 ~ 6：黃色
                             mvrvBadge.classList.add('bg-amber-500/10', 'text-amber-400', 'border-amber-500/30');
                         } else {
-                            // 頂部過熱 > 6：紅色
                             mvrvBadge.classList.add('bg-rose-500/10', 'text-rose-400', 'border-rose-500/30', 'animate-pulse');
                         }
                     } else {
@@ -583,18 +560,39 @@
                 console.error("無法載入結構資料:", error);
             }
 
-            // 讀取 daily_bitlypha_review.json 並以純文字全形格式填入 AI 助理
+            // --- 2. 讀取 ETF 與研報 (從 daily_bitlypha_review.json) ---
             try {
                 const reviewRes = await fetch(`daily_bitlypha_review.json?t=${new Date().getTime()}`);
                 if (reviewRes.ok) {
                     const reviewData = await reviewRes.json();
+                    
+                    // 【更新圖片中指定的 ETF UI 標籤，顯示 1D 與 5D】
+                    const etfValEl = document.getElementById('btc-etf-flow-val');
+                    if (etfValEl && reviewData.btc_etf) {
+                        const f1d = reviewData.btc_etf.flow_1d || 'N/A';
+                        const f5d = reviewData.btc_etf.flow_5d || 'N/A'; // 維持 5D
+                    
+                        const getColorClass = (val) => {
+                            if (val.startsWith('+')) return 'text-emerald-400 font-bold';
+                            if (val.startsWith('-')) return 'text-rose-400 font-bold';
+                            return 'text-slate-300';
+                        };
+                    
+                        const span1d = `<span class="${getColorClass(f1d)}">${f1d}</span>(1d)`;
+                        const span5d = `<span class="${getColorClass(f5d)}">${f5d}</span>(5d)`;
+                
+                        etfValEl.innerHTML = `${span1d}, ${span5d}`;
+                        
+                    }
+                    
+                    // 【更新側邊欄的 AI 研報純文字，不干擾 ETF 顯示】
                     const chatBody = document.getElementById('aiChatBody');
                     if (chatBody && reviewData.posts && reviewData.posts.length > 0) {
                         let pureText = "【 BITLYPHA 今日量化研報摘要 】\n";
                         pureText += "更新時間：" + (reviewData.updated_at || "-") + "\n";
                         pureText += "＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝\n\n";
 
-                        reviewData.posts.forEach((post, idx) => {
+                        reviewData.posts.forEach((post) => {
                             pureText += post + "\n\n";
                             pureText += "－－－－－－－－－－－－－－－－－－－－\n\n";
                         });
@@ -608,6 +606,7 @@
                 console.log("尚未取得每日短評:", err);
             }
         }
+        
 
         fetchData();
         setInterval(fetchData, 30000);

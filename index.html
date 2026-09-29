@@ -217,7 +217,7 @@
                     <div class="flex items-center gap-2">
                         <span class="text-[10px] bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded font-mono font-semibold">⛏️ BTC 成本 <span id="btc-mining-cost">-</span>
                         </span>
-                    <span id="btc-mvrv-badge" class="text-[10px] px-2 py-0.5 rounded font-mono font-bold tracking-wide transition-colors bg-slate-800 text-slate-400">MVRV <span id="btc-mvrv-val">-</span></span>
+                    <span id="btc--badge" class="text-[10px] px-2 py-0.5 rounded font-mono font-bold tracking-wide transition-colors bg-slate-800 text-slate-400"> <span id="btc--val">-</span></span>
                     </div>
                 </div>
             
@@ -529,29 +529,6 @@
                 
                 const costEl = document.getElementById('btc-mining-cost');
                 if (costEl && data.btc_mining_cost) costEl.textContent = data.btc_mining_cost;
-
-                // 渲染 MVRV 數值與動態顏色
-                const mvrvBadge = document.getElementById('btc-mvrv-badge');
-                const mvrvValEl = document.getElementById('btc-mvrv-val');
-                const mvrvRaw = data.btc_mvrv ? data.btc_mvrv.zscore : (data.btc ? data.btc.mvrv_zscore : null);
-                
-                if (mvrvBadge && mvrvValEl) {
-                    if (mvrvRaw !== null && mvrvRaw !== undefined && mvrvRaw !== 'N/A' && mvrvRaw !== '-') {
-                        const score = parseFloat(mvrvRaw);
-                        mvrvValEl.textContent = score.toFixed(2); // 顯示類似 1.34
-                        mvrvBadge.className = "text-[10px] px-2 py-0.5 rounded font-mono font-bold tracking-wide transition-colors border";
-                        if (score < 3.0) {
-                            mvrvBadge.classList.add('bg-emerald-500/10', 'text-emerald-400', 'border-emerald-500/30');
-                        } else if (score <= 6.0) {
-                            mvrvBadge.classList.add('bg-amber-500/10', 'text-amber-400', 'border-amber-500/30');
-                        } else {
-                            mvrvBadge.classList.add('bg-rose-500/10', 'text-rose-400', 'border-rose-500/30', 'animate-pulse');
-                        }
-                    } else {
-                        mvrvValEl.textContent = 'N/A';
-                        mvrvBadge.className = "text-[10px] px-2 py-0.5 rounded font-mono font-bold tracking-wide bg-slate-800 text-slate-500 border border-slate-700/50";
-                    }
-                }
                 
                 ['btc', 'eth', 'mstr', 'ethbtc', 'sol', 'uni', 'ray', 'near', 'zec', 'xcrcl', 'xcoin', 'xadbe'].forEach(key => {
                     if(data[key]) bindDeepData(key, data[key]);
@@ -583,6 +560,30 @@
                 
                         etfValEl.innerHTML = `${span1d}, ${span5d}`;
                         
+                    }
+
+                    // 【更新 MVRV 數值】
+                    const mvrvBadge = document.getElementById('btc-mvrv-badge');
+                    const mvrvValEl = document.getElementById('btc-mvrv-val');
+                    // 這裡改成從 reviewData 拿取資料
+                    const mvrvRaw = reviewData.btc_mvrv ? reviewData.btc_mvrv.zscore : null;
+                    
+                    if (mvrvBadge && mvrvValEl) {
+                        if (mvrvRaw !== null && mvrvRaw !== undefined && mvrvRaw !== 'N/A' && mvrvRaw !== '-') {
+                            const score = parseFloat(mvrvRaw);
+                            mvrvValEl.textContent = score.toFixed(2); // 顯示類似 1.34
+                            mvrvBadge.className = "text-[10px] px-2 py-0.5 rounded font-mono font-bold tracking-wide transition-colors border";
+                            if (score < 3.0) {
+                                mvrvBadge.classList.add('bg-emerald-500/10', 'text-emerald-400', 'border-emerald-500/30');
+                            } else if (score <= 6.0) {
+                                mvrvBadge.classList.add('bg-amber-500/10', 'text-amber-400', 'border-amber-500/30');
+                            } else {
+                                mvrvBadge.classList.add('bg-rose-500/10', 'text-rose-400', 'border-rose-500/30', 'animate-pulse');
+                            }
+                        } else {
+                            mvrvValEl.textContent = 'N/A';
+                            mvrvBadge.className = "text-[10px] px-2 py-0.5 rounded font-mono font-bold tracking-wide bg-slate-800 text-slate-500 border border-slate-700/50";
+                        }
                     }
                     
                     // 【更新側邊欄的 AI 研報純文字，不干擾 ETF 顯示】

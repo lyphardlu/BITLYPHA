@@ -1,46 +1,8 @@
 {
-  "updated_at": "2026-10-02 04:22 UTC",
-  "btc_mining_cost": "$73,324",
-  "btc_oi": {
-    "markdown_table": "| 時間 | OI 總額估算 | 增減幅 (%) | 絕對變動 | 市場結構與特徵 |\n| :--- | ---: | ---: | ---: | :--- |\n| 當前 (Current) | $7.78B | — | — | 估算 OI 約 $7.78B，涵蓋 3 個合約市場；不含 CME。 |\n| 1天前 (24h) | $7.22B | +7.68% | +$0.55B | OI 較24 小時前擴張 7.68%；僅反映未平倉量變化。 |\n| 3天前 (72h) | $7.31B | +6.31% | +$0.46B | OI 較3 天前擴張 6.31%；僅反映未平倉量變化。 |\n| 5天前 (120h) | $7.55B | +2.95% | +$0.22B | OI 較5 天前擴張 2.95%；僅反映未平倉量變化。 |",
-    "raw_data": {
-      "source": "multi_exchange_estimate",
-      "exchanges": [
-        "OKX USDT swap",
-        "OKX coin swap",
-        "Gate.io USDT"
-      ],
-      "excluded": [
-        "CME",
-        "未納入的其他交易所與合約"
-      ],
-      "analysis_source": "multi_exchange_estimate",
-      "market_analysis": {
-        "current": "估算 OI 約 $7.78B，涵蓋 3 個合約市場；不含 CME。",
-        "1d": "OI 較24 小時前擴張 7.68%；僅反映未平倉量變化。",
-        "3d": "OI 較3 天前擴張 6.31%；僅反映未平倉量變化。",
-        "5d": "OI 較5 天前擴張 2.95%；僅反映未平倉量變化。"
-      },
-      "current_usd": 7776348090.7752495,
-      "1d": {
-        "history_usd": 7221639933.29639,
-        "delta_usd": 554708157.4788599,
-        "delta_pct": 7.68
-      },
-      "3d": {
-        "history_usd": 7314820389.421158,
-        "delta_usd": 461527701.35409164,
-        "delta_pct": 6.31
-      },
-      "5d": {
-        "history_usd": 7553459545.419926,
-        "delta_usd": 222888545.3553238,
-        "delta_pct": 2.95
-      }
-    }
-  },
+  "updated_at": "2026-10-02 04:47 UTC",
+  "btc_mining_cost": "$73,323",
   "btc": {
-    "price": 86294.0,
+    "price": 86555.0,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 82874.5,
@@ -62,7 +24,7 @@
     }
   },
   "eth": {
-    "price": 2732.07,
+    "price": 2741.28,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 2635.71,
@@ -84,7 +46,7 @@
     }
   },
   "ethbtc": {
-    "price": 0.03219,
+    "price": 0.03228,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 0.03119,
@@ -106,7 +68,7 @@
     }
   },
   "sol": {
-    "price": 121.64,
+    "price": 122.53,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 116.37,
@@ -128,7 +90,7 @@
     }
   },
   "uni": {
-    "price": 9.129,
+    "price": 9.241,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 8.447,
@@ -150,7 +112,7 @@
     }
   },
   "ray": {
-    "price": 1.93,
+    "price": 1.956,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 1.821,
@@ -172,7 +134,7 @@
     }
   },
   "near": {
-    "price": 4.981,
+    "price": 5.042,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 4.545,
@@ -194,15 +156,15 @@
     }
   },
   "zec": {
-    "price": 1348.8,
+    "price": 1382.51,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
-    "support": 1054.04,
+    "support": 1355.67,
     "resistance": 1595.0,
     "buy_target": 1189.68,
     "sell_target": 1697.45,
     "wyckoff_phase": "PHASE D",
-    "wyckoff_hint": "✅【回踩確認】(BUEC) 突破後縮量回測支撐，確認為真實 SOS，右側買點浮現。於 1,189.68 至 1,207.53 之間設定分批買單。",
+    "wyckoff_hint": "【頂部突破】挑戰上方強壓區，關注多頭量能是否持續堆積。",
     "fib_236": 1383.75,
     "fib_382": 1189.68,
     "fib_500": 1032.83,
@@ -216,7 +178,7 @@
     }
   },
   "mstr": {
-    "price": 165.13,
+    "price": 165.65,
     "mnav_multiple": "1.22x",
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
@@ -237,7 +199,7 @@
     }
   },
   "xcoin": {
-    "price": 193.03,
+    "price": 193.89,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "buy_target": 190.55,
@@ -277,13 +239,13 @@
     }
   },
   "xcrcl": {
-    "price": 84.59,
+    "price": 85.06,
     "dow_status": "Secondary Correction",
     "dow_signal": "空頭壓制",
-    "buy_target": 75.26,
+    "buy_target": 75.73,
     "sell_target": 98.92,
     "wyckoff_phase": "PHASE C",
-    "wyckoff_hint": "🔥【強力買進】無供應測試 (No Supply)：賣壓枯竭，右側絕佳買點！。於 75.26 至 76.39 之間設定分批買單。",
+    "wyckoff_hint": "🔥【強力買進】無供應測試 (No Supply)：賣壓枯竭，右側絕佳買點！。於 75.73 至 76.87 之間設定分批買單。",
     "fib_236": 120.61,
     "fib_382": 108.61,
     "fib_500": 98.92,

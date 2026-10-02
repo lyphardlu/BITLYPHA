@@ -1,12 +1,12 @@
 {
-  "updated_at": "2026-10-02 03:43 UTC",
+  "updated_at": "2026-10-02 03:48 UTC",
   "btc_mining_cost": "$73,325",
   "btc_oi": {
-    "markdown_table": "⚠ API 拒絕連線 (狀態碼: 404)",
+    "markdown_table": "⚠️ CoinGlass 拒絕請求: Upgrade plan (代碼: 401)",
     "raw_data": {}
   },
   "btc": {
-    "price": 85411.4,
+    "price": 85425.2,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 82874.5,
@@ -28,7 +28,7 @@
     }
   },
   "eth": {
-    "price": 2718.34,
+    "price": 2717.13,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 2635.71,
@@ -72,7 +72,7 @@
     }
   },
   "sol": {
-    "price": 120.3,
+    "price": 120.44,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 116.37,
@@ -94,7 +94,7 @@
     }
   },
   "uni": {
-    "price": 9.031,
+    "price": 9.014,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 8.447,
@@ -138,7 +138,7 @@
     }
   },
   "near": {
-    "price": 4.901,
+    "price": 4.896,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 4.545,
@@ -160,7 +160,7 @@
     }
   },
   "zec": {
-    "price": 1334.55,
+    "price": 1332.48,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 1054.04,
@@ -182,7 +182,7 @@
     }
   },
   "mstr": {
-    "price": 163.32,
+    "price": 163.18,
     "mnav_multiple": "1.22x",
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
@@ -203,7 +203,7 @@
     }
   },
   "xcoin": {
-    "price": 191.11,
+    "price": 191.18,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "buy_target": 190.55,
@@ -243,13 +243,13 @@
     }
   },
   "xcrcl": {
-    "price": 84.15,
+    "price": 84.11,
     "dow_status": "Secondary Correction",
     "dow_signal": "空頭壓制",
-    "buy_target": 74.82,
+    "buy_target": 74.78,
     "sell_target": 98.92,
     "wyckoff_phase": "PHASE C",
-    "wyckoff_hint": "🔥【強力買進】無供應測試 (No Supply)：賣壓枯竭，右側絕佳買點！。於 74.82 至 75.94 之間設定分批買單。",
+    "wyckoff_hint": "🔥【強力買進】無供應測試 (No Supply)：賣壓枯竭，右側絕佳買點！。於 74.78 至 75.90 之間設定分批買單。",
     "fib_236": 120.61,
     "fib_382": 108.61,
     "fib_500": 98.92,

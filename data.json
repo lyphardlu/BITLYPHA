@@ -1,8 +1,8 @@
 {
-  "updated_at": "2026-10-07 18:00 UTC",
-  "btc_mining_cost": "$73,040",
+  "updated_at": "2026-10-07 23:54 UTC",
+  "btc_mining_cost": "$73,028",
   "btc": {
-    "price": 83194.7,
+    "price": 83300.0,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 82874.5,
@@ -24,11 +24,11 @@
     }
   },
   "eth": {
-    "price": 2553.82,
+    "price": 2574.3,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 2405.91,
-    "resistance": 2566.46,
+    "resistance": 2615.0,
     "buy_target": 2511.52,
     "sell_target": 2807.67,
     "wyckoff_phase": "PHASE D",
@@ -46,10 +46,10 @@
     }
   },
   "ethbtc": {
-    "price": 0.0298,
+    "price": 0.03008,
     "dow_status": "Primary Bull",
     "dow_signal": "多頭推進",
-    "support": 0.02762,
+    "support": 0.02793,
     "resistance": 0.03203,
     "buy_target": 0.02948,
     "sell_target": 0.03333,
@@ -68,10 +68,10 @@
     }
   },
   "sol": {
-    "price": 116.4,
+    "price": 116.25,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
-    "support": 116.37,
+    "support": 112.51,
     "resistance": 119.99,
     "buy_target": 112.13,
     "sell_target": 124.96,
@@ -90,7 +90,7 @@
     }
   },
   "uni": {
-    "price": 7.836,
+    "price": 7.921,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 6.001,
@@ -98,7 +98,7 @@
     "buy_target": 7.801,
     "sell_target": 10.944,
     "wyckoff_phase": "PHASE D",
-    "wyckoff_hint": "✅【回踩確認】(BUEC) 突破後縮量回測支撐，確認為真實 SOS，右側買點浮現。於 7.801 至 7.918 之間設定分批買單。",
+    "wyckoff_hint": "【頂部突破】挑戰上方強壓區，關注多頭量能是否持續堆積。",
     "fib_236": 9.002,
     "fib_382": 7.801,
     "fib_500": 6.83,
@@ -112,11 +112,11 @@
     }
   },
   "ray": {
-    "price": 2.455,
+    "price": 2.468,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 1.83,
-    "resistance": 2.826,
+    "resistance": 2.845,
     "buy_target": 2.106,
     "sell_target": 2.575,
     "wyckoff_phase": "PHASE D",
@@ -134,11 +134,11 @@
     }
   },
   "near": {
-    "price": 5.155,
+    "price": 5.336,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 4.588,
-    "resistance": 5.37,
+    "resistance": 5.53,
     "buy_target": 4.036,
     "sell_target": 5.58,
     "wyckoff_phase": "PHASE B",
@@ -156,7 +156,7 @@
     }
   },
   "zec": {
-    "price": 1308.63,
+    "price": 1325.08,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 1278.0,
@@ -178,8 +178,8 @@
     }
   },
   "mstr": {
-    "price": 153.55,
-    "mnav_multiple": "1.18x",
+    "price": 154.64,
+    "mnav_multiple": "1.19x",
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "buy_target": 143.87,
@@ -199,13 +199,13 @@
     }
   },
   "xcoin": {
-    "price": 178.08,
+    "price": 179.29,
     "dow_status": "Consolidation",
     "dow_signal": "結構收斂",
     "buy_target": 173.72,
     "sell_target": 208.33,
     "wyckoff_phase": "PHASE D",
-    "wyckoff_hint": "【區間突圍】多空交戰中，嚴格觀望，等待方向表態。",
+    "wyckoff_hint": "✅【回踩確認】(BUEC) 突破後縮量回測支撐，確認為真實 SOS，右側買點浮現。於 173.72 至 176.33 之間設定分批買單。",
     "fib_236": 191.99,
     "fib_382": 181.89,
     "fib_500": 173.72,
@@ -219,7 +219,7 @@
     }
   },
   "xadbe": {
-    "price": 232.38,
+    "price": 232.82,
     "dow_status": "Secondary Correction",
     "dow_signal": "空頭受阻",
     "buy_target": 230.0,
@@ -239,13 +239,13 @@
     }
   },
   "xcrcl": {
-    "price": 80.79,
+    "price": 80.76,
     "dow_status": "Secondary Correction",
     "dow_signal": "空頭壓制",
-    "buy_target": 72.81,
+    "buy_target": 72.78,
     "sell_target": 88.34,
     "wyckoff_phase": "PHASE C",
-    "wyckoff_hint": "🔥【強力買進】無供應測試 (No Supply)：賣壓枯竭，右側絕佳買點！。於 72.81 至 73.90 之間設定分批買單。",
+    "wyckoff_hint": "🔥【強力買進】無供應測試 (No Supply)：賣壓枯竭，右側絕佳買點！。於 72.78 至 73.87 之間設定分批買單。",
     "fib_236": 104.45,
     "fib_382": 95.54,
     "fib_500": 88.34,

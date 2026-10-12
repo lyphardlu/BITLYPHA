@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-10-12 11:23 UTC",
-  "btc_mining_cost": "$72,817",
+  "updated_at": "2026-10-12 20:28 UTC",
+  "btc_mining_cost": "$72,800",
   "btc": {
-    "price": 83370.9,
+    "price": 83080.7,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 82874.5,
     "resistance": 86994.3,
-    "buy_target": 81243.95,
+    "buy_target": 77436.17,
     "sell_target": 87399.0,
-    "wyckoff_phase": "PHASE D",
-    "wyckoff_hint": "✅【回踩確認】(BUEC) 突破後縮量回測支撐，確認為真實 SOS，右側買點浮現。於 81,243.95 至 82,462.61 之間設定分批買單。",
+    "wyckoff_phase": "PHASE B",
+    "wyckoff_hint": "⚠️【高位誘多】需求不足 (No Demand)：無量過高，提防假突破！",
     "fib_236": 81243.95,
     "fib_382": 77436.17,
     "fib_500": 74358.65,
@@ -24,15 +24,15 @@
     }
   },
   "eth": {
-    "price": 2546.44,
+    "price": 2525.0,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 2406.36,
-    "resistance": 2547.1,
+    "resistance": 2536.54,
     "buy_target": 2389.68,
     "sell_target": 2807.67,
-    "wyckoff_phase": "PHASE B",
-    "wyckoff_hint": "⚠️【高位誘多】需求不足 (No Demand)：無量過高，提防假突破！",
+    "wyckoff_phase": "PHASE D",
+    "wyckoff_hint": "✅【回踩確認】(BUEC) 突破後縮量回測支撐，確認為真實 SOS，右側買點浮現。於 2,389.68 至 2,425.53 之間設定分批買單。",
     "fib_236": 2549.44,
     "fib_382": 2389.68,
     "fib_500": 2260.57,
@@ -46,10 +46,10 @@
     }
   },
   "ethbtc": {
-    "price": 0.03045,
+    "price": 0.03014,
     "dow_status": "Consolidation",
     "dow_signal": "結構收斂",
-    "support": 0.03021,
+    "support": 0.0295,
     "resistance": 0.03266,
     "buy_target": 0.02922,
     "sell_target": 0.03333,
@@ -68,7 +68,7 @@
     }
   },
   "sol": {
-    "price": 111.22,
+    "price": 108.59,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 105.71,
@@ -90,15 +90,15 @@
     }
   },
   "uni": {
-    "price": 7.565,
+    "price": 7.396,
     "dow_status": "Secondary Correction",
     "dow_signal": "空頭受阻",
     "support": 6.995,
-    "resistance": 9.326,
+    "resistance": 7.484,
     "buy_target": 7.007,
     "sell_target": 10.944,
-    "wyckoff_phase": "PHASE B",
-    "wyckoff_hint": "⚠️【高位誘多】需求不足 (No Demand)：無量過高，提防假突破！",
+    "wyckoff_phase": "PHASE D",
+    "wyckoff_hint": "【區間突圍】多空交戰中，嚴格觀望，等待方向表態。",
     "fib_236": 9.086,
     "fib_382": 7.936,
     "fib_500": 7.007,
@@ -112,7 +112,7 @@
     }
   },
   "ray": {
-    "price": 2.303,
+    "price": 2.216,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 1.83,
@@ -134,11 +134,11 @@
     }
   },
   "near": {
-    "price": 5.723,
+    "price": 5.509,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 4.588,
-    "resistance": 6.619,
+    "resistance": 5.53,
     "buy_target": 4.968,
     "sell_target": 6.028,
     "wyckoff_phase": "PHASE D",
@@ -156,15 +156,15 @@
     }
   },
   "zec": {
-    "price": 1305.95,
+    "price": 1238.92,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
-    "support": 1271.4,
-    "resistance": 1384.39,
+    "support": 1112.27,
+    "resistance": 1298.0,
     "buy_target": 1216.27,
     "sell_target": 1697.45,
-    "wyckoff_phase": "PHASE B",
-    "wyckoff_hint": "⚠️【高位誘多】需求不足 (No Demand)：無量過高，提防假突破！",
+    "wyckoff_phase": "PHASE D",
+    "wyckoff_hint": "✅【回踩確認】(BUEC) 突破後縮量回測支撐，確認為真實 SOS，右側買點浮現。於 1,216.27 至 1,234.51 之間設定分批買單。",
     "fib_236": 1400.18,
     "fib_382": 1216.27,
     "fib_500": 1067.63,
@@ -178,8 +178,8 @@
     }
   },
   "mstr": {
-    "price": 155.85,
-    "mnav_multiple": "1.19x",
+    "price": 153.57,
+    "mnav_multiple": "1.18x",
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "buy_target": 150.1,
@@ -199,7 +199,7 @@
     }
   },
   "xcoin": {
-    "price": 181.41,
+    "price": 181.33,
     "dow_status": "Consolidation",
     "dow_signal": "結構收斂",
     "buy_target": 173.72,
@@ -219,7 +219,7 @@
     }
   },
   "xadbe": {
-    "price": 235.99,
+    "price": 238.56,
     "dow_status": "Consolidation",
     "dow_signal": "結構收斂",
     "buy_target": 230.0,
@@ -239,9 +239,9 @@
     }
   },
   "xcrcl": {
-    "price": 85.55,
-    "dow_status": "Consolidation",
-    "dow_signal": "結構收斂",
+    "price": 84.11,
+    "dow_status": "Secondary Correction",
+    "dow_signal": "空頭受阻",
     "buy_target": 81.15,
     "sell_target": 95.54,
     "wyckoff_phase": "PHASE C",

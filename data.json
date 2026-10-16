@@ -1,13 +1,13 @@
 {
-  "updated_at": "2026-10-16 19:04 UTC",
-  "btc_mining_cost": "$72,614",
+  "updated_at": "2026-10-16 22:15 UTC",
+  "btc_mining_cost": "$72,608",
   "btc": {
-    "price": 81098.2,
+    "price": 81761.9,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 80400.0,
     "resistance": 84361.6,
-    "buy_target": 77631.64,
+    "buy_target": 81364.72,
     "sell_target": 87399.0,
     "wyckoff_phase": "PHASE D",
     "wyckoff_hint": "【頂部突破】挑戰上方強壓區，關注多頭量能是否持續堆積。",
@@ -24,10 +24,10 @@
     }
   },
   "eth": {
-    "price": 2403.16,
+    "price": 2423.49,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
-    "support": 2358.1,
+    "support": 2406.36,
     "resistance": 2536.54,
     "buy_target": 2396.77,
     "sell_target": 2807.67,
@@ -46,10 +46,10 @@
     }
   },
   "ethbtc": {
-    "price": 0.02925,
+    "price": 0.02948,
     "dow_status": "Secondary Correction",
     "dow_signal": "空頭受阻",
-    "support": 0.02728,
+    "support": 0.0275,
     "resistance": 0.0309,
     "buy_target": 0.02922,
     "sell_target": 0.03079,
@@ -68,15 +68,15 @@
     }
   },
   "sol": {
-    "price": 102.8,
-    "dow_status": "Secondary Correction",
-    "dow_signal": "空頭受阻",
+    "price": 104.52,
+    "dow_status": "Primary Bull",
+    "dow_signal": "SOS 強勢修復",
     "support": 100.56,
     "resistance": 104.83,
-    "buy_target": 97.77,
+    "buy_target": 104.19,
     "sell_target": 124.96,
     "wyckoff_phase": "PHASE D",
-    "wyckoff_hint": "【區間突圍】多空交戰中，嚴格觀望，等待方向表態。",
+    "wyckoff_hint": "【頂部突破】挑戰上方強壓區，關注多頭量能是否持續堆積。",
     "fib_236": 112.13,
     "fib_382": 104.19,
     "fib_500": 97.77,
@@ -90,7 +90,7 @@
     }
   },
   "uni": {
-    "price": 7.186,
+    "price": 7.297,
     "dow_status": "Secondary Correction",
     "dow_signal": "空頭受阻",
     "support": 6.995,
@@ -112,15 +112,15 @@
     }
   },
   "ray": {
-    "price": 1.808,
-    "dow_status": "Secondary Correction",
-    "dow_signal": "空頭受阻",
-    "support": 1.736,
+    "price": 1.862,
+    "dow_status": "Primary Bull",
+    "dow_signal": "SOS 強勢修復",
+    "support": 1.83,
     "resistance": 1.927,
-    "buy_target": 1.582,
+    "buy_target": 1.817,
     "sell_target": 2.575,
     "wyckoff_phase": "PHASE D",
-    "wyckoff_hint": "【區間突圍】多空交戰中，嚴格觀望，等待方向表態。",
+    "wyckoff_hint": "【頂部突破】挑戰上方強壓區，關注多頭量能是否持續堆積。",
     "fib_236": 2.107,
     "fib_382": 1.817,
     "fib_500": 1.582,
@@ -134,7 +134,7 @@
     }
   },
   "near": {
-    "price": 4.982,
+    "price": 5.045,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 4.588,
@@ -156,7 +156,7 @@
     }
   },
   "zec": {
-    "price": 1137.76,
+    "price": 1145.4,
     "dow_status": "Secondary Correction",
     "dow_signal": "空頭受阻",
     "support": 1112.27,
@@ -178,8 +178,8 @@
     }
   },
   "mstr": {
-    "price": 134.71,
-    "mnav_multiple": "1.06x",
+    "price": 136.8,
+    "mnav_multiple": "1.07x",
     "dow_status": "Secondary Correction",
     "dow_signal": "空頭受阻",
     "buy_target": 126.5,
@@ -199,7 +199,7 @@
     }
   },
   "xcoin": {
-    "price": 170.03,
+    "price": 173.38,
     "dow_status": "Secondary Correction",
     "dow_signal": "空頭受阻",
     "buy_target": 165.55,
@@ -219,13 +219,13 @@
     }
   },
   "xadbe": {
-    "price": 245.49,
-    "dow_status": "Primary Bull",
-    "dow_signal": "強勢突破",
+    "price": 244.7,
+    "dow_status": "Consolidation",
+    "dow_signal": "結構收斂",
     "buy_target": 242.32,
     "sell_target": 294.53,
     "wyckoff_phase": "PHASE D",
-    "wyckoff_hint": "【頂部突破】挑戰上方強壓區，關注多頭量能是否持續堆積。",
+    "wyckoff_hint": "【區間突圍】多空交戰中，嚴格觀望，等待方向表態。",
     "fib_236": 269.89,
     "fib_382": 254.65,
     "fib_500": 242.32,
@@ -239,13 +239,13 @@
     }
   },
   "xcrcl": {
-    "price": 80.99,
+    "price": 82.34,
     "dow_status": "Secondary Correction",
     "dow_signal": "空頭受阻",
     "buy_target": 79.46,
     "sell_target": 92.82,
     "wyckoff_phase": "PHASE C",
-    "wyckoff_hint": "【邊界測試】位於 618 深水區防守測試中，等待量能表態。",
+    "wyckoff_hint": "🔥【強力買進】極度低估！宏觀極限回調出現恐慌拋售與彈簧洗盤，左側摸底。",
     "fib_236": 101.08,
     "fib_382": 92.82,
     "fib_500": 86.14,

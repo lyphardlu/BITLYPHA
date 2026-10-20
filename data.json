@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-10-20 15:53 UTC",
-  "btc_mining_cost": "$72,432",
+  "updated_at": "2026-10-20 19:40 UTC",
+  "btc_mining_cost": "$72,425",
   "btc": {
-    "price": 82458.2,
+    "price": 82559.8,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
-    "support": 80400.0,
+    "support": 82556.6,
     "resistance": 84361.6,
     "buy_target": 81364.72,
     "sell_target": 87399.0,
     "wyckoff_phase": "PHASE D",
-    "wyckoff_hint": "【頂部突破】挑戰上方強壓區，關注多頭量能是否持續堆積。",
+    "wyckoff_hint": "✅【回踩確認】(BUEC) 突破後縮量回測支撐，確認為真實 SOS，右側買點浮現。於 81,364.72 至 82,585.19 之間設定分批買單。",
     "fib_236": 81364.72,
     "fib_382": 77631.64,
     "fib_500": 74614.5,
@@ -24,7 +24,7 @@
     }
   },
   "eth": {
-    "price": 2435.92,
+    "price": 2435.34,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 2406.36,
@@ -32,7 +32,7 @@
     "buy_target": 2403.64,
     "sell_target": 2807.67,
     "wyckoff_phase": "PHASE D",
-    "wyckoff_hint": "【頂部突破】挑戰上方強壓區，關注多頭量能是否持續堆積。",
+    "wyckoff_hint": "✅【回踩確認】(BUEC) 突破後縮量回測支撐，確認為真實 SOS，右側買點浮現。於 2,403.64 至 2,439.69 之間設定分批買單。",
     "fib_236": 2558.06,
     "fib_382": 2403.64,
     "fib_500": 2278.84,
@@ -46,7 +46,7 @@
     }
   },
   "ethbtc": {
-    "price": 0.02974,
+    "price": 0.02971,
     "dow_status": "Secondary Correction",
     "dow_signal": "空頭受阻",
     "support": 0.0295,
@@ -68,15 +68,15 @@
     }
   },
   "sol": {
-    "price": 105.44,
+    "price": 105.88,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
-    "support": 100.56,
-    "resistance": 105.8,
+    "support": 105.71,
+    "resistance": 113.4,
     "buy_target": 104.19,
     "sell_target": 124.96,
-    "wyckoff_phase": "PHASE D",
-    "wyckoff_hint": "【頂部突破】挑戰上方強壓區，關注多頭量能是否持續堆積。",
+    "wyckoff_phase": "PHASE B",
+    "wyckoff_hint": "⚠️【高位誘多】需求不足 (No Demand)：無量過高，提防假突破！",
     "fib_236": 112.13,
     "fib_382": 104.19,
     "fib_500": 97.77,
@@ -90,15 +90,15 @@
     }
   },
   "uni": {
-    "price": 7.23,
-    "dow_status": "Secondary Correction",
-    "dow_signal": "空頭受阻",
+    "price": 7.323,
+    "dow_status": "Consolidation",
+    "dow_signal": "結構收斂",
     "support": 6.995,
     "resistance": 7.899,
     "buy_target": 7.057,
     "sell_target": 10.944,
     "wyckoff_phase": "PHASE B",
-    "wyckoff_hint": "【區間震盪】於黃金區間內縮量換手，籌碼沉澱中。",
+    "wyckoff_hint": "⚖️【籌碼沉澱】主力建立部位中，無明確方向，建議嚴格執行高拋低吸。",
     "fib_236": 9.109,
     "fib_382": 7.974,
     "fib_500": 7.057,
@@ -112,7 +112,7 @@
     }
   },
   "ray": {
-    "price": 1.944,
+    "price": 2.057,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 1.83,
@@ -134,15 +134,15 @@
     }
   },
   "near": {
-    "price": 4.816,
+    "price": 4.866,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
-    "support": 4.588,
+    "support": 4.621,
     "resistance": 5.44,
     "buy_target": 4.313,
     "sell_target": 6.028,
-    "wyckoff_phase": "PHASE D",
-    "wyckoff_hint": "✅【回踩確認】(BUEC) 突破後縮量回測支撐，確認為真實 SOS，右側買點浮現。於 4.313 至 4.378 之間設定分批買單。",
+    "wyckoff_phase": "PHASE B",
+    "wyckoff_hint": "⚠️【高位誘多】需求不足 (No Demand)：無量過高，提防假突破！",
     "fib_236": 4.968,
     "fib_382": 4.313,
     "fib_500": 3.783,
@@ -156,7 +156,7 @@
     }
   },
   "zec": {
-    "price": 1180.85,
+    "price": 1197.22,
     "dow_status": "Secondary Correction",
     "dow_signal": "空頭受阻",
     "support": 1112.27,
@@ -178,7 +178,7 @@
     }
   },
   "mstr": {
-    "price": 143.79,
+    "price": 142.92,
     "mnav_multiple": "1.11x",
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
@@ -199,7 +199,7 @@
     }
   },
   "xcoin": {
-    "price": 170.96,
+    "price": 170.4,
     "dow_status": "Consolidation",
     "dow_signal": "結構收斂",
     "buy_target": 165.55,
@@ -219,10 +219,10 @@
     }
   },
   "xadbe": {
-    "price": 254.56,
+    "price": 255.54,
     "dow_status": "Primary Bull",
-    "dow_signal": "多頭推進",
-    "buy_target": 242.32,
+    "dow_signal": "SOS 強勢修復",
+    "buy_target": 254.65,
     "sell_target": 294.53,
     "wyckoff_phase": "PHASE B",
     "wyckoff_hint": "⚠️【高位誘多】需求不足 (No Demand)：無量過高，提防假突破！",
@@ -239,7 +239,7 @@
     }
   },
   "xcrcl": {
-    "price": 85.0,
+    "price": 85.71,
     "dow_status": "Consolidation",
     "dow_signal": "結構收斂",
     "buy_target": 79.46,

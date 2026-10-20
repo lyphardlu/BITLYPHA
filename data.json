@@ -1,16 +1,16 @@
 {
-  "updated_at": "2026-10-20 19:40 UTC",
-  "btc_mining_cost": "$72,425",
+  "updated_at": "2026-10-20 22:45 UTC",
+  "btc_mining_cost": "$72,419",
   "btc": {
-    "price": 82559.8,
+    "price": 83024.8,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
-    "support": 82556.6,
+    "support": 82874.5,
     "resistance": 84361.6,
-    "buy_target": 81364.72,
+    "buy_target": 77631.64,
     "sell_target": 87399.0,
-    "wyckoff_phase": "PHASE D",
-    "wyckoff_hint": "✅【回踩確認】(BUEC) 突破後縮量回測支撐，確認為真實 SOS，右側買點浮現。於 81,364.72 至 82,585.19 之間設定分批買單。",
+    "wyckoff_phase": "PHASE B",
+    "wyckoff_hint": "⚠️【高位誘多】需求不足 (No Demand)：無量過高，提防假突破！",
     "fib_236": 81364.72,
     "fib_382": 77631.64,
     "fib_500": 74614.5,
@@ -24,15 +24,15 @@
     }
   },
   "eth": {
-    "price": 2435.34,
+    "price": 2457.86,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 2406.36,
     "resistance": 2579.98,
     "buy_target": 2403.64,
     "sell_target": 2807.67,
-    "wyckoff_phase": "PHASE D",
-    "wyckoff_hint": "✅【回踩確認】(BUEC) 突破後縮量回測支撐，確認為真實 SOS，右側買點浮現。於 2,403.64 至 2,439.69 之間設定分批買單。",
+    "wyckoff_phase": "PHASE B",
+    "wyckoff_hint": "⚠️【高位誘多】需求不足 (No Demand)：無量過高，提防假突破！",
     "fib_236": 2558.06,
     "fib_382": 2403.64,
     "fib_500": 2278.84,
@@ -46,7 +46,7 @@
     }
   },
   "ethbtc": {
-    "price": 0.02971,
+    "price": 0.03001,
     "dow_status": "Secondary Correction",
     "dow_signal": "空頭受阻",
     "support": 0.0295,
@@ -68,7 +68,7 @@
     }
   },
   "sol": {
-    "price": 105.88,
+    "price": 107.01,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 105.71,
@@ -90,7 +90,7 @@
     }
   },
   "uni": {
-    "price": 7.323,
+    "price": 7.514,
     "dow_status": "Consolidation",
     "dow_signal": "結構收斂",
     "support": 6.995,
@@ -112,7 +112,7 @@
     }
   },
   "ray": {
-    "price": 2.057,
+    "price": 2.042,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 1.83,
@@ -134,7 +134,7 @@
     }
   },
   "near": {
-    "price": 4.866,
+    "price": 4.941,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 4.621,
@@ -156,15 +156,15 @@
     }
   },
   "zec": {
-    "price": 1197.22,
-    "dow_status": "Secondary Correction",
-    "dow_signal": "空頭受阻",
+    "price": 1271.0,
+    "dow_status": "Primary Bull",
+    "dow_signal": "SOS 強勢修復",
     "support": 1112.27,
     "resistance": 1298.0,
-    "buy_target": 1074.62,
+    "buy_target": 1221.61,
     "sell_target": 1697.45,
     "wyckoff_phase": "PHASE D",
-    "wyckoff_hint": "【區間突圍】多空交戰中，嚴格觀望，等待方向表態。",
+    "wyckoff_hint": "【頂部突破】挑戰上方強壓區，關注多頭量能是否持續堆積。",
     "fib_236": 1403.48,
     "fib_382": 1221.61,
     "fib_500": 1074.62,
@@ -178,7 +178,7 @@
     }
   },
   "mstr": {
-    "price": 142.92,
+    "price": 144.93,
     "mnav_multiple": "1.11x",
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
@@ -199,7 +199,7 @@
     }
   },
   "xcoin": {
-    "price": 170.4,
+    "price": 172.69,
     "dow_status": "Consolidation",
     "dow_signal": "結構收斂",
     "buy_target": 165.55,
@@ -219,13 +219,13 @@
     }
   },
   "xadbe": {
-    "price": 255.54,
+    "price": 255.15,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "buy_target": 254.65,
     "sell_target": 294.53,
-    "wyckoff_phase": "PHASE B",
-    "wyckoff_hint": "⚠️【高位誘多】需求不足 (No Demand)：無量過高，提防假突破！",
+    "wyckoff_phase": "PHASE D",
+    "wyckoff_hint": "【頂部突破】挑戰上方強壓區，關注多頭量能是否持續堆積。",
     "fib_236": 269.89,
     "fib_382": 254.65,
     "fib_500": 242.32,
@@ -239,13 +239,13 @@
     }
   },
   "xcrcl": {
-    "price": 85.71,
+    "price": 86.42,
     "dow_status": "Consolidation",
     "dow_signal": "結構收斂",
     "buy_target": 79.46,
-    "sell_target": 92.82,
+    "sell_target": 114.44,
     "wyckoff_phase": "PHASE C",
-    "wyckoff_hint": "🔥【強力買進】無供應測試 (No Supply)：賣壓枯竭，右側絕佳買點！。於 79.46 至 80.65 之間設定分批買單。",
+    "wyckoff_hint": "【邊界測試】位於 618 深水區防守測試中，等待量能表態。",
     "fib_236": 101.08,
     "fib_382": 92.82,
     "fib_500": 86.14,

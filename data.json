@@ -1,11 +1,11 @@
 {
-  "updated_at": "2026-10-25 15:07 UTC",
-  "btc_mining_cost": "$76,476",
+  "updated_at": "2026-10-25 18:35 UTC",
+  "btc_mining_cost": "$76,469",
   "btc": {
-    "price": 80693.6,
+    "price": 80679.7,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
-    "support": 80680.5,
+    "support": 80400.0,
     "resistance": 84361.6,
     "buy_target": 77799.15,
     "sell_target": 87399.0,
@@ -24,9 +24,9 @@
     }
   },
   "eth": {
-    "price": 2345.05,
-    "dow_status": "Consolidation",
-    "dow_signal": "結構收斂",
+    "price": 2355.12,
+    "dow_status": "Secondary Correction",
+    "dow_signal": "空頭受阻",
     "support": 2329.04,
     "resistance": 2526.4,
     "buy_target": 2314.79,
@@ -46,15 +46,15 @@
     }
   },
   "ethbtc": {
-    "price": 0.02899,
+    "price": 0.02912,
     "dow_status": "Secondary Correction",
     "dow_signal": "空頭壓制",
-    "support": 0.02878,
+    "support": 0.02908,
     "resistance": 0.03008,
-    "buy_target": 0.02722,
+    "buy_target": 0.02735,
     "sell_target": 0.03075,
     "wyckoff_phase": "PHASE C",
-    "wyckoff_hint": "🔥【強力買進】無供應測試 (No Supply)：賣壓枯竭，右側絕佳買點！。於 0.02722 至 0.02763 之間設定分批買單。",
+    "wyckoff_hint": "🔥【強力買進】無供應測試 (No Supply)：賣壓枯竭，右側絕佳買點！。於 0.02735 至 0.02776 之間設定分批買單。",
     "fib_236": 0.03211,
     "fib_382": 0.03136,
     "fib_500": 0.03075,
@@ -68,7 +68,7 @@
     }
   },
   "sol": {
-    "price": 101.65,
+    "price": 101.92,
     "dow_status": "Secondary Correction",
     "dow_signal": "空頭受阻",
     "support": 100.56,
@@ -90,9 +90,9 @@
     }
   },
   "uni": {
-    "price": 6.813,
-    "dow_status": "Consolidation",
-    "dow_signal": "結構收斂",
+    "price": 6.969,
+    "dow_status": "Secondary Correction",
+    "dow_signal": "空頭受阻",
     "support": 6.81,
     "resistance": 7.79,
     "buy_target": 6.14,
@@ -112,15 +112,15 @@
     }
   },
   "ray": {
-    "price": 1.83,
+    "price": 1.828,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
-    "support": 1.83,
+    "support": 1.821,
     "resistance": 1.927,
     "buy_target": 1.817,
     "sell_target": 2.575,
     "wyckoff_phase": "PHASE D",
-    "wyckoff_hint": "【頂部突破】挑戰上方強壓區，關注多頭量能是否持續堆積。",
+    "wyckoff_hint": "✅【回踩確認】(BUEC) 突破後縮量回測支撐，確認為真實 SOS，右側買點浮現。於 1.817 至 1.844 之間設定分批買單。",
     "fib_236": 2.107,
     "fib_382": 1.817,
     "fib_500": 1.582,
@@ -134,10 +134,10 @@
     }
   },
   "near": {
-    "price": 4.505,
+    "price": 4.606,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
-    "support": 4.301,
+    "support": 4.588,
     "resistance": 5.44,
     "buy_target": 4.313,
     "sell_target": 6.028,
@@ -156,15 +156,15 @@
     }
   },
   "zec": {
-    "price": 1215.05,
-    "dow_status": "Consolidation",
-    "dow_signal": "結構收斂",
-    "support": 1112.27,
+    "price": 1225.36,
+    "dow_status": "Primary Bull",
+    "dow_signal": "SOS 強勢修復",
+    "support": 1119.27,
     "resistance": 1349.09,
-    "buy_target": 1074.62,
+    "buy_target": 1221.61,
     "sell_target": 1697.45,
     "wyckoff_phase": "PHASE D",
-    "wyckoff_hint": "【區間突圍】多空交戰中，嚴格觀望，等待方向表態。",
+    "wyckoff_hint": "【頂部突破】挑戰上方強壓區，關注多頭量能是否持續堆積。",
     "fib_236": 1403.48,
     "fib_382": 1221.61,
     "fib_500": 1074.62,
@@ -178,7 +178,7 @@
     }
   },
   "mstr": {
-    "price": 145.06,
+    "price": 145.29,
     "mnav_multiple": "1.15x",
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
@@ -199,10 +199,10 @@
     }
   },
   "xcoin": {
-    "price": 164.79,
+    "price": 165.31,
     "dow_status": "Secondary Correction",
     "dow_signal": "空頭壓制",
-    "buy_target": 149.88,
+    "buy_target": 150.4,
     "sell_target": 173.72,
     "wyckoff_phase": "PHASE C",
     "wyckoff_hint": "【邊界測試】位於 618 深水區防守測試中，等待量能表態。",
@@ -219,7 +219,7 @@
     }
   },
   "xadbe": {
-    "price": 263.11,
+    "price": 263.65,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "buy_target": 254.65,
@@ -239,7 +239,7 @@
     }
   },
   "xcrcl": {
-    "price": 85.29,
+    "price": 85.55,
     "dow_status": "Primary Bull",
     "dow_signal": "多頭推進",
     "buy_target": 80.56,

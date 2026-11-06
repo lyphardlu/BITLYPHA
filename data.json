@@ -1,11 +1,11 @@
 {
-  "updated_at": "2026-11-05 19:07 UTC",
-  "btc_mining_cost": "$75,920",
+  "updated_at": "2026-11-06 00:35 UTC",
+  "btc_mining_cost": "$75,908",
   "btc": {
-    "price": 75998.0,
+    "price": 76313.9,
     "dow_status": "Secondary Correction",
     "dow_signal": "空頭受阻",
-    "support": 72122.21,
+    "support": 76265.2,
     "resistance": 81200.0,
     "buy_target": 74833.75,
     "sell_target": 87399.0,
@@ -24,10 +24,10 @@
     }
   },
   "eth": {
-    "price": 2248.49,
-    "dow_status": "Primary Bull",
-    "dow_signal": "多頭推進",
-    "support": 2226.55,
+    "price": 2246.57,
+    "dow_status": "Consolidation",
+    "dow_signal": "結構收斂",
+    "support": 2174.0,
     "resistance": 2391.94,
     "buy_target": 2198.47,
     "sell_target": 2431.11,
@@ -46,37 +46,37 @@
     }
   },
   "ethbtc": {
-    "price": 0.02792,
+    "price": 0.02954,
     "dow_status": "Secondary Correction",
     "dow_signal": "空頭壓制",
-    "support": 0.02582,
+    "support": 0.0295,
     "resistance": 0.03008,
-    "buy_target": 0.02597,
-    "sell_target": 0.03035,
+    "buy_target": 0.02775,
+    "sell_target": 0.03084,
     "wyckoff_phase": "PHASE E",
     "wyckoff_hint": "🛑【逃頂賣出】趨勢破壞！空頭結構全面崩盤，嚴格停損。",
-    "fib_236": 0.03192,
-    "fib_382": 0.03105,
-    "fib_500": 0.03035,
-    "fib_618": 0.02964,
+    "fib_236": 0.03216,
+    "fib_382": 0.03143,
+    "fib_500": 0.03084,
+    "fib_618": 0.03025,
     "fib_weights": {
-      "fib_236": 1.0,
+      "fib_236": 3.5,
       "fib_382": 1.0,
       "fib_500": 1.0,
-      "fib_618": 6.0,
-      "fib_786": 1.0
+      "fib_618": 1.0,
+      "fib_786": 3.5
     }
   },
   "sol": {
-    "price": 89.39,
+    "price": 90.28,
     "dow_status": "Secondary Correction",
     "dow_signal": "空頭壓制",
-    "support": 81.91,
+    "support": 82.74,
     "resistance": 98.16,
-    "buy_target": 82.45,
+    "buy_target": 83.29,
     "sell_target": 97.77,
-    "wyckoff_phase": "PHASE C",
-    "wyckoff_hint": "【邊界測試】位於 618 深水區防守測試中，等待量能表態。",
+    "wyckoff_phase": "PHASE E",
+    "wyckoff_hint": "🛑【逃頂賣出】趨勢破壞！空頭結構全面崩盤，嚴格停損。",
     "fib_236": 112.13,
     "fib_382": 104.19,
     "fib_500": 97.77,
@@ -90,10 +90,10 @@
     }
   },
   "uni": {
-    "price": 6.775,
+    "price": 6.97,
     "dow_status": "Secondary Correction",
     "dow_signal": "空頭受阻",
-    "support": 6.742,
+    "support": 6.81,
     "resistance": 7.525,
     "buy_target": 6.14,
     "sell_target": 7.974,
@@ -112,10 +112,10 @@
     }
   },
   "ray": {
-    "price": 1.684,
+    "price": 1.705,
     "dow_status": "Secondary Correction",
     "dow_signal": "空頭受阻",
-    "support": 1.521,
+    "support": 1.704,
     "resistance": 1.867,
     "buy_target": 1.582,
     "sell_target": 2.575,
@@ -134,10 +134,10 @@
     }
   },
   "near": {
-    "price": 3.669,
+    "price": 3.75,
     "dow_status": "Secondary Correction",
     "dow_signal": "空頭受阻",
-    "support": 3.048,
+    "support": 3.128,
     "resistance": 4.814,
     "buy_target": 3.253,
     "sell_target": 4.313,
@@ -156,10 +156,10 @@
     }
   },
   "zec": {
-    "price": 1224.39,
+    "price": 1314.36,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
-    "support": 1182.22,
+    "support": 1271.4,
     "resistance": 1349.09,
     "buy_target": 1221.87,
     "sell_target": 1697.45,
@@ -178,8 +178,8 @@
     }
   },
   "mstr": {
-    "price": 128.07,
-    "mnav_multiple": "1.08x",
+    "price": 130.31,
+    "mnav_multiple": "1.09x",
     "dow_status": "Secondary Correction",
     "dow_signal": "空頭受阻",
     "buy_target": 126.5,
@@ -199,13 +199,13 @@
     }
   },
   "xcoin": {
-    "price": 135.6,
+    "price": 137.92,
     "dow_status": "Secondary Correction",
     "dow_signal": "空頭壓制",
-    "buy_target": 120.05,
+    "buy_target": 122.37,
     "sell_target": 170.92,
-    "wyckoff_phase": "PHASE C",
-    "wyckoff_hint": "【邊界測試】位於 618 深水區防守測試中，等待量能表態。",
+    "wyckoff_phase": "PHASE E",
+    "wyckoff_hint": "🛑【逃頂賣出】趨勢破壞！空頭結構全面崩盤，嚴格停損。",
     "fib_236": 190.67,
     "fib_382": 179.75,
     "fib_500": 170.92,
@@ -219,7 +219,7 @@
     }
   },
   "xadbe": {
-    "price": 245.72,
+    "price": 244.3,
     "dow_status": "Secondary Correction",
     "dow_signal": "空頭受阻",
     "buy_target": 242.32,
@@ -239,13 +239,13 @@
     }
   },
   "xcrcl": {
-    "price": 67.25,
+    "price": 69.2,
     "dow_status": "Secondary Correction",
     "dow_signal": "空頭壓制",
-    "buy_target": 59.09,
+    "buy_target": 61.04,
     "sell_target": 80.56,
-    "wyckoff_phase": "PHASE C",
-    "wyckoff_hint": "【邊界測試】位於 618 深水區防守測試中，等待量能表態。",
+    "wyckoff_phase": "PHASE E",
+    "wyckoff_hint": "🛑【逃頂賣出】趨勢破壞！空頭結構全面崩盤，嚴格停損。",
     "fib_236": 92.56,
     "fib_382": 85.92,
     "fib_500": 80.56,

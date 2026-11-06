@@ -1,11 +1,11 @@
 {
-  "updated_at": "2026-11-06 00:35 UTC",
-  "btc_mining_cost": "$75,908",
+  "updated_at": "2026-11-06 11:39 UTC",
+  "btc_mining_cost": "$75,885",
   "btc": {
-    "price": 76313.9,
+    "price": 76146.7,
     "dow_status": "Secondary Correction",
     "dow_signal": "空頭受阻",
-    "support": 76265.2,
+    "support": 72218.31,
     "resistance": 81200.0,
     "buy_target": 74833.75,
     "sell_target": 87399.0,
@@ -24,7 +24,7 @@
     }
   },
   "eth": {
-    "price": 2246.57,
+    "price": 2242.45,
     "dow_status": "Consolidation",
     "dow_signal": "結構收斂",
     "support": 2174.0,
@@ -46,12 +46,12 @@
     }
   },
   "ethbtc": {
-    "price": 0.02954,
+    "price": 0.0295,
     "dow_status": "Secondary Correction",
     "dow_signal": "空頭壓制",
     "support": 0.0295,
     "resistance": 0.03008,
-    "buy_target": 0.02775,
+    "buy_target": 0.02771,
     "sell_target": 0.03084,
     "wyckoff_phase": "PHASE E",
     "wyckoff_hint": "🛑【逃頂賣出】趨勢破壞！空頭結構全面崩盤，嚴格停損。",
@@ -68,12 +68,12 @@
     }
   },
   "sol": {
-    "price": 90.28,
+    "price": 90.45,
     "dow_status": "Secondary Correction",
     "dow_signal": "空頭壓制",
-    "support": 82.74,
+    "support": 82.91,
     "resistance": 98.16,
-    "buy_target": 83.29,
+    "buy_target": 83.46,
     "sell_target": 97.77,
     "wyckoff_phase": "PHASE E",
     "wyckoff_hint": "🛑【逃頂賣出】趨勢破壞！空頭結構全面崩盤，嚴格停損。",
@@ -90,10 +90,10 @@
     }
   },
   "uni": {
-    "price": 6.97,
+    "price": 7.023,
     "dow_status": "Secondary Correction",
     "dow_signal": "空頭受阻",
-    "support": 6.81,
+    "support": 6.995,
     "resistance": 7.525,
     "buy_target": 6.14,
     "sell_target": 7.974,
@@ -112,15 +112,15 @@
     }
   },
   "ray": {
-    "price": 1.705,
+    "price": 1.776,
     "dow_status": "Secondary Correction",
     "dow_signal": "空頭受阻",
-    "support": 1.704,
+    "support": 1.736,
     "resistance": 1.867,
     "buy_target": 1.582,
     "sell_target": 2.575,
     "wyckoff_phase": "PHASE D",
-    "wyckoff_hint": "【區間突圍】多空交戰中，嚴格觀望，等待方向表態。",
+    "wyckoff_hint": "🚀【強勢表態】需求強勁湧現，挑戰上方強壓區。",
     "fib_236": 2.107,
     "fib_382": 1.817,
     "fib_500": 1.582,
@@ -134,10 +134,10 @@
     }
   },
   "near": {
-    "price": 3.75,
+    "price": 3.741,
     "dow_status": "Secondary Correction",
     "dow_signal": "空頭受阻",
-    "support": 3.128,
+    "support": 3.119,
     "resistance": 4.814,
     "buy_target": 3.253,
     "sell_target": 4.313,
@@ -156,7 +156,7 @@
     }
   },
   "zec": {
-    "price": 1314.36,
+    "price": 1289.99,
     "dow_status": "Primary Bull",
     "dow_signal": "SOS 強勢修復",
     "support": 1271.4,
@@ -178,8 +178,8 @@
     }
   },
   "mstr": {
-    "price": 130.31,
-    "mnav_multiple": "1.09x",
+    "price": 130.79,
+    "mnav_multiple": "1.1x",
     "dow_status": "Secondary Correction",
     "dow_signal": "空頭受阻",
     "buy_target": 126.5,
@@ -199,31 +199,31 @@
     }
   },
   "xcoin": {
-    "price": 137.92,
+    "price": 138.67,
     "dow_status": "Secondary Correction",
     "dow_signal": "空頭壓制",
-    "buy_target": 122.37,
+    "buy_target": 123.12,
     "sell_target": 170.92,
     "wyckoff_phase": "PHASE E",
     "wyckoff_hint": "🛑【逃頂賣出】趨勢破壞！空頭結構全面崩盤，嚴格停損。",
     "fib_236": 190.67,
-    "fib_382": 179.75,
+    "fib_382": 179.74,
     "fib_500": 170.92,
     "fib_618": 162.09,
     "fib_weights": {
       "fib_236": 1.0,
       "fib_382": 1.0,
-      "fib_500": 1.0,
+      "fib_500": 3.5,
       "fib_618": 1.0,
       "fib_786": 6.0
     }
   },
   "xadbe": {
-    "price": 244.3,
+    "price": 241.3,
     "dow_status": "Secondary Correction",
     "dow_signal": "空頭受阻",
-    "buy_target": 242.32,
-    "sell_target": 294.53,
+    "buy_target": 230.0,
+    "sell_target": 254.65,
     "wyckoff_phase": "PHASE D",
     "wyckoff_hint": "【區間突圍】多空交戰中，嚴格觀望，等待方向表態。",
     "fib_236": 269.89,
@@ -239,10 +239,10 @@
     }
   },
   "xcrcl": {
-    "price": 69.2,
+    "price": 69.43,
     "dow_status": "Secondary Correction",
     "dow_signal": "空頭壓制",
-    "buy_target": 61.04,
+    "buy_target": 61.27,
     "sell_target": 80.56,
     "wyckoff_phase": "PHASE E",
     "wyckoff_hint": "🛑【逃頂賣出】趨勢破壞！空頭結構全面崩盤，嚴格停損。",
